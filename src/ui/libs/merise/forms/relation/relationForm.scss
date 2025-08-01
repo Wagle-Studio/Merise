@@ -1,0 +1,20 @@
+.relation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__input-wrapper {
+    width: 100%;
+    height: max-content;
+
+    &__label {
+      display: none;
+    }
+
+    &__select {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 16px;
+    }
+  }
+}

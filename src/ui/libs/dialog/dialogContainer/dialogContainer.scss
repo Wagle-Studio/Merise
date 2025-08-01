@@ -1,0 +1,32 @@
+.dialog-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  padding: 24px;
+}
+
+// Common dialog overlay
+.dialog-overlay {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  animation: fade-in 0.2s ease-out;
+  pointer-events: auto;
+  inset: 0;
+
+  > div {
+    transform: translate(0%, -100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

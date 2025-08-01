@@ -1,0 +1,39 @@
+.dialog-entity {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    min-width: 320px;
+    max-width: 500px;
+    max-height: 80vh;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid rgb(209, 152, 20);
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
+
+    &-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &-item {
+      max-width: max-content;
+      max-height: max-content;
+    }
+  }
+}

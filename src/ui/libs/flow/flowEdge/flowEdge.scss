@@ -1,0 +1,18 @@
+.edge {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 4px 4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: border 0.15s ease;
+}
+
+.edge {
+  position: absolute;
+  cursor: pointer;
+}
+
+.edge:hover {
+  border: 1px solid gray;
+}
