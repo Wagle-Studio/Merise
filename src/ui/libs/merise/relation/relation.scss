@@ -1,7 +1,7 @@
 .relation {
   padding: 4px 16px;
-  background-color: white;
-  border: 1px solid rgb(194, 58, 180);
+  background-color: var(--white);
+  border: 1px solid var(--relation);
   border-radius: 2px;
   pointer-events: all;
 }

@@ -1,4 +1,4 @@
-import type { ZodError } from "zod";
+import type { ZodError, ZodSafeParseError } from "zod";
 import { EntityComponent, EntityFormComponent } from "@/ui";
 import { type MeriseDependencies, type MeriseEntityInterface, MeriseErrorTypeEnum, MeriseItemTypeEnum, type MeriseResult } from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
@@ -6,6 +6,7 @@ import { type EntityFormType, EntityFormTypeSchema } from "./EntityFormSchema";
 
 export default class Entity extends AbstractMeriseItem implements MeriseEntityInterface {
   emoji: string;
+  formError?: ZodSafeParseError<EntityFormType>;
 
   constructor(flowId: string, dependencies: MeriseDependencies) {
     super(flowId, MeriseItemTypeEnum.ENTITY, dependencies);
@@ -16,13 +17,15 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     this.dependencies?.onEntitySelect(this);
   };
 
-  handleSave = (formData: EntityFormType): MeriseResult<EntityFormType, ZodError> => {
+  handleFormSubmit = (formData: EntityFormType): MeriseResult<EntityFormType, ZodError> => {
     const validationResult = EntityFormTypeSchema.safeParse(formData);
 
     if (!validationResult.success) {
+      this.setFormError(validationResult);
+
       return {
         success: false,
-        message: "Impossible de mettre à jour l'entité",
+        message: "Formulaire invalide",
         severity: MeriseErrorTypeEnum.ERROR,
         error: validationResult.error,
       };
@@ -47,11 +50,22 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     this.emoji = emoji;
   };
 
+  getFormError = (): ZodSafeParseError<EntityFormType> | undefined => {
+    return this.formError;
+  };
+
+  setFormError = (error: ZodSafeParseError<EntityFormType>): void => {
+    this.formError = error;
+  };
+
   renderComponent = (): React.ReactElement => {
     return EntityComponent(this);
   };
 
   renderFormComponent = (): React.ReactElement => {
-    return EntityFormComponent(this, this.handleSave);
+    return EntityFormComponent({
+      entity: this,
+      onSubmit: this.handleFormSubmit,
+    });
   };
 }

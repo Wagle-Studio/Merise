@@ -1,0 +1,22 @@
+.field-text {
+  display: flex;
+  gap: 8px;
+
+  &--horizontal {
+    flex-direction: row;
+  }
+
+  &--vertical {
+    flex-direction: column;
+  }
+
+  &__label {
+    display: none;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 16px;
+  }
+}
