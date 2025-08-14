@@ -54,14 +54,15 @@ export type MeriseResultSuccess<T> = {
 };
 
 // Represents a failed Merise operation
-export type MeriseResultFail = {
+export type MeriseResultFail<E> = {
   success: false;
   message: string;
   severity: MeriseErrorType;
+  error?: E;
 };
 
 // Union type representing the result of a Merise operation
-export type MeriseResult<T> = MeriseResultSuccess<T> | MeriseResultFail;
+export type MeriseResult<T, E = undefined> = MeriseResultSuccess<T> | MeriseResultFail<E>;
 
 // Merise dependencies contract provided by the provider factory
 export interface MeriseDependencies {
