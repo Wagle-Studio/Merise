@@ -1,11 +1,11 @@
 import type { KernelManagers } from "@/core";
 import { ToastTypeEnum } from "@/core/libs/toast";
-import type { MeriseAssociationInterface, MeriseDependencies, MeriseEntityInterface, MeriseRelationInterface } from "@/libs/merise";
+import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseOperations, MeriseRelationInterface } from "@/libs/merise";
 import { Association, Entity, Relation } from "@/libs/merise";
 
 // Factory responsible for creating Merise operations and dependency mappings from Kernel managers
 export default class ProviderFactoryMerise {
-  static createDependencies(managers: KernelManagers): MeriseDependencies {
+  static createOperations(managers: KernelManagers): MeriseOperations {
     return {
       onEntitySelect: (entity: MeriseEntityInterface): void => {
         const dialogId = managers.dialog.addEntityDialog({
@@ -16,7 +16,7 @@ export default class ProviderFactoryMerise {
               managers.dialog.removeDialogById(dialogId);
             },
             delete: () => {
-              managers.core.handleFlowNodeRemove(entity.flowId, () => managers.dialog.removeDialogById(dialogId));
+              managers.core.handleFlowNodeRemove(entity.getFlowId(), () => managers.dialog.removeDialogById(dialogId));
             },
           },
         });
@@ -30,7 +30,7 @@ export default class ProviderFactoryMerise {
               managers.dialog.removeDialogById(dialogId);
             },
             delete: () => {
-              managers.core.handleFlowNodeRemove(association.flowId, () => managers.dialog.removeDialogById(dialogId));
+              managers.core.handleFlowNodeRemove(association.getFlowId(), () => managers.dialog.removeDialogById(dialogId));
             },
           },
         });
@@ -44,7 +44,7 @@ export default class ProviderFactoryMerise {
               managers.dialog.removeDialogById(dialogId);
             },
             delete: () => {
-              managers.core.handleFlowEdgeRemove(relation.flowId, () => managers.dialog.removeDialogById(dialogId));
+              managers.core.handleFlowEdgeRemove(relation.getFlowId(), () => managers.dialog.removeDialogById(dialogId));
             },
           },
         });

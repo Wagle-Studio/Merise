@@ -15,14 +15,12 @@ function App() {
                 <ProviderMerise>
                   <Toolbar />
                   <FlowComponent />
+                  <ToastContainer />
+                  <DialogContainer />
                 </ProviderMerise>
               </ErrorBoundary>
             </ProviderFlow>
           </ErrorBoundary>
-          <>
-            <ToastContainer />
-            <DialogContainer />
-          </>
         </KernelContextProvider>
       </ErrorBoundary>
     </div>

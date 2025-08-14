@@ -1,17 +1,12 @@
 import { Association, Entity, Relation } from "../models";
-import type { MeriseAssociationInterface, MeriseDTODispatcher, MeriseDTOInterface, MeriseDependencies, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult } from "../types";
+import type { MeriseAssociationInterface, MeriseDTODispatcher, MeriseDTOInterface, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult } from "../types";
 import { MeriseErrorTypeEnum } from "../types";
 
 export default class MeriseManager implements MeriseManagerInterface {
   constructor(
     private getMerise: () => MeriseDTOInterface,
-    private setMerise: MeriseDTODispatcher,
-    private dependencies: MeriseDependencies
+    private setMerise: MeriseDTODispatcher
   ) {}
-
-  setDependencies = (dependencies: any): void => {
-    this.dependencies = dependencies;
-  };
 
   addEntity = (flowId: string): MeriseResult<MeriseEntityInterface> => {
     if (!flowId?.trim()) {
@@ -22,7 +17,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const existingEntity = this.getMerise().entities.find((entity) => entity.flowId === flowId);
+    const existingEntity = this.getMerise().entities.find((entity) => entity.getFlowId() === flowId);
 
     if (existingEntity) {
       return {
@@ -32,7 +27,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const entity = new Entity(flowId, this.dependencies);
+    const entity = new Entity(flowId);
     this.setMerise((prev) => prev.cloneWithAddedEntity(entity));
 
     return {
@@ -50,7 +45,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const existingAssociation = this.getMerise().associations.find((association) => association.flowId === flowId);
+    const existingAssociation = this.getMerise().associations.find((association) => association.getFlowId() === flowId);
 
     if (existingAssociation) {
       return {
@@ -60,7 +55,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const association = new Association(flowId, this.dependencies);
+    const association = new Association(flowId);
     this.setMerise((prev) => prev.cloneWithAddedAssociation(association));
 
     return {
@@ -98,7 +93,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const relation = new Relation(flowId, source, target, this.dependencies);
+    const relation = new Relation(flowId, source, target);
 
     this.setMerise((prev) => prev.cloneWithAddedRelation(relation));
 
@@ -109,7 +104,7 @@ export default class MeriseManager implements MeriseManagerInterface {
   };
 
   updateEntity = (updatedEntity: Entity): MeriseResult<MeriseEntityInterface> => {
-    if (!updatedEntity?.id?.trim()) {
+    if (!updatedEntity?.getId()?.trim()) {
       return {
         success: false,
         message: "Impossible de mettre à jour l'entité",
@@ -118,7 +113,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const merise = this.getMerise();
-    const index = merise.entities.findIndex((entity) => entity.id === updatedEntity.id);
+    const index = merise.entities.findIndex((entity) => entity.getId() === updatedEntity.getId());
 
     if (index === -1) {
       return {
@@ -139,7 +134,7 @@ export default class MeriseManager implements MeriseManagerInterface {
   };
 
   updateAssociation = (updatedAssociation: Association): MeriseResult<MeriseAssociationInterface> => {
-    if (!updatedAssociation?.id?.trim()) {
+    if (!updatedAssociation?.getId()?.trim()) {
       return {
         success: false,
         message: "Impossible de mettre à jour l'association",
@@ -148,7 +143,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const merise = this.getMerise();
-    const index = merise.associations.findIndex((association) => association.id === updatedAssociation.id);
+    const index = merise.associations.findIndex((association) => association.getId() === updatedAssociation.getId());
 
     if (index === -1) {
       return {
@@ -169,7 +164,7 @@ export default class MeriseManager implements MeriseManagerInterface {
   };
 
   updateRelation = (updatedRelation: Relation): MeriseResult<MeriseRelationInterface> => {
-    if (!updatedRelation?.id?.trim()) {
+    if (!updatedRelation?.getId()?.trim()) {
       return {
         success: false,
         message: "Impossible de mettre à jour la relation",
@@ -178,7 +173,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const merise = this.getMerise();
-    const index = merise.relations.findIndex((relation) => relation.id === updatedRelation.id);
+    const index = merise.relations.findIndex((relation) => relation.getId() === updatedRelation.getId());
 
     if (index === -1) {
       return {
@@ -208,7 +203,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const merise = this.getMerise();
-    const index = merise.entities.findIndex((entity) => entity.flowId === flowId);
+    const index = merise.entities.findIndex((entity) => entity.getFlowId() === flowId);
 
     if (index === -1) {
       return {
@@ -220,7 +215,7 @@ export default class MeriseManager implements MeriseManagerInterface {
 
     const entity = merise.entities[index];
     const updatedEntities = merise.entities.filter((_, i) => i !== index);
-    const updatedRelations = this.getMerise().relations.filter((relation) => relation.source !== entity.flowId && relation.target !== entity.flowId);
+    const updatedRelations = this.getMerise().relations.filter((relation) => relation.source !== entity.getFlowId() && relation.target !== entity.getFlowId());
 
     this.setMerise((prev) => prev.cloneWithUpdatedEntitiesAndRelations(updatedEntities, updatedRelations));
 
@@ -240,7 +235,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const merise = this.getMerise();
-    const index = merise.associations.findIndex((association) => association.flowId === flowId);
+    const index = merise.associations.findIndex((association) => association.getFlowId() === flowId);
 
     if (index === -1) {
       return {
@@ -252,7 +247,7 @@ export default class MeriseManager implements MeriseManagerInterface {
 
     const association = merise.associations[index];
     const updatedAssociations = merise.associations.filter((_, i) => i !== index);
-    const updatedRelations = this.getMerise().relations.filter((relation) => relation.source !== association.flowId && relation.target !== association.flowId);
+    const updatedRelations = this.getMerise().relations.filter((relation) => relation.source !== association.getFlowId() && relation.target !== association.getFlowId());
 
     this.setMerise((prev) => prev.cloneWithUpdatedAssociationsAndRelations(updatedAssociations, updatedRelations));
 
@@ -272,7 +267,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const merise = this.getMerise();
-    const index = merise.relations.findIndex((relation) => relation.flowId === flowId);
+    const index = merise.relations.findIndex((relation) => relation.getFlowId() === flowId);
 
     if (index === -1) {
       return {
@@ -302,7 +297,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const entity = this.getMerise().entities.find((entity) => entity.flowId === flowId);
+    const entity = this.getMerise().entities.find((entity) => entity.getFlowId() === flowId);
 
     if (!entity) {
       return {
@@ -327,7 +322,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const association = this.getMerise().associations.find((association) => association.flowId === flowId);
+    const association = this.getMerise().associations.find((association) => association.getFlowId() === flowId);
 
     if (!association) {
       return {
@@ -352,7 +347,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const relation = this.getMerise().relations.find((relation) => relation.flowId === flowId);
+    const relation = this.getMerise().relations.find((relation) => relation.getFlowId() === flowId);
 
     if (!relation) {
       return {

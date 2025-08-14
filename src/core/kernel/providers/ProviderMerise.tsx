@@ -15,7 +15,7 @@ export const ProviderMerise = memo(function ProviderMerise({ children }: { child
 
   const contextValue = useMemo(
     () => ({
-      dependencies: ProviderFactoryMerise.createDependencies(managers),
+      operations: ProviderFactoryMerise.createOperations(managers),
     }),
     [managers]
   );

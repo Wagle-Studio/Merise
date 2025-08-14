@@ -1,43 +1,20 @@
 import { createElement } from "react";
-import type { ZodError } from "zod";
 import { AssociationComponent, AssociationFormComponent } from "@/ui";
-import { type MeriseAssociationInterface, type MeriseDependencies, MeriseErrorTypeEnum, MeriseItemTypeEnum, type MeriseResult } from "../../types";
+import { type MeriseAssociationInterface, MeriseItemTypeEnum } from "../../types";
 import AbstractMeriseItem from "./../AbstractMeriseItem";
-import { type AssociationFormType, AssociationFormTypeSchema } from "./AssociationFormSchema";
+import { type AssociationFormType } from "./AssociationFormSchema";
 
 export default class Association extends AbstractMeriseItem implements MeriseAssociationInterface {
-  emoji: string;
+  private emoji: string;
 
-  constructor(flowId: string, dependencies: MeriseDependencies) {
-    super(flowId, MeriseItemTypeEnum.ASSOCIATION, dependencies);
+  constructor(flowId: string) {
+    super(flowId, MeriseItemTypeEnum.ASSOCIATION);
     this.emoji = "🆕";
   }
 
-  handleSelection = (): void => {
-    this.dependencies?.onAssociationSelect(this);
-  };
-
-  handleFormSubmit = (formData: AssociationFormType): MeriseResult<AssociationFormType, ZodError> => {
-    const validationResult = AssociationFormTypeSchema.safeParse(formData);
-
-    if (!validationResult.success) {
-      return {
-        success: false,
-        message: "Impossible de mettre à jour l'association",
-        severity: MeriseErrorTypeEnum.ERROR,
-        error: validationResult.error,
-      };
-    }
-
+  hydrate = (formData: AssociationFormType): void => {
     this.setName(formData.name);
     this.setEmoji(formData.emoji);
-
-    this.dependencies?.onAssociationUpdate(this);
-
-    return {
-      success: true,
-      data: formData,
-    };
   };
 
   getEmoji = (): string => {
@@ -55,7 +32,6 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
   renderFormComponent = (): React.ReactElement => {
     return createElement(AssociationFormComponent, {
       association: this,
-      onSubmit: this.handleFormSubmit,
     });
   };
 }

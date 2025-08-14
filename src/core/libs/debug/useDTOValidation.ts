@@ -34,11 +34,11 @@ function validateDTOConsistency(flow: FlowDTOInterface, merise: MeriseDTOInterfa
   const flowNodeIds = new Set(flow.nodes.map((node) => node.id));
   const flowEdgeIds = new Set(flow.edges.map((edge) => edge.id));
 
-  const meriseEntityFlowIds = new Set(merise.entities.map((entity) => entity.flowId));
-  const meriseAssociationFlowIds = new Set(merise.associations?.map((association) => association.flowId) || []);
+  const meriseEntityFlowIds = new Set(merise.entities.map((entity) => entity.getFlowId()));
+  const meriseAssociationFlowIds = new Set(merise.associations?.map((association) => association.getFlowId()) || []);
   const allMeriseItemFlowIds = new Set([...meriseEntityFlowIds, ...meriseAssociationFlowIds]);
 
-  const meriseRelationFlowIds = new Set(merise.relations.map((relation) => relation.flowId));
+  const meriseRelationFlowIds = new Set(merise.relations.map((relation) => relation.getFlowId()));
 
   const orphanedFlowNodes = [...flowNodeIds].filter((id) => !allMeriseItemFlowIds.has(id));
   const orphanedMeriseItems = [...allMeriseItemFlowIds].filter((id) => !flowNodeIds.has(id));
