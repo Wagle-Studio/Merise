@@ -1,0 +1,12 @@
+.form-fieldset {
+  display: flex;
+  gap: 8px;
+
+  &--horizontal {
+    flex-direction: row;
+  }
+
+  &--vertical {
+    flex-direction: column;
+  }
+}

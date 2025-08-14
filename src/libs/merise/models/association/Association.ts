@@ -16,7 +16,7 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
     this.dependencies?.onAssociationSelect(this);
   };
 
-  handleSave = (formData: AssociationFormType): MeriseResult<AssociationFormType, ZodError> => {
+  handleFormSubmit = (formData: AssociationFormType): MeriseResult<AssociationFormType, ZodError> => {
     const validationResult = AssociationFormTypeSchema.safeParse(formData);
 
     if (!validationResult.success) {
@@ -31,7 +31,7 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
     this.setName(formData.name);
     this.setEmoji(formData.emoji);
 
-    this.dependencies?.onEntityUpdate(this);
+    this.dependencies?.onAssociationUpdate(this);
 
     return {
       success: true,
@@ -52,6 +52,9 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
   };
 
   renderFormComponent = (): React.ReactElement => {
-    return AssociationFormComponent(this, this.handleSave);
+    return AssociationFormComponent({
+      association: this,
+      onSubmit: this.handleFormSubmit,
+    });
   };
 }

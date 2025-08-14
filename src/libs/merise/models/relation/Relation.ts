@@ -22,7 +22,7 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
     this.dependencies?.onRelationSelect(this);
   };
 
-  handleSave = (formData: RelationFormType): MeriseResult<RelationFormType, ZodError> => {
+  handleFormSubmit = (formData: RelationFormType): MeriseResult<RelationFormType, ZodError> => {
     const validationResult = RelationFormTypeSchema.safeParse(formData);
 
     if (!validationResult.success) {
@@ -35,7 +35,6 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
     }
 
     this.setCardinality(formData.cardinality);
-    this.dependencies?.onRelationUpdate(this);
 
     this.dependencies?.onRelationUpdate(this);
 
@@ -58,6 +57,9 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
   };
 
   renderFormComponent = (): React.ReactElement => {
-    return RelationFormComponent(this, this.handleSave);
+    return RelationFormComponent({
+      relation: this,
+      onSubmit: this.handleFormSubmit,
+    });
   };
 }
