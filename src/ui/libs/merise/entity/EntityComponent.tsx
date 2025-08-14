@@ -1,7 +1,11 @@
 import type { MeriseEntityInterface } from "@/libs/merise";
 import "./entity.scss";
 
-export const EntityComponent = (entity: MeriseEntityInterface) => {
+interface EntityComponentProps {
+  entity: MeriseEntityInterface;
+}
+
+export const EntityComponent = ({ entity }: EntityComponentProps) => {
   return (
     <div className="entity" onClick={() => entity.handleSelection()}>
       <p>

@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import type { ZodError } from "zod";
 import { RelationComponent, RelationFormComponent } from "@/ui";
 import { type MeriseDependencies, MeriseErrorTypeEnum, MeriseItemTypeEnum, type MeriseRelationCardinalityType, type MeriseRelationInterface, type MeriseResult } from "../../types";
@@ -53,11 +54,11 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
   };
 
   renderComponent = (): React.ReactElement => {
-    return RelationComponent(this);
+    return createElement(RelationComponent, { relation: this });
   };
 
   renderFormComponent = (): React.ReactElement => {
-    return RelationFormComponent({
+    return createElement(RelationFormComponent, {
       relation: this,
       onSubmit: this.handleFormSubmit,
     });
