@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import type { ZodError } from "zod";
 import { AssociationComponent, AssociationFormComponent } from "@/ui";
 import { type MeriseAssociationInterface, type MeriseDependencies, MeriseErrorTypeEnum, MeriseItemTypeEnum, type MeriseResult } from "../../types";
@@ -48,11 +49,11 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
   };
 
   renderComponent = (): React.ReactElement => {
-    return AssociationComponent(this);
+    return createElement(AssociationComponent, { association: this });
   };
 
   renderFormComponent = (): React.ReactElement => {
-    return AssociationFormComponent({
+    return createElement(AssociationFormComponent, {
       association: this,
       onSubmit: this.handleFormSubmit,
     });

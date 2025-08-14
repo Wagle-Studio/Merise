@@ -3,15 +3,16 @@ import clsx from "clsx";
 import "./button.scss";
 
 type ButtonProps = {
-  className?: string;
-  onClick: MouseEventHandler<HTMLButtonElement>;
   children: ReactNode;
+  className?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  type?: "button" | "submit" | "reset";
 };
 
-export const Button = (props: ButtonProps) => {
+export const Button = ({ children, className, onClick, type = "button" }: ButtonProps) => {
   return (
-    <button className={clsx("button", props.className)} onClick={props.onClick}>
-      {props.children}
+    <button className={clsx("button", className)} onClick={onClick} type={type}>
+      {children}
     </button>
   );
 };

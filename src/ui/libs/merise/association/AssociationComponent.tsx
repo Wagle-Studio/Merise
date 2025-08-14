@@ -1,7 +1,11 @@
 import type { MeriseAssociationInterface } from "@/libs/merise";
 import "./association.scss";
 
-export const AssociationComponent = (association: MeriseAssociationInterface) => {
+interface AssociationComponentProps {
+  association: MeriseAssociationInterface;
+}
+
+export const AssociationComponent = ({ association }: AssociationComponentProps) => {
   return (
     <div className="association" onClick={() => association.handleSelection()}>
       <p>

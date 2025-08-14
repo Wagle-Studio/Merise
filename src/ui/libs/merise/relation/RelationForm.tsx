@@ -1,7 +1,9 @@
+import type { FormEvent } from "react";
 import type { ZodError } from "zod";
 import { MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface, type MeriseResult } from "@/libs/merise";
 import type { RelationFormType } from "@/libs/merise/models/relation/RelationFormSchema";
 import { Button, FieldSelect, Form } from "@/ui/system";
+import { useFormErrors } from "@/ui/system/form/useFormErrors";
 
 interface RelationFormComponentProps {
   relation: MeriseRelationInterface;
@@ -9,14 +11,19 @@ interface RelationFormComponentProps {
 }
 
 export const RelationFormComponent = ({ onSubmit, relation }: RelationFormComponentProps) => {
-  const handleSubmit = () => {
-    const cardinalitySelect = document.getElementById("relation-cardinality") as HTMLSelectElement;
-    const cardinality = cardinalitySelect?.value as MeriseRelationCardinalityTypeEnum;
+  const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    clearErrors();
+
+    const formData = new FormData(e.currentTarget);
+    const cardinality = formData.get("relation-cardinality") as MeriseRelationCardinalityTypeEnum;
 
     const saveResult = onSubmit({ cardinality });
 
     if (!saveResult.success && saveResult.error) {
-      console.log(saveResult.error.issues);
+      setZodErrors(saveResult.error);
     }
   };
 
@@ -39,11 +46,11 @@ export const RelationFormComponent = ({ onSubmit, relation }: RelationFormCompon
     },
   ];
 
-  const formActions = <Button onClick={handleSubmit}>Sauvegarder</Button>;
+  const formActions = <Button type="submit">Sauvegarder</Button>;
 
   return (
-    <Form actions={formActions}>
-      <FieldSelect label="Cardinalité" htmlFor="relation-cardinality" defaultValue={relation.getCardinality() || MeriseRelationCardinalityTypeEnum.ZERO_N} options={cardinalityOptions} />
+    <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
+      <FieldSelect label="Cardinalité" htmlFor="relation-cardinality" defaultValue={relation.getCardinality() || MeriseRelationCardinalityTypeEnum.ZERO_N} options={cardinalityOptions} error={fieldErrors.cardinality} />
     </Form>
   );
 };

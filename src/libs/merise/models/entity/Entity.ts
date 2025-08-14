@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import type { ZodError, ZodSafeParseError } from "zod";
 import { EntityComponent, EntityFormComponent } from "@/ui";
 import { type MeriseDependencies, type MeriseEntityInterface, MeriseErrorTypeEnum, MeriseItemTypeEnum, type MeriseResult } from "../../types";
@@ -21,8 +22,6 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     const validationResult = EntityFormTypeSchema.safeParse(formData);
 
     if (!validationResult.success) {
-      this.setFormError(validationResult);
-
       return {
         success: false,
         message: "Formulaire invalide",
@@ -50,20 +49,12 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     this.emoji = emoji;
   };
 
-  getFormError = (): ZodSafeParseError<EntityFormType> | undefined => {
-    return this.formError;
-  };
-
-  setFormError = (error: ZodSafeParseError<EntityFormType>): void => {
-    this.formError = error;
-  };
-
   renderComponent = (): React.ReactElement => {
-    return EntityComponent(this);
+    return createElement(EntityComponent, { entity: this });
   };
 
   renderFormComponent = (): React.ReactElement => {
-    return EntityFormComponent({
+    return createElement(EntityFormComponent, {
       entity: this,
       onSubmit: this.handleFormSubmit,
     });
