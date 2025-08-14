@@ -1,4 +1,5 @@
 import type { MeriseRelationInterface } from "@/libs/merise";
+import { useMeriseContext } from "@/libs/merise";
 import "./relation.scss";
 
 interface RelationComponentProps {
@@ -6,9 +7,11 @@ interface RelationComponentProps {
 }
 
 export const RelationComponent = ({ relation }: RelationComponentProps) => {
+  const { operations } = useMeriseContext();
+
   return (
-    <div className="relation" onClick={() => relation.handleSelection()}>
-      <span>{relation.getCardinality() || relation.getName()}</span>
+    <div className="relation" onClick={() => operations.onRelationSelect(relation)}>
+      <span>{relation.getCardinality()}</span>
     </div>
   );
 };

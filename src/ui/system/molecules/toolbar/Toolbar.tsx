@@ -9,11 +9,11 @@ export const Toolbar = () => {
   if (!managers) return null;
 
   const handleCreateEntity = useCallback(() => {
-    managers.core.createFlowNodeAndMeriseEntity();
+    managers.core.handleCreateFlowNodeAndMeriseEntity();
   }, []);
 
   const handleCreateAssociation = useCallback(() => {
-    managers.core.createFlowNodeAndMeriseAssociation();
+    managers.core.handleCreateFlowNodeAndMeriseAssociation();
   }, []);
 
   return (

@@ -1,38 +1,34 @@
 import { Association, Entity, Relation } from "../models";
-import type { MeriseAssociationInterface, MeriseDTODispatcher, MeriseDTOInterface, MeriseDependencies, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult } from "../types";
-import { MeriseErrorTypeEnum } from "../types";
+import type { MeriseAssociationInterface, MeriseDTODispatcher, MeriseDTOInterface, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult } from "../types";
+import { MeriseErrorTypeEnum, MeriseRelationCardinalityTypeEnum } from "../types";
 
 export default class MeriseManager implements MeriseManagerInterface {
   constructor(
     private getMerise: () => MeriseDTOInterface,
-    private setMerise: MeriseDTODispatcher,
-    private dependencies: MeriseDependencies
+    private setMerise: MeriseDTODispatcher
   ) {}
 
-  setDependencies = (dependencies: any): void => {
-    this.dependencies = dependencies;
-  };
-
+  // CORE MANAGER
   addEntity = (flowId: string): MeriseResult<MeriseEntityInterface> => {
     if (!flowId?.trim()) {
       return {
         success: false,
-        message: "Impossible de créer l'entité",
+        message: "Création de l’entité impossible",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
-    const existingEntity = this.getMerise().entities.find((entity) => entity.flowId === flowId);
+    const existingEntity = this.getMerise().entities.find((entity) => entity.getFlowId() === flowId);
 
     if (existingEntity) {
       return {
         success: false,
-        message: "Une entité avec une référence identique existe déjà",
+        message: "Une entité avec cette référence existe déjà",
         severity: MeriseErrorTypeEnum.WARNING,
       };
     }
 
-    const entity = new Entity(flowId, this.dependencies);
+    const entity = new Entity(flowId);
     this.setMerise((prev) => prev.cloneWithAddedEntity(entity));
 
     return {
@@ -41,26 +37,27 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // CORE MANAGER
   addAssociation = (flowId: string): MeriseResult<MeriseAssociationInterface> => {
     if (!flowId?.trim()) {
       return {
         success: false,
-        message: "Impossible de créer l'association",
+        message: "Création de l’association impossible",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
-    const existingAssociation = this.getMerise().associations.find((association) => association.flowId === flowId);
+    const existingAssociation = this.getMerise().associations.find((association) => association.getFlowId() === flowId);
 
     if (existingAssociation) {
       return {
         success: false,
-        message: "Une association avec une référence identique existe déjà",
+        message: "Une association avec cette référence existe déjà",
         severity: MeriseErrorTypeEnum.WARNING,
       };
     }
 
-    const association = new Association(flowId, this.dependencies);
+    const association = new Association(flowId);
     this.setMerise((prev) => prev.cloneWithAddedAssociation(association));
 
     return {
@@ -69,36 +66,23 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // CORE MANAGER
   addRelation = (flowId: string, source: string, target: string): MeriseResult<MeriseRelationInterface> => {
     if (!flowId?.trim() || !source?.trim() || !target?.trim()) {
       return {
         success: false,
-        message: "Impossible de créer la relation",
+        message: "Création de la relation impossible",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
-    if (source === target) {
-      return {
-        success: false,
-        message: "Impossible de créer une relation vers soi-même",
-        severity: MeriseErrorTypeEnum.INFO,
-      };
+    const validationResult = this.validateRelationCreation(source, target);
+
+    if (!validationResult.success) {
+      return validationResult as MeriseResult<MeriseRelationInterface>;
     }
 
-    const existingRelation = this.getMerise().relations.find((relation) => {
-      return (relation.source === source && relation.target === target) || (relation.source === target && relation.target === source);
-    });
-
-    if (existingRelation) {
-      return {
-        success: false,
-        message: "Une relation existe déjà entre ces éléments",
-        severity: MeriseErrorTypeEnum.WARNING,
-      };
-    }
-
-    const relation = new Relation(flowId, source, target, this.dependencies);
+    const relation = new Relation(flowId, source, target, MeriseRelationCardinalityTypeEnum.ZERO_N);
 
     this.setMerise((prev) => prev.cloneWithAddedRelation(relation));
 
@@ -108,22 +92,23 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // CORE MANAGER
   updateEntity = (updatedEntity: Entity): MeriseResult<MeriseEntityInterface> => {
-    if (!updatedEntity?.id?.trim()) {
+    if (!updatedEntity?.getId()?.trim()) {
       return {
         success: false,
-        message: "Impossible de mettre à jour l'entité",
+        message: "Mise à jour de l’entité impossible",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
     const merise = this.getMerise();
-    const index = merise.entities.findIndex((entity) => entity.id === updatedEntity.id);
+    const index = merise.entities.findIndex((entity) => entity.getId() === updatedEntity.getId());
 
     if (index === -1) {
       return {
         success: false,
-        message: "Entité non trouvée pour la mise à jour",
+        message: "Entité introuvable",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
@@ -138,22 +123,23 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // CORE MANAGER
   updateAssociation = (updatedAssociation: Association): MeriseResult<MeriseAssociationInterface> => {
-    if (!updatedAssociation?.id?.trim()) {
+    if (!updatedAssociation?.getId()?.trim()) {
       return {
         success: false,
-        message: "Impossible de mettre à jour l'association",
+        message: "Mise à jour de l’association impossible",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
     const merise = this.getMerise();
-    const index = merise.associations.findIndex((association) => association.id === updatedAssociation.id);
+    const index = merise.associations.findIndex((association) => association.getId() === updatedAssociation.getId());
 
     if (index === -1) {
       return {
         success: false,
-        message: "Association non trouvée pour la mise à jour",
+        message: "Association introuvable",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
@@ -168,22 +154,23 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // CORE MANAGER
   updateRelation = (updatedRelation: Relation): MeriseResult<MeriseRelationInterface> => {
-    if (!updatedRelation?.id?.trim()) {
+    if (!updatedRelation?.getId()?.trim()) {
       return {
         success: false,
-        message: "Impossible de mettre à jour la relation",
+        message: "Mise à jour de la relation impossible",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
     const merise = this.getMerise();
-    const index = merise.relations.findIndex((relation) => relation.id === updatedRelation.id);
+    const index = merise.relations.findIndex((relation) => relation.getId() === updatedRelation.getId());
 
     if (index === -1) {
       return {
         success: false,
-        message: "Relation non trouvée pour la mise à jour",
+        message: "Relation introuvable",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
@@ -198,86 +185,37 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // CORE MANAGER
   removeEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface | null> => {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: "Impossible d'identifier l'entité à supprimer",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    const merise = this.getMerise();
-    const index = merise.entities.findIndex((entity) => entity.flowId === flowId);
-
-    if (index === -1) {
-      return {
-        success: false,
-        message: "Impossible d'identifier l'entité à supprimer",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    const entity = merise.entities[index];
-    const updatedEntities = merise.entities.filter((_, i) => i !== index);
-    const updatedRelations = this.getMerise().relations.filter((relation) => relation.source !== entity.flowId && relation.target !== entity.flowId);
-
-    this.setMerise((prev) => prev.cloneWithUpdatedEntitiesAndRelations(updatedEntities, updatedRelations));
-
-    return {
-      success: true,
-      data: entity,
-    };
+    return this.removeItemByFlowId(this.getMerise().entities, flowId, "l'entité", (updatedEntities, updatedRelations) => {
+      this.setMerise((prev) => prev.cloneWithUpdatedEntitiesAndRelations(updatedEntities, updatedRelations));
+    });
   };
 
+  // CORE MANAGER
   removeAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface | null> => {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: "Impossible d'identifier l'association à supprimer",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    const merise = this.getMerise();
-    const index = merise.associations.findIndex((association) => association.flowId === flowId);
-
-    if (index === -1) {
-      return {
-        success: false,
-        message: "Impossible d'identifier l'entité à supprimer",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    const association = merise.associations[index];
-    const updatedAssociations = merise.associations.filter((_, i) => i !== index);
-    const updatedRelations = this.getMerise().relations.filter((relation) => relation.source !== association.flowId && relation.target !== association.flowId);
-
-    this.setMerise((prev) => prev.cloneWithUpdatedAssociationsAndRelations(updatedAssociations, updatedRelations));
-
-    return {
-      success: true,
-      data: association,
-    };
+    return this.removeItemByFlowId(this.getMerise().associations, flowId, "l'association", (updatedAssociations, updatedRelations) => {
+      this.setMerise((prev) => prev.cloneWithUpdatedAssociationsAndRelations(updatedAssociations, updatedRelations));
+    });
   };
 
+  // CORE MANAGER
   removeRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface | null> => {
     if (!flowId?.trim()) {
       return {
         success: false,
-        message: "Impossible d'identifier la relation à supprimer",
+        message: "Suppression de la relation impossible",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
     const merise = this.getMerise();
-    const index = merise.relations.findIndex((relation) => relation.flowId === flowId);
+    const index = merise.relations.findIndex((relation) => relation.getFlowId() === flowId);
 
     if (index === -1) {
       return {
         success: false,
-        message: "Impossible d'identifier l'entité à supprimer",
+        message: "Relation introuvable",
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
@@ -293,78 +231,92 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // FLOW FACTORY
   findEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface | null> => {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: "FlowId requis pour rechercher l'entité",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    const entity = this.getMerise().entities.find((entity) => entity.flowId === flowId);
-
-    if (!entity) {
-      return {
-        success: false,
-        message: "Impossible d'identifier l'entité recherchée",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    return {
-      success: true,
-      data: entity,
-    };
+    return this.findItemByFlowId(this.getMerise().entities, flowId, "l'entité") as MeriseResult<MeriseEntityInterface | null>;
   };
 
+  // FLOW FACTORY
   findAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface | null> => {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: "FlowId requis pour rechercher l'association",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    const association = this.getMerise().associations.find((association) => association.flowId === flowId);
-
-    if (!association) {
-      return {
-        success: false,
-        message: "Impossible d'identifier l'association recherchée",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    return {
-      success: true,
-      data: association,
-    };
+    return this.findItemByFlowId(this.getMerise().associations, flowId, "l'association") as MeriseResult<MeriseAssociationInterface | null>;
   };
 
+  // FLOW FACTORY
   findRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface | null> => {
+    return this.findItemByFlowId(this.getMerise().relations, flowId, "la relation") as MeriseResult<MeriseRelationInterface | null>;
+  };
+
+  private validateRelationCreation(source: string, target: string): MeriseResult<void> {
+    if (source === target) {
+      return {
+        success: false,
+        message: "La source et la cible ne peuvent pas être identiques",
+        severity: MeriseErrorTypeEnum.INFO,
+      };
+    }
+
+    const existingRelation = this.getMerise().relations.find((relation) => (relation.getSource() === source && relation.getTarget() === target) || (relation.getSource() === target && relation.getTarget() === source));
+
+    if (existingRelation) {
+      return {
+        success: false,
+        message: "Une relation entre ces éléments existe déjà",
+        severity: MeriseErrorTypeEnum.WARNING,
+      };
+    }
+
+    return { success: true, data: undefined };
+  }
+
+  private removeItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string, updateFn: (items: T[], relations: Relation[]) => void): MeriseResult<T | null> {
     if (!flowId?.trim()) {
       return {
         success: false,
-        message: "FlowId requis pour rechercher la relation",
+        message: `Suppression de ${itemType} impossible`,
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
 
-    const relation = this.getMerise().relations.find((relation) => relation.flowId === flowId);
+    const index = collection.findIndex((item) => item.getFlowId() === flowId);
 
-    if (!relation) {
+    if (index === -1) {
       return {
         success: false,
-        message: "Impossible d'identifier la relation recherchée",
+        message: `${itemType} introuvable`,
         severity: MeriseErrorTypeEnum.ERROR,
       };
     }
+
+    const item = collection[index];
+    const updatedItems = collection.filter((_, i) => i !== index);
+    const updatedRelations = this.getMerise().relations.filter((relation) => relation.getSource() !== item.getFlowId() && relation.getTarget() !== item.getFlowId());
+
+    updateFn(updatedItems, updatedRelations);
 
     return {
       success: true,
-      data: relation,
+      data: item,
     };
-  };
+  }
+
+  private findItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string): MeriseResult<T | null> {
+    if (!flowId?.trim()) {
+      return {
+        success: false,
+        message: `FlowId requis pour la recherche`,
+        severity: MeriseErrorTypeEnum.ERROR,
+      };
+    }
+
+    const item = collection.find((item) => item.getFlowId() === flowId);
+    if (!item) {
+      return {
+        success: false,
+        message: `${itemType} introuvable`,
+        severity: MeriseErrorTypeEnum.ERROR,
+      };
+    }
+
+    return { success: true, data: item };
+  }
 }

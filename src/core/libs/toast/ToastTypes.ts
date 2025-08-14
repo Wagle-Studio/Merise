@@ -26,4 +26,5 @@ export interface AddToastProps {
 // Contract for the toast manager implementation
 export interface ToastManagerInterface {
   addToast: (props: AddToastProps) => void;
+  removeToastById: (id: string) => void;
 }

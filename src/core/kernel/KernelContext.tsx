@@ -21,7 +21,7 @@ export const KernelContextProvider = ({ children }: KernelContextProps) => {
 export const useKernelContext = (): KernelContext => {
   const context = useContext(KernelContext);
   if (!context) {
-    throw new Error("🔧 KernelContext doit être utilisé dans KernelContextProvider");
+    throw new Error("🔄 KernelContext doit être utilisé dans KernelContextProvider");
   }
   return context;
 };

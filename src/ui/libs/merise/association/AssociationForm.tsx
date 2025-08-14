@@ -1,16 +1,14 @@
 import type { FormEvent } from "react";
-import type { ZodError } from "zod";
-import type { MeriseAssociationInterface, MeriseResult } from "@/libs/merise";
-import type { AssociationFormType } from "@/libs/merise/models/association/AssociationFormSchema";
-import { Button, FieldSelect, FieldText, Fieldset, Form } from "@/ui/system";
-import { useFormErrors } from "@/ui/system/form/useFormErrors";
+import { AssociationFormTypeSchema, type MeriseAssociationInterface, useMeriseContext } from "@/libs/merise";
+import { Button, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
 
 interface AssociationFormComponentProps {
   association: MeriseAssociationInterface;
-  onSubmit: (formData: AssociationFormType) => MeriseResult<AssociationFormType, ZodError>;
 }
 
-export const AssociationFormComponent = ({ association, onSubmit }: AssociationFormComponentProps) => {
+export const AssociationFormComponent = ({ association }: AssociationFormComponentProps) => {
+  const { operations } = useMeriseContext();
+
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -18,14 +16,21 @@ export const AssociationFormComponent = ({ association, onSubmit }: AssociationF
     clearErrors();
 
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("association-name") as string;
-    const emoji = formData.get("association-emoji") as string;
 
-    const saveResult = onSubmit({ name, emoji });
+    const formValues = {
+      name: formData.get("association-name") as string,
+      emoji: formData.get("association-emoji") as string,
+    };
 
-    if (!saveResult.success && saveResult.error) {
-      setZodErrors(saveResult.error);
+    const validationResult = AssociationFormTypeSchema.safeParse(formValues);
+
+    if (!validationResult.success) {
+      setZodErrors(validationResult.error);
+      return;
     }
+
+    association.hydrate(validationResult.data);
+    operations.onAssociationUpdate(association);
   };
 
   const emojiOptions = [

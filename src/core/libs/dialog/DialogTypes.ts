@@ -23,8 +23,8 @@ export interface DialogConfirm extends Dialog {
 }
 
 interface DialogConfirmCallbacks {
-  cancel: Function;
-  confirm: Function;
+  cancel: () => void;
+  confirm: () => void;
 }
 
 // Interface for an entity dialog instance
@@ -34,6 +34,28 @@ export interface DialogEntity extends Dialog {
 }
 
 interface DialogEntityCallbacks {
+  cancel: () => void;
+  delete: () => void;
+}
+
+// Interface for an association dialog instance
+export interface DialogAssociation extends Dialog {
+  component: ReactNode;
+  callbacks: DialogAssociationCallbacks;
+}
+
+interface DialogAssociationCallbacks {
+  cancel: Function;
+  delete: Function;
+}
+
+// Interface for an relation dialog instance
+export interface DialogRelation extends Dialog {
+  component: ReactNode;
+  callbacks: DialogRelationCallbacks;
+}
+
+interface DialogRelationCallbacks {
   cancel: Function;
   delete: Function;
 }

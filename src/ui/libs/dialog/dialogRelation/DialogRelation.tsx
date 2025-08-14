@@ -1,9 +1,9 @@
-import type { DialogEntity as DialogEntityType } from "@/core/libs/dialog";
+import type { DialogRelation as DialogRelationType } from "@/core/libs/dialog";
 import { Button } from "@/ui/system";
 import "./dialogRelation.scss";
 
 interface DialogRelationProps {
-  dialog: DialogEntityType;
+  dialog: DialogRelationType;
 }
 
 export const DialogRelation = ({ dialog }: DialogRelationProps) => {

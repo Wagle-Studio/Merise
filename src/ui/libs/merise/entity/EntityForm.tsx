@@ -1,16 +1,14 @@
 import type { FormEvent } from "react";
-import type { ZodError } from "zod";
-import type { MeriseEntityInterface, MeriseResult } from "@/libs/merise";
-import type { EntityFormType } from "@/libs/merise/models/entity/EntityFormSchema";
-import { Button, FieldSelect, FieldText, Fieldset, Form } from "@/ui/system";
-import { useFormErrors } from "@/ui/system/form/useFormErrors";
+import { EntityFormTypeSchema, type MeriseEntityInterface, useMeriseContext } from "@/libs/merise";
+import { Button, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
 
 interface EntityFormComponentProps {
   entity: MeriseEntityInterface;
-  onSubmit: (formData: EntityFormType) => MeriseResult<EntityFormType, ZodError>;
 }
 
-export const EntityFormComponent = ({ entity, onSubmit }: EntityFormComponentProps) => {
+export const EntityFormComponent = ({ entity }: EntityFormComponentProps) => {
+  const { operations } = useMeriseContext();
+
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -18,14 +16,21 @@ export const EntityFormComponent = ({ entity, onSubmit }: EntityFormComponentPro
     clearErrors();
 
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("entity-name") as string;
-    const emoji = formData.get("entity-emoji") as string;
 
-    const saveResult = onSubmit({ name, emoji });
+    const formValues = {
+      name: formData.get("entity-name") as string,
+      emoji: formData.get("entity-emoji") as string,
+    };
 
-    if (!saveResult.success && saveResult.error) {
-      setZodErrors(saveResult.error);
+    const validationResult = EntityFormTypeSchema.safeParse(formValues);
+
+    if (!validationResult.success) {
+      setZodErrors(validationResult.error);
+      return;
     }
+
+    entity.hydrate(validationResult.data);
+    operations.onEntityUpdate(entity);
   };
 
   const emojiOptions = [

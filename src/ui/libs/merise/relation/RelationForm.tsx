@@ -1,16 +1,14 @@
 import type { FormEvent } from "react";
-import type { ZodError } from "zod";
-import { MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface, type MeriseResult } from "@/libs/merise";
-import type { RelationFormType } from "@/libs/merise/models/relation/RelationFormSchema";
-import { Button, FieldSelect, Form } from "@/ui/system";
-import { useFormErrors } from "@/ui/system/form/useFormErrors";
+import { MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface, RelationFormTypeSchema, useMeriseContext } from "@/libs/merise";
+import { Button, FieldSelect, Form, useFormErrors } from "@/ui/system";
 
 interface RelationFormComponentProps {
   relation: MeriseRelationInterface;
-  onSubmit: (formData: RelationFormType) => MeriseResult<RelationFormType, ZodError>;
 }
 
-export const RelationFormComponent = ({ onSubmit, relation }: RelationFormComponentProps) => {
+export const RelationFormComponent = ({ relation }: RelationFormComponentProps) => {
+  const { operations } = useMeriseContext();
+
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -18,13 +16,20 @@ export const RelationFormComponent = ({ onSubmit, relation }: RelationFormCompon
     clearErrors();
 
     const formData = new FormData(e.currentTarget);
-    const cardinality = formData.get("relation-cardinality") as MeriseRelationCardinalityTypeEnum;
 
-    const saveResult = onSubmit({ cardinality });
+    const formValues = {
+      cardinality: formData.get("relation-cardinality") as MeriseRelationCardinalityTypeEnum,
+    };
 
-    if (!saveResult.success && saveResult.error) {
-      setZodErrors(saveResult.error);
+    const validationResult = RelationFormTypeSchema.safeParse(formValues);
+
+    if (!validationResult.success) {
+      setZodErrors(validationResult.error);
+      return;
     }
+
+    relation.hydrate(validationResult.data);
+    operations.onRelationUpdate(relation);
   };
 
   const cardinalityOptions = [
@@ -50,7 +55,7 @@ export const RelationFormComponent = ({ onSubmit, relation }: RelationFormCompon
 
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
-      <FieldSelect label="Cardinalité" htmlFor="relation-cardinality" defaultValue={relation.getCardinality() || MeriseRelationCardinalityTypeEnum.ZERO_N} options={cardinalityOptions} error={fieldErrors.cardinality} />
+      <FieldSelect label="Cardinalité" htmlFor="relation-cardinality" defaultValue={relation.getCardinality()} options={cardinalityOptions} error={fieldErrors.cardinality} />
     </Form>
   );
 };

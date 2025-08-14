@@ -1,5 +1,17 @@
 import { v4 as uuidv4 } from "uuid";
-import type { AddAssociationDialogProps, AddConfirmDialogProps, AddEntityDialogProps, AddRelationDialogProps, Dialog, DialogConfirm, DialogEntity, DialogManagerInterface, DialogsDispatcher } from "./DialogTypes";
+import type {
+  AddAssociationDialogProps,
+  AddConfirmDialogProps,
+  AddEntityDialogProps,
+  AddRelationDialogProps,
+  Dialog,
+  DialogAssociation,
+  DialogConfirm,
+  DialogEntity,
+  DialogManagerInterface,
+  DialogRelation,
+  DialogsDispatcher,
+} from "./DialogTypes";
 import { DialogType as DialogTypeEnum } from "./DialogTypes";
 
 export default class DialogManager implements DialogManagerInterface {
@@ -58,7 +70,7 @@ export default class DialogManager implements DialogManagerInterface {
     };
   };
 
-  private createAssociationDialog = (props: AddAssociationDialogProps): DialogEntity => {
+  private createAssociationDialog = (props: AddAssociationDialogProps): DialogAssociation => {
     return {
       timestamp: Date.now(),
       id: uuidv4(),
@@ -69,7 +81,7 @@ export default class DialogManager implements DialogManagerInterface {
     };
   };
 
-  private createRelationDialog = (props: AddRelationDialogProps): DialogEntity => {
+  private createRelationDialog = (props: AddRelationDialogProps): DialogRelation => {
     return {
       timestamp: Date.now(),
       id: uuidv4(),

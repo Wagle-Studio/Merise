@@ -4,11 +4,9 @@ import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/lib
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
-import type { MeriseManagerInterface, MeriseResultFail } from "@/libs/merise";
+import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
 import { MeriseErrorTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
-
-// REVIEW OK + TODO
 
 export default class CoreManager implements CoreManagerInterface {
   constructor(
@@ -19,7 +17,7 @@ export default class CoreManager implements CoreManagerInterface {
     private errorManager: ErrorManagerInterface
   ) {}
 
-  createFlowEdgeAndMeriseRelation = (connection: Connection): void => {
+  handleCreateFlowEdgeAndMeriseRelation = (connection: Connection): void => {
     const edgeCreateResult = this.flowManager.addEdge(connection, FlowMeriseItemTypeEnum.RELATION);
 
     if (!edgeCreateResult.success) {
@@ -37,11 +35,11 @@ export default class CoreManager implements CoreManagerInterface {
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SUCCESS,
-      message: "Relation créée avec succès",
+      message: "Relation créée",
     });
   };
 
-  createFlowNodeAndMeriseEntity = (): void => {
+  handleCreateFlowNodeAndMeriseEntity = (): void => {
     const nodeCreateResult = this.flowManager.addNode(FlowMeriseItemTypeEnum.ENTITY);
 
     if (!nodeCreateResult.success) {
@@ -59,11 +57,11 @@ export default class CoreManager implements CoreManagerInterface {
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SUCCESS,
-      message: "Entité créée avec succès",
+      message: "Entité créée",
     });
   };
 
-  createFlowNodeAndMeriseAssociation = (): void => {
+  handleCreateFlowNodeAndMeriseAssociation = (): void => {
     const nodeCreateResult = this.flowManager.addNode(FlowMeriseItemTypeEnum.ASSOCIATION);
 
     if (!nodeCreateResult.success) {
@@ -81,11 +79,81 @@ export default class CoreManager implements CoreManagerInterface {
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SUCCESS,
-      message: "Association créée avec succès",
+      message: "Association créée",
     });
   };
 
-  handleFlowEdgeRemove = (edgeId: string, onComplete?: () => void): void => {
+  handleMeriseEntitySelect = (entity: MeriseEntityInterface): void => {
+    this.createItemDialog(entity, "entity");
+  };
+
+  handleMeriseAssociationSelect = (association: MeriseAssociationInterface): void => {
+    this.createItemDialog(association, "association");
+  };
+
+  handleMeriseRelationSelect = (relation: MeriseRelationInterface): void => {
+    this.createItemDialog(relation, "relation");
+  };
+
+  handleMeriseEntityUpdate = (entity: MeriseEntityInterface): void => {
+    this.handleItemUpdate(entity as Entity, this.meriseManager.updateEntity.bind(this.meriseManager), "Entité mise à jour", "Échec de la mise à jour de l’entité");
+  };
+
+  handleMeriseAssociationUpdate = (association: MeriseAssociationInterface): void => {
+    this.handleItemUpdate(association as Association, this.meriseManager.updateAssociation.bind(this.meriseManager), "Association mise à jour", "Échec de la mise à jour de l’association");
+  };
+
+  handleMeriseRelationUpdate = (relation: MeriseRelationInterface): void => {
+    this.handleItemUpdate(relation as Relation, this.meriseManager.updateRelation.bind(this.meriseManager), "Échec de la mise à jour de la relation", "La relation n'a pas pu être mise à jour");
+  };
+
+  private createItemDialog<T extends { getFlowId(): string; renderFormComponent(): React.ReactElement }>(item: T, dialogType: "entity" | "association" | "relation"): string {
+    const addDialogFn = {
+      entity: this.dialogManager.addEntityDialog.bind(this.dialogManager),
+      association: this.dialogManager.addAssociationDialog.bind(this.dialogManager),
+      relation: this.dialogManager.addRelationDialog.bind(this.dialogManager),
+    }[dialogType];
+
+    const dialogId = addDialogFn({
+      title: "",
+      component: item.renderFormComponent(),
+      callbacks: {
+        cancel: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+        delete: () => {
+          if (dialogType === "entity" || dialogType === "association") {
+            this.handleFlowNodeRemove(item.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
+          } else {
+            this.handleFlowEdgeRemove(item.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
+          }
+        },
+      },
+    });
+
+    return dialogId;
+  }
+
+  private handleItemUpdate<TInput, TOutput>(item: TInput, updateFn: (item: TInput) => MeriseResult<TOutput>, successMessage: string, errorMessage: string): void {
+    const updateResult = updateFn(item);
+
+    if (!updateResult.success) {
+      this.toastManager.addToast({
+        type: ToastTypeEnum.ERROR,
+        message: errorMessage,
+      });
+      return;
+    }
+
+    this.flowManager.triggerReRender();
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SUCCESS,
+      message: successMessage,
+    });
+  }
+
+  // TODO: handle recover
+  private handleFlowEdgeRemove = (edgeId: string, onComplete?: () => void): void => {
     const edgeFindResult = this.flowManager.findEdgeByEdgeId(edgeId);
 
     if (!edgeFindResult.success) {
@@ -104,19 +172,19 @@ export default class CoreManager implements CoreManagerInterface {
       const relationRemoveResult = this.meriseManager.removeRelationByFlowId(edge.id);
 
       if (!relationRemoveResult.success) {
-        // TODO: handle recover
+        this.flowManager.addEdge({ source: edge.source, target: edge.target, sourceHandle: edge.sourceHandle ?? null, targetHandle: edge.targetHandle ?? null }, edge.data.type);
         this.errorManager.handleError(this.mapResultError(relationRemoveResult));
         return;
       }
 
       this.toastManager.addToast({
         type: ToastTypeEnum.SUCCESS,
-        message: "Relation supprimée avec succès",
+        message: "Relation supprimée",
       });
     };
 
     if (edgeFindResult.success && edgeFindResult.data) {
-      const data = edgeFindResult.data;
+      const edge = edgeFindResult.data;
 
       const dialogId = this.dialogManager.addConfirmDialog({
         title: "Supprimer la relation",
@@ -124,7 +192,7 @@ export default class CoreManager implements CoreManagerInterface {
         callbacks: {
           cancel: () => this.dialogManager.removeDialogById(dialogId),
           confirm: () => {
-            onConfirm(data);
+            onConfirm(edge);
             this.dialogManager.removeDialogById(dialogId);
             if (onComplete) onComplete();
           },
@@ -133,7 +201,8 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
-  handleFlowNodeRemove = (nodeId: string, onComplete?: () => void): void => {
+  // TODO: handle recover
+  private handleFlowNodeRemove = (nodeId: string, onComplete?: () => void): void => {
     const nodeFindResult = this.flowManager.findNodeByNodeId(nodeId);
 
     if (!nodeFindResult.success) {
@@ -149,10 +218,10 @@ export default class CoreManager implements CoreManagerInterface {
         return;
       }
 
-      if (!nodeRemoveResult.data) {
+      if (!nodeRemoveResult.data || !nodeRemoveResult.data.data.type) {
         this.toastManager.addToast({
           type: ToastTypeEnum.ERROR,
-          message: "Impossible de déterminer le type d'élément",
+          message: "Type d’élément introuvable",
         });
         return;
       }
@@ -160,22 +229,28 @@ export default class CoreManager implements CoreManagerInterface {
       switch (nodeRemoveResult.data.data.type) {
         case FlowMeriseItemTypeEnum.ENTITY:
           const entityRemoveResult = this.meriseManager.removeEntityByFlowId(node.id);
+
           if (!entityRemoveResult.success) {
-            // TODO: handle recover
+            this.flowManager.addNode(node.data.type);
             this.errorManager.handleError(this.mapResultError(entityRemoveResult));
             return;
           }
+
           break;
         case FlowMeriseItemTypeEnum.ASSOCIATION:
           const associationRemoveResult = this.meriseManager.removeAssociationByFlowId(node.id);
+
           if (!associationRemoveResult.success) {
-            // TODO: handle recover
+            this.flowManager.addNode(node.data.type);
             this.errorManager.handleError(this.mapResultError(associationRemoveResult));
             return;
           }
+
           break;
         default:
-          this.toastManager.addToast({ type: ToastTypeEnum.ERROR, message: "Type d'élément non reconnu" });
+          this.flowManager.addNode(node.data.type);
+          this.toastManager.addToast({ type: ToastTypeEnum.ERROR, message: "Type d’élément non pris en charge" });
+
           return;
       }
 
@@ -183,16 +258,16 @@ export default class CoreManager implements CoreManagerInterface {
     };
 
     if (nodeFindResult.success && nodeFindResult.data) {
-      const data = nodeFindResult.data;
-      const itemTypeName = data.data.type;
+      const node = nodeFindResult.data;
+      const itemTypeName = node.data.type;
 
       const dialogId = this.dialogManager.addConfirmDialog({
         title: `Supprimer l'${itemTypeName.toLowerCase()}`,
-        message: `Êtes-vous sûr de vouloir supprimer cette ${itemTypeName.toLowerCase()} ?`,
+        message: `Confirmer la suppression de cette relation ${itemTypeName.toLowerCase()} ?`,
         callbacks: {
           cancel: () => this.dialogManager.removeDialogById(dialogId),
           confirm: () => {
-            onConfirm(data, itemTypeName);
+            onConfirm(node, itemTypeName);
             this.dialogManager.removeDialogById(dialogId);
             if (onComplete) onComplete();
           },

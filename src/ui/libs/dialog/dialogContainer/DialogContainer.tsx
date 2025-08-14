@@ -1,10 +1,10 @@
 import { Fragment } from "react";
 import { useKernelContext } from "@/core";
-import { type DialogConfirm as DialogConfirmType, type DialogEntity as DialogEntityType, DialogTypeEnum } from "@/core/libs/dialog";
-import { DialogAssociation } from "../dialogAssociation/DialogAssociation";
-import { DialogConfirm } from "../dialogConfirm/DialogConfirm";
-import { DialogEntity } from "../dialogEntity/DialogEntity";
-import { DialogRelation } from "../dialogRelation/DialogRelation";
+import { type DialogAssociation, type DialogConfirm, type DialogEntity, type DialogRelation, DialogTypeEnum } from "@/core/libs/dialog";
+import { DialogAssociation as DialogAssociationComponent } from "../dialogAssociation/DialogAssociation";
+import { DialogConfirm as DialogConfirmComponent } from "../dialogConfirm/DialogConfirm";
+import { DialogEntity as DialogEntityComponent } from "../dialogEntity/DialogEntity";
+import { DialogRelation as DialogRelationComponent } from "../dialogRelation/DialogRelation";
 import "./dialogContainer.scss";
 
 export const DialogContainer = () => {
@@ -18,10 +18,10 @@ export const DialogContainer = () => {
     <div className="dialog-container">
       {dialogs.map((dialog) => (
         <Fragment key={dialog.id}>
-          {dialog.type === DialogTypeEnum.CONFIRM && <DialogConfirm dialog={dialog as DialogConfirmType} />}
-          {dialog.type === DialogTypeEnum.ENTITY && <DialogEntity dialog={dialog as DialogEntityType} />}
-          {dialog.type === DialogTypeEnum.ASSOCIATION && <DialogAssociation dialog={dialog as DialogEntityType} />}
-          {dialog.type === DialogTypeEnum.RELATION && <DialogRelation dialog={dialog as DialogEntityType} />}
+          {dialog.type === DialogTypeEnum.CONFIRM && <DialogConfirmComponent dialog={dialog as DialogConfirm} />}
+          {dialog.type === DialogTypeEnum.ENTITY && <DialogEntityComponent dialog={dialog as DialogEntity} />}
+          {dialog.type === DialogTypeEnum.ASSOCIATION && <DialogAssociationComponent dialog={dialog as DialogAssociation} />}
+          {dialog.type === DialogTypeEnum.RELATION && <DialogRelationComponent dialog={dialog as DialogRelation} />}
         </Fragment>
       ))}
     </div>

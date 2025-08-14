@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
-import type { MeriseDependencies } from "./MeriseCore";
+import type { MeriseOperations } from "./MeriseCore";
 
 // Props required to initialize the Merise context
 export type MeriseContextProps = {
   children: ReactNode;
-  dependencies: MeriseDependencies;
+  operations: MeriseOperations;
 };
 
 // Values exposed by the Merise context
-export type MeriseContext = {};
+export type MeriseContext = {
+  operations: MeriseOperations;
+};

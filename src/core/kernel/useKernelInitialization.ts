@@ -6,7 +6,6 @@ import { type Toast, ToastManager } from "@/core/libs/toast";
 import { FlowDTO, type FlowDTOInterface, FlowManager } from "@/libs/flow";
 import { MeriseDTO, type MeriseDTOInterface, MeriseManager } from "@/libs/merise";
 import type { KernelManagers, UseKernelInitializationResult } from "./KernelTypes";
-import { ProviderFactoryMerise } from "./providers/factories";
 
 // Initializes and provides all Kernel-related state and managers
 export const useKernelInitialization = (): Omit<UseKernelInitializationResult, "managers"> & { managers: KernelManagers } => {
@@ -47,19 +46,10 @@ export const useKernelInitialization = (): Omit<UseKernelInitializationResult, "
     const toast = new ToastManager(getToats, setToasts, toastsTimersRef);
     const error = new ErrorManager(toast);
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
-
-    const meriseTempManagers = { dialog, toast, error, flow } as Omit<KernelManagers, any>;
-    const meriseTempDependencies = ProviderFactoryMerise.createDependencies(meriseTempManagers as KernelManagers);
-
-    const merise = new MeriseManager(getMeriseDTO, setMeriseDTO, meriseTempDependencies);
+    const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
     const core = new CoreManager(flow, merise, toast, dialog, error);
 
-    const meriseFinalManagers = { dialog, toast, error, flow, merise, core };
-    const meriseFinalDependencies = ProviderFactoryMerise.createDependencies(meriseFinalManagers);
-
-    merise.setDependencies(meriseFinalDependencies);
-
-    return meriseFinalManagers;
+    return { dialog, toast, error, flow, merise, core };
   }, []);
 
   return {

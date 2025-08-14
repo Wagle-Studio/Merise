@@ -10,12 +10,12 @@ export const ProviderMerise = memo(function ProviderMerise({ children }: { child
   const { managers } = useKernelContext();
 
   if (!managers) {
-    return <FallbackLoading title="Initialisation de Merise" message="Chargement des services..." />;
+    return <FallbackLoading title="Initialisation de Merise" message="Chargement des services" />;
   }
 
   const contextValue = useMemo(
     () => ({
-      dependencies: ProviderFactoryMerise.createDependencies(managers),
+      operations: ProviderFactoryMerise.createOperations(managers),
     }),
     [managers]
   );

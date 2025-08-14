@@ -2,11 +2,11 @@ export type { MeriseContext, MeriseContextProps } from "./MeriseContextTypes";
 export { MeriseErrorType as MeriseErrorTypeEnum, MeriseItemType as MeriseItemTypeEnum, MeriseRelationCardinalityType as MeriseRelationCardinalityTypeEnum } from "./MeriseCore";
 export type {
   MeriseAssociationInterface,
-  MeriseDependencies,
   MeriseEntityInterface,
   MeriseErrorType,
   MeriseItemInterface,
   MeriseItemType,
+  MeriseOperations,
   MeriseRelationCardinalityType,
   MeriseRelationInterface,
   MeriseResult,

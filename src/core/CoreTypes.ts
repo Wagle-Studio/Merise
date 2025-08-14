@@ -1,10 +1,15 @@
 import type { Connection } from "@xyflow/react";
+import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseRelationInterface } from "@/libs/merise";
 
 // Contract for the core manager implementation
 export interface CoreManagerInterface {
-  createFlowEdgeAndMeriseRelation: (connection: Connection) => void;
-  createFlowNodeAndMeriseEntity: () => void;
-  createFlowNodeAndMeriseAssociation: () => void;
-  handleFlowEdgeRemove: (edgeId: string, onComplete?: () => void) => void;
-  handleFlowNodeRemove: (nodeId: string, onComplete?: () => void) => void;
+  handleCreateFlowEdgeAndMeriseRelation: (connection: Connection) => void;
+  handleCreateFlowNodeAndMeriseEntity: () => void;
+  handleCreateFlowNodeAndMeriseAssociation: () => void;
+  handleMeriseEntitySelect: (entity: MeriseEntityInterface) => void;
+  handleMeriseAssociationSelect: (assocation: MeriseAssociationInterface) => void;
+  handleMeriseRelationSelect: (relation: MeriseRelationInterface) => void;
+  handleMeriseEntityUpdate: (association: MeriseEntityInterface) => void;
+  handleMeriseAssociationUpdate: (entity: MeriseAssociationInterface) => void;
+  handleMeriseRelationUpdate: (relation: MeriseRelationInterface) => void;
 }

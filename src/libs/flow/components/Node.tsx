@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Handle, type NodeProps, Position } from "@xyflow/react";
 import { FlowNode } from "@/ui";
-import { useFlowContext } from "../core/FlowContext";
+import { useFlowContext } from "../core";
 import type { FlowMeriseItemInterface, FlowResult, TypedNode } from "../types";
 import { FlowMeriseItemTypeEnum } from "../types";
 

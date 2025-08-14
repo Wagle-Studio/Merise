@@ -1,7 +1,12 @@
 import { type Connection, type NodeChange, applyNodeChanges } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { FlowDTODispatcher, FlowDTOInterface, FlowManagerInterface, FlowMeriseItemType, FlowResult, TypedEdge, TypedNode } from "../types";
-import { FlowErrorTypeEnum, FlowItemTypeEnum } from "../types";
+import { FlowErrorTypeEnum, FlowItemTypeEnum, FlowMeriseItemTypeEnum } from "../types";
+
+const POSITIONING = {
+  DEFAULT_X: 100,
+  VERTICAL_SPACING: 120,
+} as const;
 
 export default class FlowManager implements FlowManagerInterface {
   constructor(
@@ -9,51 +14,34 @@ export default class FlowManager implements FlowManagerInterface {
     private setFlow: FlowDTODispatcher
   ) {}
 
+  // FLOW FACTORY
   handleMove = (change: NodeChange<TypedNode>): void => {
     this.setFlow((prev) => {
       return prev.cloneWithUpdatedNodes(applyNodeChanges<TypedNode>([change], prev.nodes));
     });
   };
 
+  // CORE MANAGER
   triggerReRender = (): void => {
     this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.edges, prev.nodes));
   };
 
+  // CORE MANAGER
   addEdge = (params: Connection, itemType: FlowMeriseItemType): FlowResult<TypedEdge> => {
-    if (!params.source || !params.target) {
-      return {
-        success: false,
-        message: "Source et target sont requis pour créer une relation",
-        severity: FlowErrorTypeEnum.ERROR,
-      };
-    }
+    const validationResult = this.validateConnection(params);
 
-    if (params.source === params.target) {
-      return {
-        success: false,
-        message: "Impossible de créer une relation vers soi-même",
-        severity: FlowErrorTypeEnum.INFO,
-      };
-    }
-
-    const existingEdge = this.getFlow().edges.find((edge) => {
-      return (edge.source === params.source && edge.target === params.target) || (edge.source === params.target && edge.target === params.source);
-    });
-
-    if (existingEdge) {
-      return {
-        success: false,
-        message: "Une relation existe déjà entre ces éléments",
-        severity: FlowErrorTypeEnum.WARNING,
-      };
+    if (!validationResult.success) {
+      return validationResult as FlowResult<TypedEdge>;
     }
 
     const edgeId = uuidv4();
 
     const edge: TypedEdge = {
       id: edgeId,
-      source: params.source,
-      target: params.target,
+      source: params.source!,
+      target: params.target!,
+      sourceHandle: params.sourceHandle || undefined,
+      targetHandle: params.targetHandle || undefined,
       data: {
         id: edgeId,
         type: itemType,
@@ -71,12 +59,13 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
+  // CORE MANAGER
   addNode = (itemType: FlowMeriseItemType): FlowResult<TypedNode> => {
     const nodeId = uuidv4();
 
-    let node: TypedNode = {
+    const node: TypedNode = {
       id: nodeId,
-      position: { x: 0, y: 0 },
+      position: this.calculateNewNodePosition(),
       data: {
         id: nodeId,
         type: itemType,
@@ -85,10 +74,6 @@ export default class FlowManager implements FlowManagerInterface {
     };
 
     this.setFlow((prev) => {
-      const existingPositions = prev.nodes.map((n) => n.position.y);
-      const maxY = existingPositions.length > 0 ? Math.max(...existingPositions) : 0;
-      node.position = { x: 100, y: maxY + 120 };
-
       return prev.cloneWithAddedNode(node);
     });
 
@@ -98,6 +83,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
+  // CORE MANAGER
   removeEdgeByEdgeId = (edgeId: string): FlowResult<TypedEdge | null> => {
     if (!edgeId?.trim()) {
       return {
@@ -129,6 +115,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
+  // CORE MANAGER
   removeNodeByNodeId = (nodeId: string): FlowResult<TypedNode | null> => {
     if (!nodeId?.trim()) {
       return {
@@ -161,6 +148,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
+  // CORE MANAGER
   findEdgeByEdgeId = (edgeId: string): FlowResult<TypedEdge | null> => {
     if (!edgeId?.trim()) {
       return {
@@ -186,6 +174,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
+  // CORE MANAGER
   findNodeByNodeId = (nodeId: string): FlowResult<TypedNode | null> => {
     if (!nodeId?.trim()) {
       return {
@@ -210,4 +199,62 @@ export default class FlowManager implements FlowManagerInterface {
       data: node,
     };
   };
+
+  private validateConnection(params: Connection): FlowResult<void> {
+    if (!params.source || !params.target) {
+      return {
+        success: false,
+        message: "Source et target sont requis pour créer une relation",
+        severity: FlowErrorTypeEnum.ERROR,
+      };
+    }
+
+    if (params.source === params.target) {
+      return {
+        success: false,
+        message: "Impossible de créer une relation vers soi-même",
+        severity: FlowErrorTypeEnum.INFO,
+      };
+    }
+
+    const existingEdge = this.getFlow().edges.find((edge) => {
+      return (edge.source === params.source && edge.target === params.target) || (edge.source === params.target && edge.target === params.source);
+    });
+
+    if (existingEdge) {
+      return {
+        success: false,
+        message: "Une relation existe déjà entre ces éléments",
+        severity: FlowErrorTypeEnum.WARNING,
+      };
+    }
+
+    const sourceNode = this.getFlow().nodes.find((node) => node.id === params.source);
+    const targetNode = this.getFlow().nodes.find((node) => node.id === params.target);
+
+    if (sourceNode && targetNode) {
+      const isSourceEntity = sourceNode.data.type === FlowMeriseItemTypeEnum.ENTITY;
+      const isTargetEntity = targetNode.data.type === FlowMeriseItemTypeEnum.ENTITY;
+
+      if (isSourceEntity && isTargetEntity) {
+        return {
+          success: false,
+          message: "Impossible de créer une relation directe entre deux entités. Utilisez une association.",
+          severity: FlowErrorTypeEnum.WARNING,
+        };
+      }
+    }
+
+    return { success: true, data: undefined };
+  }
+
+  private calculateNewNodePosition(): { x: number; y: number } {
+    const existingPositions = this.getFlow().nodes.map((n) => n.position.y);
+    const maxY = existingPositions.length > 0 ? Math.max(...existingPositions) : 0;
+
+    return {
+      x: POSITIONING.DEFAULT_X,
+      y: maxY + POSITIONING.VERTICAL_SPACING,
+    };
+  }
 }

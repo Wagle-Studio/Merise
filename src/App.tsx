@@ -9,20 +9,18 @@ function App() {
     <div className="app">
       <ErrorBoundary fallback={FallBackPresetTypeEnum.CORE}>
         <KernelContextProvider>
-          <ErrorBoundary fallback={FallBackPresetTypeEnum.ORCHESTROR_FLOW}>
+          <ErrorBoundary fallback={FallBackPresetTypeEnum.ORCHESTRATOR_FLOW}>
             <ProviderFlow>
-              <ErrorBoundary fallback={FallBackPresetTypeEnum.ORCHESTROR_MERISE}>
+              <ErrorBoundary fallback={FallBackPresetTypeEnum.ORCHESTRATOR_MERISE}>
                 <ProviderMerise>
                   <Toolbar />
                   <FlowComponent />
+                  <ToastContainer />
+                  <DialogContainer />
                 </ProviderMerise>
               </ErrorBoundary>
             </ProviderFlow>
           </ErrorBoundary>
-          <>
-            <ToastContainer />
-            <DialogContainer />
-          </>
         </KernelContextProvider>
       </ErrorBoundary>
     </div>

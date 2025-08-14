@@ -1,3 +1,7 @@
+import type { AssociationFormType } from "../models/association/AssociationFormSchema";
+import type { EntityFormType } from "../models/entity/EntityFormSchema";
+import type { RelationFormType } from "../models/relation/RelationFormSchema";
+
 // List of all available merise item types
 export enum MeriseItemType {
   ENTITY = "Entité",
@@ -15,29 +19,32 @@ export enum MeriseRelationCardinalityType {
 
 // Base interface implemented by all Merise items
 export interface MeriseItemInterface {
-  readonly id: string;
-  readonly flowId: string;
-  readonly type: MeriseItemType;
-  handleSelection: () => void;
+  renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
+  getId: () => string;
+  getFlowId: () => string;
+  getType: () => MeriseItemType;
   getName: () => string;
 }
 
 // Interface for a Merise entity
 export interface MeriseEntityInterface extends MeriseItemInterface {
+  hydrate: (formData: EntityFormType) => void;
   getEmoji: () => string;
 }
 
 // Interface for a Merise association
 export interface MeriseAssociationInterface extends MeriseItemInterface {
+  hydrate: (formData: AssociationFormType) => void;
   getEmoji: () => string;
 }
 
 // Interface for a Merise relation
 export interface MeriseRelationInterface extends MeriseItemInterface {
-  readonly source: string;
-  readonly target: string;
-  getCardinality: () => MeriseRelationCardinalityType | undefined;
+  hydrate: (formData: RelationFormType) => void;
+  getSource: () => string;
+  getTarget: () => string;
+  getCardinality: () => MeriseRelationCardinalityType;
 }
 
 // Mirror of the Core item types used in Merise
@@ -64,8 +71,8 @@ export type MeriseResultFail<E> = {
 // Union type representing the result of a Merise operation
 export type MeriseResult<T, E = undefined> = MeriseResultSuccess<T> | MeriseResultFail<E>;
 
-// Merise dependencies contract provided by the provider factory
-export interface MeriseDependencies {
+// Merise operations contract provided by the provider factory
+export interface MeriseOperations {
   onEntitySelect: (entity: MeriseEntityInterface) => void;
   onAssociationSelect: (association: MeriseAssociationInterface) => void;
   onRelationSelect: (relation: MeriseRelationInterface) => void;

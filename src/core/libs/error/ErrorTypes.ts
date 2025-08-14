@@ -16,8 +16,8 @@ export interface ErrorManagerInterface {
 // List of all available fallback preset types for error boundaries
 export enum FallBackPresetType {
   CORE = "CORE",
-  ORCHESTROR_FLOW = "ORCHESTROR_FLOW",
-  ORCHESTROR_MERISE = "ORCHESTROR_MERISE",
+  ORCHESTRATOR_FLOW = "ORCHESTRATOR_FLOW",
+  ORCHESTRATOR_MERISE = "ORCHESTRATOR_MERISE",
   LIB_FLOW = "LIB_FLOW",
   LIB_MERISE = "LIB_MERISE",
 }

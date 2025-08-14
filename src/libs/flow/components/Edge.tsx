@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 import { BaseEdge, EdgeLabelRenderer, type EdgeProps } from "@xyflow/react";
 import { FlowEdge } from "@/ui";
-import { useFlowContext } from "../core/FlowContext";
+import { useFlowContext } from "../core";
 import type { TypedEdge } from "../types";
 
 // Custom Edge component rendering the corresponding Merise item UI and connection handles

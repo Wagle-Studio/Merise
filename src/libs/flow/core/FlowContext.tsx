@@ -8,7 +8,7 @@ const FlowContext = createContext<FlowContext | null>(null);
 export const FlowContextProvider = ({ children, flow, operations, dependencies }: FlowContextProps) => {
   const { onNodesChange, onConnect } = useFlowHandlers(operations); // Hooks for React Flow events
 
-  const contextValue = useMemo<FlowContext>(
+  const contextValue = useMemo(
     () => ({
       flow,
       operations,
@@ -17,7 +17,7 @@ export const FlowContextProvider = ({ children, flow, operations, dependencies }
       onConnect,
     }),
     [flow, dependencies, onNodesChange, onConnect]
-  ) as FlowContext;
+  );
 
   return <FlowContext.Provider value={contextValue}>{children}</FlowContext.Provider>;
 };

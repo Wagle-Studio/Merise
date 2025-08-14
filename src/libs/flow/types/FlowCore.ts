@@ -1,4 +1,5 @@
 import type { Connection, NodeChange } from "@xyflow/react";
+import type { MeriseItemType } from "@/libs/merise";
 import type { TypedNode } from "./FlowDTOTypes";
 
 // List of all available flow item types
@@ -23,11 +24,12 @@ export enum FlowMeriseItemType {
 
 // Mirror of the Merise library item interface exposed to Flow
 export interface FlowMeriseItemInterface {
-  readonly id: string;
-  readonly flowId: string;
-  readonly type: FlowMeriseItemType;
   renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
+  getId: () => string;
+  getFlowId: () => string;
+  getType: () => MeriseItemType;
+  getName: () => string;
 }
 
 // Represents a successful Flow operation

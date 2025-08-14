@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { AddToastProps, Toast, ToastManagerInterface, ToastsDispatcher } from "./ToastTypes";
 
@@ -8,7 +9,7 @@ export default class ToastManager implements ToastManagerInterface {
   constructor(
     private getToasts: () => Toast[],
     private setToasts: ToastsDispatcher,
-    private timersRef: React.RefObject<Record<string, NodeJS.Timeout>>
+    private timersRef: RefObject<Record<string, NodeJS.Timeout>>
   ) {}
 
   addToast = (props: AddToastProps): void => {
@@ -22,7 +23,7 @@ export default class ToastManager implements ToastManagerInterface {
     }, TOAST_DURATION);
   };
 
-  removeToastById = (id: string) => {
+  removeToastById = (id: string): void => {
     this.setToasts((prev) => prev.filter((toast) => toast.id !== id));
 
     if (this.timersRef.current[id]) {

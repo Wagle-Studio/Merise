@@ -7,7 +7,7 @@ export default class ProviderFactoryFlow {
   static createOperations(managers: KernelManagers): FlowOperations {
     return {
       onEdgeCreate: (connection: Connection): void => {
-        managers.core.createFlowEdgeAndMeriseRelation(connection);
+        managers.core.handleCreateFlowEdgeAndMeriseRelation(connection);
       },
       onNodeMove: (change: NodeChange<TypedNode>): void => {
         managers.flow.handleMove(change);

@@ -1,9 +1,9 @@
-import type { DialogEntity as DialogEntityType } from "@/core/libs/dialog";
+import type { DialogAssociation as DialogAssociationType } from "@/core/libs/dialog";
 import { Button } from "@/ui/system";
 import "./dialogAssociation.scss";
 
 interface DialogAssociationProps {
-  dialog: DialogEntityType;
+  dialog: DialogAssociationType;
 }
 
 export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {

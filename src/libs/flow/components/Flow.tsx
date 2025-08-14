@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { type EdgeProps, type NodeProps, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useFlowContext } from "../core/FlowContext";
+import { useFlowContext } from "../core";
 import type { TypedEdge, TypedNode } from "../types";
 import Edge from "./Edge";
 import Node from "./Node";
