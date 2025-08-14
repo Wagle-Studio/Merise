@@ -1,8 +1,12 @@
-import type { MeriseEntityInterface } from "@/libs/merise";
+import type { ZodError } from "zod";
+import type { MeriseEntityInterface, MeriseResult } from "@/libs/merise";
+import type { EntityFormType } from "@/libs/merise/models/entity/EntityFormSchema";
 import { Button } from "@/ui/system";
 import "./entityForm.scss";
 
-export const EntityFormComponent = (entity: MeriseEntityInterface, onSave: Function) => {
+type OnSave = (formData: EntityFormType) => MeriseResult<EntityFormType, ZodError>;
+
+export const EntityFormComponent = (entity: MeriseEntityInterface, onSave: OnSave) => {
   const handleSubmit = () => {
     const nameInput = document.getElementById("name") as HTMLInputElement;
     const emojiSelect = document.getElementById("entity-emoji") as HTMLSelectElement;
@@ -10,8 +14,10 @@ export const EntityFormComponent = (entity: MeriseEntityInterface, onSave: Funct
     const name = nameInput?.value;
     const emoji = emojiSelect?.value;
 
-    if (name && onSave) {
-      onSave({ name, emoji });
+    const saveResult = onSave({ name, emoji });
+
+    if (!saveResult.success && saveResult.error) {
+      console.log(saveResult.error.issues);
     }
   };
 
@@ -22,7 +28,7 @@ export const EntityFormComponent = (entity: MeriseEntityInterface, onSave: Funct
           <label className="entity-form__wrapper_horizontal__input-wrapper__label" htmlFor="entity-emoji">
             Emoji
           </label>
-          <select className="entity-form__wrapper_horizontal__input-wrapper__select" id="entity-emoji" name="entity-emoji" defaultValue="📋">
+          <select className="entity-form__wrapper_horizontal__input-wrapper__select" id="entity-emoji" name="entity-emoji">
             <option value="📚">📚 </option>
             <option value="👤">👤 </option>
             <option value="📖">📖 </option>

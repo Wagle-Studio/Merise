@@ -1,6 +1,8 @@
+import type { ZodError } from "zod";
 import { EntityComponent, EntityFormComponent } from "@/ui";
-import { type MeriseDependencies, type MeriseEntityInterface, MeriseItemTypeEnum } from "../types";
-import AbstractMeriseItem from "./AbstractMeriseItem";
+import { type MeriseDependencies, type MeriseEntityInterface, MeriseErrorTypeEnum, MeriseItemTypeEnum, type MeriseResult } from "../../types";
+import AbstractMeriseItem from "../AbstractMeriseItem";
+import { type EntityFormType, EntityFormTypeSchema } from "./EntityFormSchema";
 
 export default class Entity extends AbstractMeriseItem implements MeriseEntityInterface {
   emoji: string;
@@ -14,10 +16,27 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     this.dependencies?.onEntitySelect(this);
   };
 
-  handleSave = (formData: { name: string; emoji: string }): void => {
+  handleSave = (formData: EntityFormType): MeriseResult<EntityFormType, ZodError> => {
+    const validationResult = EntityFormTypeSchema.safeParse(formData);
+
+    if (!validationResult.success) {
+      return {
+        success: false,
+        message: "Impossible de mettre à jour l'entité",
+        severity: MeriseErrorTypeEnum.ERROR,
+        error: validationResult.error,
+      };
+    }
+
     this.setName(formData.name);
     this.setEmoji(formData.emoji);
+
     this.dependencies?.onEntityUpdate(this);
+
+    return {
+      success: true,
+      data: formData,
+    };
   };
 
   getEmoji = (): string => {

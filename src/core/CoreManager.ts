@@ -201,7 +201,7 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
-  private mapResultError = (flowResultFail: FlowResultFail | MeriseResultFail): CoreError => {
+  private mapResultError = (flowResultFail: FlowResultFail | MeriseResultFail<any>): CoreError => {
     switch (flowResultFail.severity) {
       case FlowErrorTypeEnum.INFO:
       case MeriseErrorTypeEnum.INFO:

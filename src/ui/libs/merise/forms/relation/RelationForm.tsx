@@ -1,12 +1,21 @@
-import { MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface } from "@/libs/merise";
+import type { ZodError } from "zod";
+import { MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface, type MeriseResult } from "@/libs/merise";
+import type { RelationFormType } from "@/libs/merise/models/relation/RelationFormSchema";
 import { Button } from "@/ui/system";
 import "./relationForm.scss";
 
-export const RelationFormComponent = (relation: MeriseRelationInterface, onSave: Function) => {
+type OnSave = (formData: RelationFormType) => MeriseResult<RelationFormType, ZodError>;
+
+export const RelationFormComponent = (relation: MeriseRelationInterface, onSave: OnSave) => {
   const handleSubmit = () => {
     const cardinalitySelect = document.getElementById("relation-cardinality") as HTMLSelectElement;
     const cardinality = cardinalitySelect?.value as MeriseRelationCardinalityTypeEnum;
-    onSave({ cardinality });
+
+    const saveResult = onSave({ cardinality });
+
+    if (!saveResult.success && saveResult.error) {
+      console.log(saveResult.error.issues);
+    }
   };
 
   return (

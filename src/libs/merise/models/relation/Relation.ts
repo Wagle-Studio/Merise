@@ -1,6 +1,8 @@
+import type { ZodError } from "zod";
 import { RelationComponent, RelationFormComponent } from "@/ui";
-import { type MeriseDependencies, MeriseItemTypeEnum, type MeriseRelationCardinalityType, MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface } from "../types";
-import AbstractMeriseItem from "./AbstractMeriseItem";
+import { type MeriseDependencies, MeriseErrorTypeEnum, MeriseItemTypeEnum, type MeriseRelationCardinalityType, type MeriseRelationInterface, type MeriseResult } from "../../types";
+import AbstractMeriseItem from "./../AbstractMeriseItem";
+import { type RelationFormType, RelationFormTypeSchema } from "./RelationFormSchema";
 
 export default class Relation extends AbstractMeriseItem implements MeriseRelationInterface {
   cardinality?: MeriseRelationCardinalityType | undefined;
@@ -20,9 +22,27 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
     this.dependencies?.onRelationSelect(this);
   };
 
-  handleSave = (formData: { cardinality: MeriseRelationCardinalityTypeEnum }): void => {
+  handleSave = (formData: RelationFormType): MeriseResult<RelationFormType, ZodError> => {
+    const validationResult = RelationFormTypeSchema.safeParse(formData);
+
+    if (!validationResult.success) {
+      return {
+        success: false,
+        message: "Impossible de mettre à jour la relation",
+        severity: MeriseErrorTypeEnum.ERROR,
+        error: validationResult.error,
+      };
+    }
+
     this.setCardinality(formData.cardinality);
     this.dependencies?.onRelationUpdate(this);
+
+    this.dependencies?.onRelationUpdate(this);
+
+    return {
+      success: true,
+      data: formData,
+    };
   };
 
   getCardinality = () => {
