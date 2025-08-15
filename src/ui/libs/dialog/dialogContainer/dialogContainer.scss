@@ -16,10 +16,6 @@
   animation: fade-in 0.2s ease-out;
   pointer-events: auto;
   inset: 0;
-
-  > div {
-    transform: translate(0%, -100%);
-  }
 }
 
 @keyframes fade-in {

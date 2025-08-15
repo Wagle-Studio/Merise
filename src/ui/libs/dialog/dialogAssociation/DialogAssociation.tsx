@@ -7,8 +7,9 @@ interface DialogAssociationProps {
 }
 
 export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
-  const handleCancel = () => dialog.callbacks.cancel();
-  const handleDelete = () => dialog.callbacks.delete();
+  const handleCancel = () => dialog.callbacks.closeDialog();
+  const handleDelete = () => dialog.callbacks.deleteAssociation();
+  const handleAddField = () => dialog.callbacks.addField();
 
   return (
     <div className="dialog-overlay">
@@ -19,11 +20,14 @@ export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
               <h3>{dialog.title}</h3>
             </div>
           )}
-          {dialog.component}
+          {dialog.component()}
         </div>
         <div className="dialog-association__actions">
           <Button className="dialog-association__actions-item" onClick={handleCancel}>
             Fermer
+          </Button>
+          <Button className="dialog-entity__actions-item" onClick={handleAddField}>
+            Ajouter un champ
           </Button>
           <Button className="dialog-association__actions-item" onClick={handleDelete}>
             Supprimer

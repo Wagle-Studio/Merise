@@ -1,5 +1,6 @@
 import type { AssociationFormType } from "../models/association/AssociationFormSchema";
 import type { EntityFormType } from "../models/entity/EntityFormSchema";
+import type { FieldFormType } from "../models/field/FieldFormSchema";
 import type { RelationFormType } from "../models/relation/RelationFormSchema";
 
 // List of all available merise item types
@@ -7,6 +8,7 @@ export enum MeriseItemType {
   ENTITY = "Entité",
   ASSOCIATION = "Association",
   RELATION = "Relation",
+  FIELD = "Champ",
 }
 
 // List of all available merise relation cardinality item types
@@ -22,7 +24,6 @@ export interface MeriseItemInterface {
   renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
   getId: () => string;
-  getFlowId: () => string;
   getType: () => MeriseItemType;
   getName: () => string;
 }
@@ -30,21 +31,35 @@ export interface MeriseItemInterface {
 // Interface for a Merise entity
 export interface MeriseEntityInterface extends MeriseItemInterface {
   hydrate: (formData: EntityFormType) => void;
+  getFlowId: () => string;
   getEmoji: () => string;
+  getFields: () => MeriseFieldInterface[];
+  addField: (field: MeriseFieldInterface) => void;
 }
 
 // Interface for a Merise association
 export interface MeriseAssociationInterface extends MeriseItemInterface {
   hydrate: (formData: AssociationFormType) => void;
+  getFlowId: () => string;
   getEmoji: () => string;
+  getFields: () => MeriseFieldInterface[];
+  addField: (field: MeriseFieldInterface) => void;
 }
 
 // Interface for a Merise relation
 export interface MeriseRelationInterface extends MeriseItemInterface {
   hydrate: (formData: RelationFormType) => void;
+  getFlowId: () => string;
   getSource: () => string;
   getTarget: () => string;
   getCardinality: () => MeriseRelationCardinalityType;
+}
+
+// Interface for a Merise field
+export interface MeriseFieldInterface extends MeriseItemInterface {
+  hydrate: (formData: FieldFormType) => void;
+  getMeriseItemId: () => string;
+  getMeriseItemType: () => MeriseItemType;
 }
 
 // Mirror of the Core item types used in Merise
@@ -79,4 +94,5 @@ export interface MeriseOperations {
   onEntityUpdate: (entity: MeriseEntityInterface) => void;
   onAssociationUpdate: (association: MeriseAssociationInterface) => void;
   onRelationUpdate: (relation: MeriseRelationInterface) => void;
+  onFieldCreate: (field: MeriseFieldInterface) => void;
 }

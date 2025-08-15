@@ -3,11 +3,13 @@ import type {
   AddAssociationDialogProps,
   AddConfirmDialogProps,
   AddEntityDialogProps,
+  AddFieldDialogProps,
   AddRelationDialogProps,
   Dialog,
   DialogAssociation,
   DialogConfirm,
   DialogEntity,
+  DialogField,
   DialogManagerInterface,
   DialogRelation,
   DialogsDispatcher,
@@ -40,6 +42,12 @@ export default class DialogManager implements DialogManagerInterface {
 
   addRelationDialog = (props: AddRelationDialogProps): string => {
     const dialog = this.createRelationDialog(props);
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
+  };
+
+  addFieldDialog = (props: AddFieldDialogProps): string => {
+    const dialog = this.createFieldDialog(props);
     this.setDialogs([...this.getDialogs(), dialog]);
     return dialog.id;
   };
@@ -86,6 +94,17 @@ export default class DialogManager implements DialogManagerInterface {
       timestamp: Date.now(),
       id: uuidv4(),
       type: DialogTypeEnum.RELATION,
+      title: props.title,
+      component: props.component,
+      callbacks: props.callbacks,
+    };
+  };
+
+  private createFieldDialog = (props: AddFieldDialogProps): DialogField => {
+    return {
+      timestamp: Date.now(),
+      id: uuidv4(),
+      type: DialogTypeEnum.FIELD,
       title: props.title,
       component: props.component,
       callbacks: props.callbacks,

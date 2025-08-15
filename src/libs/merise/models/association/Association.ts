@@ -1,14 +1,17 @@
 import { createElement } from "react";
 import { AssociationComponent, AssociationFormComponent } from "@/ui";
-import { type MeriseAssociationInterface, MeriseItemTypeEnum } from "../../types";
+import { type MeriseAssociationInterface, type MeriseFieldInterface, MeriseItemTypeEnum } from "../../types";
 import AbstractMeriseItem from "./../AbstractMeriseItem";
 import { type AssociationFormType } from "./AssociationFormSchema";
 
 export default class Association extends AbstractMeriseItem implements MeriseAssociationInterface {
+  private flowId: string;
   private emoji: string;
+  private fields: MeriseFieldInterface[] = [];
 
   constructor(flowId: string) {
-    super(flowId, MeriseItemTypeEnum.ASSOCIATION);
+    super(MeriseItemTypeEnum.ASSOCIATION);
+    this.flowId = flowId;
     this.emoji = "🆕";
   }
 
@@ -17,8 +20,20 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
     this.setEmoji(formData.emoji);
   };
 
+  getFlowId = (): string => {
+    return this.flowId;
+  };
+
   getEmoji = (): string => {
     return this.emoji;
+  };
+
+  getFields = (): MeriseFieldInterface[] => {
+    return this.fields;
+  };
+
+  addField = (field: MeriseFieldInterface): void => {
+    this.fields = [...this.fields, field];
   };
 
   renderComponent = (): React.ReactElement => {

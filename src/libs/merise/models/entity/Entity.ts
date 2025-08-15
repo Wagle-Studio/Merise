@@ -1,14 +1,17 @@
 import { createElement } from "react";
 import { EntityComponent, EntityFormComponent } from "@/ui";
-import { type MeriseEntityInterface, MeriseItemTypeEnum } from "../../types";
+import { type MeriseEntityInterface, type MeriseFieldInterface, MeriseItemTypeEnum } from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
 import { type EntityFormType } from "./EntityFormSchema";
 
 export default class Entity extends AbstractMeriseItem implements MeriseEntityInterface {
+  private flowId: string;
   private emoji: string;
+  private fields: MeriseFieldInterface[] = [];
 
   constructor(flowId: string) {
-    super(flowId, MeriseItemTypeEnum.ENTITY);
+    super(MeriseItemTypeEnum.ENTITY);
+    this.flowId = flowId;
     this.emoji = "🆕";
   }
 
@@ -17,8 +20,20 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     this.setEmoji(formData.emoji);
   };
 
+  getFlowId = (): string => {
+    return this.flowId;
+  };
+
   getEmoji = (): string => {
     return this.emoji;
+  };
+
+  getFields = (): MeriseFieldInterface[] => {
+    return this.fields;
+  };
+
+  addField = (field: MeriseFieldInterface): void => {
+    this.fields = [...this.fields, field];
   };
 
   renderComponent = (): React.ReactElement => {

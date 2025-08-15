@@ -1,6 +1,9 @@
 .form-fieldset {
   display: flex;
   gap: 8px;
+  padding: 12px;
+  border-radius: 2px;
+  border: 1px solid gainsboro;
 
   &--horizontal {
     flex-direction: row;

@@ -1,5 +1,5 @@
 import type { Connection } from "@xyflow/react";
-import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseRelationInterface } from "@/libs/merise";
+import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseRelationInterface } from "@/libs/merise";
 
 // Contract for the core manager implementation
 export interface CoreManagerInterface {
@@ -12,4 +12,5 @@ export interface CoreManagerInterface {
   handleMeriseEntityUpdate: (association: MeriseEntityInterface) => void;
   handleMeriseAssociationUpdate: (entity: MeriseAssociationInterface) => void;
   handleMeriseRelationUpdate: (relation: MeriseRelationInterface) => void;
+  handleMeriseFieldCreate: (field: MeriseFieldInterface) => void;
 }

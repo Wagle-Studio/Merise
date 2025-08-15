@@ -5,12 +5,14 @@ import AbstractMeriseItem from "./../AbstractMeriseItem";
 import { type RelationFormType } from "./RelationFormSchema";
 
 export default class Relation extends AbstractMeriseItem implements MeriseRelationInterface {
+  private flowId: string;
   private source: string;
   private target: string;
   private cardinality: MeriseRelationCardinalityType;
 
   constructor(flowId: string, source: string, target: string, cardinality: MeriseRelationCardinalityType) {
-    super(flowId, MeriseItemTypeEnum.RELATION);
+    super(MeriseItemTypeEnum.RELATION);
+    this.flowId = flowId;
     this.source = source;
     this.target = target;
     this.cardinality = cardinality;
@@ -18,6 +20,10 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
 
   hydrate = (formData: RelationFormType): void => {
     this.setCardinality(formData.cardinality);
+  };
+
+  getFlowId = (): string => {
+    return this.flowId;
   };
 
   getSource = (): string => {

@@ -231,6 +231,16 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
+  // CORE MANAGER
+  findEntityById = (id: string): MeriseResult<MeriseEntityInterface | null> => {
+    return this.findItemId(this.getMerise().entities, id, "l'entité") as MeriseResult<MeriseEntityInterface | null>;
+  };
+
+  // CORE MANAGER
+  findAssociationById = (id: string): MeriseResult<MeriseAssociationInterface | null> => {
+    return this.findItemId(this.getMerise().associations, id, "l'association") as MeriseResult<MeriseAssociationInterface | null>;
+  };
+
   // FLOW FACTORY
   findEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface | null> => {
     return this.findItemByFlowId(this.getMerise().entities, flowId, "l'entité") as MeriseResult<MeriseEntityInterface | null>;
@@ -297,6 +307,27 @@ export default class MeriseManager implements MeriseManagerInterface {
       success: true,
       data: item,
     };
+  }
+
+  private findItemId<T extends { getId(): string }>(collection: T[], id: string, itemType: string): MeriseResult<T | null> {
+    if (!id?.trim()) {
+      return {
+        success: false,
+        message: `Id requis pour la recherche`,
+        severity: MeriseErrorTypeEnum.ERROR,
+      };
+    }
+
+    const item = collection.find((item) => item.getId() === id);
+    if (!item) {
+      return {
+        success: false,
+        message: `${itemType} introuvable`,
+        severity: MeriseErrorTypeEnum.ERROR,
+      };
+    }
+
+    return { success: true, data: item };
   }
 
   private findItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string): MeriseResult<T | null> {

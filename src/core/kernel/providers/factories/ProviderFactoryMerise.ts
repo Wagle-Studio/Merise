@@ -1,5 +1,5 @@
 import type { KernelManagers } from "@/core";
-import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseOperations, MeriseRelationInterface } from "@/libs/merise";
+import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseOperations, MeriseRelationInterface } from "@/libs/merise";
 
 // Factory responsible for creating Merise operations and dependency mappings from Kernel managers
 export default class ProviderFactoryMerise {
@@ -22,6 +22,9 @@ export default class ProviderFactoryMerise {
       },
       onRelationUpdate: (relation: MeriseRelationInterface): void => {
         managers.core.handleMeriseRelationUpdate(relation);
+      },
+      onFieldCreate: (field: MeriseFieldInterface): void => {
+        managers.core.handleMeriseFieldCreate(field);
       },
     };
   }

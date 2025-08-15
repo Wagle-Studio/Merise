@@ -1,6 +1,7 @@
 .field-text {
   display: flex;
   gap: 8px;
+  width: 100%;
 
   &--horizontal {
     flex-direction: row;

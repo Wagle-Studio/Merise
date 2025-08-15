@@ -1,4 +1,4 @@
-import type { FormEvent } from "react";
+import { type FormEvent, Fragment } from "react";
 import { AssociationFormTypeSchema, type MeriseAssociationInterface, useMeriseContext } from "@/libs/merise";
 import { Button, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
 
@@ -59,6 +59,11 @@ export const AssociationFormComponent = ({ association }: AssociationFormCompone
       <Fieldset variant="horizontal">
         <FieldSelect label="Emoji" htmlFor="association-emoji" defaultValue={association.getEmoji()} options={emojiOptions} error={fieldErrors.emoji} />
         <FieldText label="Nom" htmlFor="association-name" defaultValue={association.getName()} placeholder={association.getName()} error={fieldErrors.name} />
+      </Fieldset>
+      <Fieldset legend="Champs">
+        {association.getFields().map((field) => (
+          <Fragment key={`association-field-${field.getId()}`}>{field.renderComponent()}</Fragment>
+        ))}
       </Fieldset>
     </Form>
   );

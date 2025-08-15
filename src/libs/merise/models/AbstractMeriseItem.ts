@@ -3,13 +3,11 @@ import type { MeriseItemType } from "../types";
 
 export default abstract class AbstractMeriseItem {
   private id: string;
-  private flowId: string;
   private type: MeriseItemType;
   private name: string;
 
-  constructor(flowId: string, type: MeriseItemType) {
-    this.id = uuidv4();
-    this.flowId = flowId;
+  constructor(type: MeriseItemType, id?: string) {
+    this.id = id ?? uuidv4();
     this.type = type;
     this.name = type;
   }
@@ -19,10 +17,6 @@ export default abstract class AbstractMeriseItem {
 
   getId = (): string => {
     return this.id;
-  };
-
-  getFlowId = (): string => {
-    return this.flowId;
   };
 
   getType = (): MeriseItemType => {

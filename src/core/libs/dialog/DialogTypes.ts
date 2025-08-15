@@ -6,6 +6,7 @@ export enum DialogType {
   ENTITY = "entity",
   ASSOCIATION = "association",
   RELATION = "relation",
+  FIELD = "field",
 }
 
 // Base interface shared by all dialog types
@@ -23,41 +24,53 @@ export interface DialogConfirm extends Dialog {
 }
 
 interface DialogConfirmCallbacks {
-  cancel: () => void;
-  confirm: () => void;
+  closeDialog: () => void;
+  onConfirm: () => void;
 }
 
 // Interface for an entity dialog instance
 export interface DialogEntity extends Dialog {
-  component: ReactNode;
+  component: () => ReactNode;
   callbacks: DialogEntityCallbacks;
 }
 
 interface DialogEntityCallbacks {
-  cancel: () => void;
-  delete: () => void;
+  closeDialog: () => void;
+  deleteEntity: () => void;
+  addField: () => void;
 }
 
 // Interface for an association dialog instance
 export interface DialogAssociation extends Dialog {
-  component: ReactNode;
+  component: () => ReactNode;
   callbacks: DialogAssociationCallbacks;
 }
 
 interface DialogAssociationCallbacks {
-  cancel: Function;
-  delete: Function;
+  closeDialog: () => void;
+  deleteAssociation: () => void;
+  addField: () => void;
 }
 
 // Interface for an relation dialog instance
 export interface DialogRelation extends Dialog {
-  component: ReactNode;
+  component: () => ReactNode;
   callbacks: DialogRelationCallbacks;
 }
 
 interface DialogRelationCallbacks {
-  cancel: Function;
-  delete: Function;
+  closeDialog: () => void;
+  deleteRelation: () => void;
+}
+
+// Interface for a add field dialog instance
+export interface DialogField extends Dialog {
+  component: () => ReactNode;
+  callbacks: DialogFieldCallbacks;
+}
+
+interface DialogFieldCallbacks {
+  closeDialog: () => void;
 }
 
 // Dispatcher type for updating the dialogs state
@@ -79,16 +92,23 @@ export interface AddEntityDialogProps {
 
 // Props required by the addAssociationDialog method in the manager
 export interface AddAssociationDialogProps {
-  title: DialogEntity["title"];
-  component: DialogEntity["component"];
-  callbacks: DialogEntityCallbacks;
+  title: DialogAssociation["title"];
+  component: DialogAssociation["component"];
+  callbacks: DialogAssociationCallbacks;
 }
 
 // Props required by the addRelationDialog method in the manager
 export interface AddRelationDialogProps {
-  title: DialogEntity["title"];
-  component: DialogEntity["component"];
-  callbacks: DialogEntityCallbacks;
+  title: DialogRelation["title"];
+  component: DialogRelation["component"];
+  callbacks: DialogRelationCallbacks;
+}
+
+// Props required by the addFieldDialog method in the manager
+export interface AddFieldDialogProps {
+  title: DialogField["title"];
+  component: DialogField["component"];
+  callbacks: DialogFieldCallbacks;
 }
 
 // Contract for the dialog manager implementation
@@ -97,5 +117,6 @@ export interface DialogManagerInterface {
   addEntityDialog: (props: AddEntityDialogProps) => string;
   addAssociationDialog: (props: AddAssociationDialogProps) => string;
   addRelationDialog: (props: AddRelationDialogProps) => string;
+  addFieldDialog: (props: AddFieldDialogProps) => string;
   removeDialogById: (id: string) => void;
 }

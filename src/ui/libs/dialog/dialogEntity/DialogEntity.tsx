@@ -7,8 +7,9 @@ interface DialogEntityProps {
 }
 
 export const DialogEntity = ({ dialog }: DialogEntityProps) => {
-  const handleCancel = () => dialog.callbacks.cancel();
-  const handleDelete = () => dialog.callbacks.delete();
+  const handleCloseDialog = () => dialog.callbacks.closeDialog();
+  const handleDeleteEntity = () => dialog.callbacks.deleteEntity();
+  const handleAddField = () => dialog.callbacks.addField();
 
   return (
     <div className="dialog-overlay">
@@ -19,13 +20,16 @@ export const DialogEntity = ({ dialog }: DialogEntityProps) => {
               <h3>{dialog.title}</h3>
             </div>
           )}
-          {dialog.component}
+          {dialog.component()}
         </div>
         <div className="dialog-entity__actions">
-          <Button className="dialog-entity__actions-item" onClick={handleCancel}>
+          <Button className="dialog-entity__actions-item" onClick={handleCloseDialog}>
             Fermer
           </Button>
-          <Button className="dialog-entity__actions-item" onClick={handleDelete}>
+          <Button className="dialog-entity__actions-item" onClick={handleAddField}>
+            Ajouter un champ
+          </Button>
+          <Button className="dialog-entity__actions-item" onClick={handleDeleteEntity}>
             Supprimer
           </Button>
         </div>

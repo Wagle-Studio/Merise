@@ -1,11 +1,12 @@
 import type { Connection } from "@xyflow/react";
+import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
-import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
-import { MeriseErrorTypeEnum } from "@/libs/merise";
+import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
+import { Field, MeriseErrorTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
 
 export default class CoreManager implements CoreManagerInterface {
@@ -84,49 +85,124 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleMeriseEntitySelect = (entity: MeriseEntityInterface): void => {
-    this.createItemDialog(entity, "entity");
+    this.createEntityDialog(entity);
   };
 
   handleMeriseAssociationSelect = (association: MeriseAssociationInterface): void => {
-    this.createItemDialog(association, "association");
+    this.createAssociationDialog(association);
   };
 
   handleMeriseRelationSelect = (relation: MeriseRelationInterface): void => {
-    this.createItemDialog(relation, "relation");
+    this.createRelationDialog(relation);
   };
 
   handleMeriseEntityUpdate = (entity: MeriseEntityInterface): void => {
-    this.handleItemUpdate(entity as Entity, this.meriseManager.updateEntity.bind(this.meriseManager), "Entité mise à jour", "Échec de la mise à jour de l’entité");
+    this.handleItemUpdate(entity as Entity, this.meriseManager.updateEntity, "Entité mise à jour", "Échec de la mise à jour de l’entité");
   };
 
   handleMeriseAssociationUpdate = (association: MeriseAssociationInterface): void => {
-    this.handleItemUpdate(association as Association, this.meriseManager.updateAssociation.bind(this.meriseManager), "Association mise à jour", "Échec de la mise à jour de l’association");
+    this.handleItemUpdate(association as Association, this.meriseManager.updateAssociation, "Association mise à jour", "Échec de la mise à jour de l’association");
   };
 
   handleMeriseRelationUpdate = (relation: MeriseRelationInterface): void => {
-    this.handleItemUpdate(relation as Relation, this.meriseManager.updateRelation.bind(this.meriseManager), "Échec de la mise à jour de la relation", "La relation n'a pas pu être mise à jour");
+    this.handleItemUpdate(relation as Relation, this.meriseManager.updateRelation, "Échec de la mise à jour de la relation", "La relation n'a pas pu être mise à jour");
   };
 
-  private createItemDialog<T extends { getFlowId(): string; renderFormComponent(): React.ReactElement }>(item: T, dialogType: "entity" | "association" | "relation"): string {
-    const addDialogFn = {
-      entity: this.dialogManager.addEntityDialog.bind(this.dialogManager),
-      association: this.dialogManager.addAssociationDialog.bind(this.dialogManager),
-      relation: this.dialogManager.addRelationDialog.bind(this.dialogManager),
-    }[dialogType];
+  handleMeriseFieldCreate = (field: MeriseFieldInterface): void => {
+    switch (field.getMeriseItemType()) {
+      case MeriseItemTypeEnum.ENTITY:
+        const entityFindResult = this.meriseManager.findEntityById(field.getMeriseItemId());
 
-    const dialogId = addDialogFn({
+        if (!entityFindResult.success) {
+          this.errorManager.handleError(this.mapResultError(entityFindResult));
+          return;
+        }
+
+        entityFindResult.data?.addField(field);
+        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ créé", "Échec de la création du champ");
+
+        break;
+      case MeriseItemTypeEnum.ASSOCIATION:
+        const associationFindResult = this.meriseManager.findAssociationById(field.getMeriseItemId());
+
+        if (!associationFindResult.success) {
+          this.errorManager.handleError(this.mapResultError(associationFindResult));
+          return;
+        }
+
+        associationFindResult.data?.addField(field);
+        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ créé", "Échec de la création du champ");
+
+        break;
+    }
+  };
+
+  private createEntityDialog = (entity: MeriseEntityInterface): string => {
+    const dialogId = this.dialogManager.addEntityDialog({
       title: "",
-      component: item.renderFormComponent(),
+      component: () => entity.renderFormComponent(),
       callbacks: {
-        cancel: () => {
+        closeDialog: () => {
           this.dialogManager.removeDialogById(dialogId);
         },
-        delete: () => {
-          if (dialogType === "entity" || dialogType === "association") {
-            this.handleFlowNodeRemove(item.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
-          } else {
-            this.handleFlowEdgeRemove(item.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
-          }
+        deleteEntity: () => {
+          this.handleFlowNodeRemove(entity.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
+        },
+        addField: () => {
+          const addFieldDialogId = this.dialogManager.addFieldDialog({
+            title: "Ajouter un champ",
+            component: () => new Field(entity.getId(), entity.getType(), uuidv4()).renderFormComponent(),
+            callbacks: {
+              closeDialog: () => {
+                this.dialogManager.removeDialogById(addFieldDialogId);
+              },
+            },
+          });
+        },
+      },
+    });
+
+    return dialogId;
+  };
+
+  private createAssociationDialog(association: MeriseAssociationInterface): string {
+    const dialogId = this.dialogManager.addAssociationDialog({
+      title: "",
+      component: () => association.renderFormComponent(),
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+        deleteAssociation: () => {
+          this.handleFlowNodeRemove(association.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
+        },
+        addField: () => {
+          const addFieldDialogId = this.dialogManager.addFieldDialog({
+            title: "Ajouter un champ",
+            component: () => new Field(association.getId(), association.getType(), uuidv4()).renderFormComponent(),
+            callbacks: {
+              closeDialog: () => {
+                this.dialogManager.removeDialogById(addFieldDialogId);
+              },
+            },
+          });
+        },
+      },
+    });
+
+    return dialogId;
+  }
+
+  private createRelationDialog(relation: MeriseRelationInterface): string {
+    const dialogId = this.dialogManager.addRelationDialog({
+      title: "",
+      component: () => relation.renderFormComponent(),
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+        deleteRelation: () => {
+          this.handleFlowEdgeRemove(relation.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
         },
       },
     });
@@ -190,8 +266,8 @@ export default class CoreManager implements CoreManagerInterface {
         title: "Supprimer la relation",
         message: "Êtes-vous sûr de vouloir supprimer cette relation ?",
         callbacks: {
-          cancel: () => this.dialogManager.removeDialogById(dialogId),
-          confirm: () => {
+          closeDialog: () => this.dialogManager.removeDialogById(dialogId),
+          onConfirm: () => {
             onConfirm(edge);
             this.dialogManager.removeDialogById(dialogId);
             if (onComplete) onComplete();
@@ -265,8 +341,8 @@ export default class CoreManager implements CoreManagerInterface {
         title: `Supprimer l'${itemTypeName.toLowerCase()}`,
         message: `Confirmer la suppression de cette relation ${itemTypeName.toLowerCase()} ?`,
         callbacks: {
-          cancel: () => this.dialogManager.removeDialogById(dialogId),
-          confirm: () => {
+          closeDialog: () => this.dialogManager.removeDialogById(dialogId),
+          onConfirm: () => {
             onConfirm(node, itemTypeName);
             this.dialogManager.removeDialogById(dialogId);
             if (onComplete) onComplete();

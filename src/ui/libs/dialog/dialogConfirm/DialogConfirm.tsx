@@ -7,8 +7,8 @@ interface DialogConfirmProps {
 }
 
 export const DialogConfirm = ({ dialog }: DialogConfirmProps) => {
-  const handleConfirm = () => dialog.callbacks.confirm();
-  const handleCancel = () => dialog.callbacks.cancel();
+  const handleConfirm = () => dialog.callbacks.onConfirm();
+  const handleCancel = () => dialog.callbacks.closeDialog();
 
   return (
     <div className="dialog-overlay">

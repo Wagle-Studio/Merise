@@ -10,7 +10,7 @@ export const ToastContainer = () => {
   return (
     <div className="toast-container">
       {toasts.map((toast) => (
-        <Toast key={toast.id} toast={toast} />
+        <Toast key={`toast-${toast.id}`} toast={toast} />
       ))}
     </div>
   );

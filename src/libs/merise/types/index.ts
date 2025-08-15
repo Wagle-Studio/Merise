@@ -4,6 +4,7 @@ export type {
   MeriseAssociationInterface,
   MeriseEntityInterface,
   MeriseErrorType,
+  MeriseFieldInterface,
   MeriseItemInterface,
   MeriseItemType,
   MeriseOperations,

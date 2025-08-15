@@ -7,8 +7,8 @@ interface DialogRelationProps {
 }
 
 export const DialogRelation = ({ dialog }: DialogRelationProps) => {
-  const handleCancel = () => dialog.callbacks.cancel();
-  const handleDelete = () => dialog.callbacks.delete();
+  const handleCancel = () => dialog.callbacks.closeDialog();
+  const handleDelete = () => dialog.callbacks.deleteRelation();
 
   return (
     <div className="dialog-overlay">
@@ -19,7 +19,7 @@ export const DialogRelation = ({ dialog }: DialogRelationProps) => {
               <h3>{dialog.title}</h3>
             </div>
           )}
-          {dialog.component}
+          {dialog.component()}
         </div>
         <div className="dialog-relation__actions">
           <Button className="dialog-relation__actions-item" onClick={handleCancel}>

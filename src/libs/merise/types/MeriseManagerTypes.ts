@@ -16,6 +16,8 @@ export interface MeriseManagerInterface {
   removeEntityByFlowId: (flowId: string) => MeriseResult<MeriseEntityInterface | null>;
   removeAssociationByFlowId: (flowId: string) => MeriseResult<MeriseAssociationInterface | null>;
   removeRelationByFlowId: (flowId: string) => MeriseResult<MeriseRelationInterface | null>;
+  findEntityById: (flowId: string) => MeriseResult<MeriseEntityInterface | null>;
+  findAssociationById: (flowId: string) => MeriseResult<MeriseAssociationInterface | null>;
   findEntityByFlowId: (flowId: string) => MeriseResult<MeriseEntityInterface | null>;
   findAssociationByFlowId: (flowId: string) => MeriseResult<MeriseAssociationInterface | null>;
   findRelationByFlowId: (flowId: string) => MeriseResult<MeriseRelationInterface | null>;
