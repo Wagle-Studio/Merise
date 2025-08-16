@@ -10,8 +10,6 @@ export default abstract class AbstractMeriseItem {
     this.type = type;
   }
 
-  abstract renderFormComponent(): React.ReactElement;
-
   getId = (): string => {
     return this.id;
   };

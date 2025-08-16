@@ -6,7 +6,7 @@ import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
 import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
-import { Field, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
+import { Field, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
 import type { Settings, SettingsManagerInterface } from "./libs/settings";
 
@@ -98,9 +98,10 @@ export default class CoreManager implements CoreManagerInterface {
           this.handleFlowNodeRemove(entity.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
         },
         addField: () => {
+          const field = new Field(entity.getId(), entity.getType(), uuidv4());
           const addFieldDialogId = this.dialogManager.addFieldDialog({
             title: "Ajouter un champ",
-            component: () => new Field(entity.getId(), entity.getType(), uuidv4()).renderFormComponent(),
+            component: () => field.renderFormComponent(MeriseFormTypeEnum.CREATE),
             callbacks: {
               closeDialog: () => {
                 this.dialogManager.removeDialogById(addFieldDialogId);
@@ -127,9 +128,10 @@ export default class CoreManager implements CoreManagerInterface {
           this.handleFlowNodeRemove(association.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
         },
         addField: () => {
+          const field = new Field(association.getId(), association.getType(), uuidv4());
           const addFieldDialogId = this.dialogManager.addFieldDialog({
             title: "Ajouter un champ",
-            component: () => new Field(association.getId(), association.getType(), uuidv4()).renderFormComponent(),
+            component: () => field.renderFormComponent(MeriseFormTypeEnum.CREATE),
             callbacks: {
               closeDialog: () => {
                 this.dialogManager.removeDialogById(addFieldDialogId);
@@ -154,6 +156,18 @@ export default class CoreManager implements CoreManagerInterface {
         },
         deleteRelation: () => {
           this.handleFlowEdgeRemove(relation.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
+        },
+      },
+    });
+  };
+
+  handleMeriseFieldSelect = (field: MeriseFieldInterface): void => {
+    const dialogId = this.dialogManager.addFieldDialog({
+      title: "Éditer un champ",
+      component: () => field.renderFormComponent(MeriseFormTypeEnum.UPDATE),
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
         },
       },
     });
@@ -203,6 +217,35 @@ export default class CoreManager implements CoreManagerInterface {
   handleMeriseFieldCreatePrimaryKey = (meriseItem: MeriseEntityInterface | MeriseAssociationInterface): void => {
     const fieldPrimaryKey = new Field(meriseItem.getId(), meriseItem.getType(), uuidv4(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, true, false, true);
     this.handleMeriseFieldCreate(fieldPrimaryKey);
+  };
+
+  handleMeriseFieldUpdate = (field: MeriseFieldInterface): void => {
+    switch (field.getMeriseItemType()) {
+      case MeriseItemTypeEnum.ENTITY:
+        const entityFindResult = this.meriseManager.findEntityById(field.getMeriseItemId());
+
+        if (!entityFindResult.success) {
+          this.errorManager.handleError(this.mapResultError(entityFindResult));
+          return;
+        }
+
+        entityFindResult.data?.updateField(field);
+        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ mis à jour", "Échec de la mise à jour du champ");
+
+        break;
+      case MeriseItemTypeEnum.ASSOCIATION:
+        const associationFindResult = this.meriseManager.findAssociationById(field.getMeriseItemId());
+
+        if (!associationFindResult.success) {
+          this.errorManager.handleError(this.mapResultError(associationFindResult));
+          return;
+        }
+
+        associationFindResult.data?.updateField(field);
+        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ mis à jour", "Échec de la mise à jour du champ");
+
+        break;
+    }
   };
 
   handleMeriseFieldDelete = (field: MeriseFieldInterface): void => {

@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { FieldFormComponent } from "@/ui";
-import { type MeriseFieldInterface, type MeriseFieldTypeType, type MeriseItemType, MeriseItemTypeEnum } from "../../types";
+import { type MeriseFieldInterface, type MeriseFieldTypeType, type MeriseFormType, type MeriseItemType, MeriseItemTypeEnum } from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
 import type { FieldFormType } from "./FieldFormSchema";
 
@@ -60,8 +60,8 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
     return this.unique;
   };
 
-  renderFormComponent = (): React.ReactElement => {
-    return createElement(FieldFormComponent, { field: this });
+  renderFormComponent = (formType: MeriseFormType): React.ReactElement => {
+    return createElement(FieldFormComponent, { field: this, formType: formType });
   };
 
   private setName = (name: string): void => {

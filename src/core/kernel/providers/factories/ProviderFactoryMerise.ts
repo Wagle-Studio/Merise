@@ -14,6 +14,9 @@ export default class ProviderFactoryMerise {
       onRelationSelect: (relation: MeriseRelationInterface): void => {
         managers.core.handleMeriseRelationSelect(relation);
       },
+      onFieldSelect: (field: MeriseFieldInterface): void => {
+        managers.core.handleMeriseFieldSelect(field);
+      },
       onEntityUpdate: (entity: MeriseEntityInterface): void => {
         managers.core.handleMeriseEntityUpdate(entity);
       },
@@ -25,6 +28,9 @@ export default class ProviderFactoryMerise {
       },
       onFieldCreate: (field: MeriseFieldInterface): void => {
         managers.core.handleMeriseFieldCreate(field);
+      },
+      onFieldUpdate: (field: MeriseFieldInterface): void => {
+        managers.core.handleMeriseFieldUpdate(field);
       },
       onFieldDelete: (field: MeriseFieldInterface): void => {
         managers.core.handleMeriseFieldDelete(field);

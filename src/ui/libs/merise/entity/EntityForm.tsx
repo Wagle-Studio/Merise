@@ -62,7 +62,7 @@ export const EntityFormComponent = ({ entity }: EntityFormComponentProps) => {
         <FieldText label="Nom" labelDisplay={false} htmlFor="entity-name" defaultValue={entity.getName()} placeholder={entity.getName()} error={fieldErrors.name} />
       </Fieldset>
       <Fieldset legend="Champs">
-        <FieldTableComponent fields={entity.getFields()} />
+        <FieldTableComponent fields={entity.getFields()} onSelect={operations.onFieldSelect} />
       </Fieldset>
     </Form>
   );

@@ -4,12 +4,17 @@ import "./field.scss";
 
 interface FieldTableComponentProps {
   fields: MeriseFieldInterface[];
+  onSelect: (field: MeriseFieldInterface) => void;
 }
 
-export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
+export const FieldTableComponent = ({ fields, onSelect }: FieldTableComponentProps) => {
   const { operations } = useMeriseContext();
 
-  const handleFieldDelete = (field: MeriseFieldInterface) => {
+  const handleFieldSelect = (field: MeriseFieldInterface): void => {
+    onSelect(field);
+  };
+
+  const handleFieldDelete = (field: MeriseFieldInterface): void => {
     operations.onFieldDelete(field);
   };
 
@@ -50,7 +55,7 @@ export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
                   {!field.isUnique() && <UnCheckedIcon />}
                 </td>
                 <td className="field-table__rows__item--actions">
-                  <Button variant="invisible" onClick={() => handleFieldDelete(field)}>
+                  <Button variant="invisible" onClick={() => handleFieldSelect(field)}>
                     <EditIcon />
                   </Button>
                   <Button variant="invisible" onClick={() => handleFieldDelete(field)}>
