@@ -1,7 +1,7 @@
 .toast {
   pointer-events: auto;
-  background-color: white;
-  border-radius: 6px;
+  background-color: var(--white);
+  border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   transform: translateX(100%);
@@ -34,7 +34,7 @@
     flex: 1;
     font-size: 14px;
     line-height: 1.4;
-    color: #374151;
+    color: var(--gray-darker);
   }
 
   &__progress {
@@ -43,7 +43,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--white);
 
     &-bar {
       height: 100%;

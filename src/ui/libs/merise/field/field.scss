@@ -10,33 +10,46 @@
     width: 150px;
   }
 
-  &__col--type,
+  &__col--type {
+    width: 150px;
+  }
+
   &__col--nullable,
   &__col--unique {
-    width: 120px;
+    width: 100px;
   }
 
   thead th {
     text-align: left;
     font-weight: 600;
     padding: 6px 8px;
-    border-bottom: 1px solid gainsboro;
-    color: #4a4a4a;
+    border-bottom: 1px solid var(--gray-base);
+    color: var(--gray-darker);
     box-sizing: border-box;
   }
 
   tbody td {
     padding: 6px 8px;
-    border-bottom: 1px solid gainsboro;
+    border-bottom: 1px solid var(--gray-base);
     vertical-align: middle;
     box-sizing: border-box;
   }
 
   &__rows {
-    &__item__data--name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    &__item {
+      &--key {
+        &--primary {
+          > svg > path {
+            fill: var(--primary-key);
+          }
+        }
+      }
+
+      &--name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
 }

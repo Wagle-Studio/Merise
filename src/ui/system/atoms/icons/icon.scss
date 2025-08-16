@@ -1,0 +1,26 @@
+.icon {
+  stroke: var(--gray-darker);
+  fill: none;
+  stroke-width: 0;
+
+  &--small {
+    width: 16px;
+    height: 16px;
+  }
+
+  &--medium {
+    width: 24px;
+    height: 24px;
+  }
+
+  &--large {
+    width: 32px;
+    height: 32px;
+  }
+
+  path {
+    fill-rule: evenodd;
+    clip-rule: evenodd;
+    fill: var(--gray-darker);
+  }
+}
