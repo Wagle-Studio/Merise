@@ -1,6 +1,7 @@
-import { type FormEvent, Fragment } from "react";
+import { type FormEvent } from "react";
 import { EntityFormTypeSchema, type MeriseEntityInterface, useMeriseContext } from "@/libs/merise";
 import { Button, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
+import { FieldTableComponent } from "../field/FieldTable";
 
 interface EntityFormComponentProps {
   entity: MeriseEntityInterface;
@@ -61,9 +62,7 @@ export const EntityFormComponent = ({ entity }: EntityFormComponentProps) => {
         <FieldText label="Nom" labelDisplay={false} htmlFor="entity-name" defaultValue={entity.getName()} placeholder={entity.getName()} error={fieldErrors.name} />
       </Fieldset>
       <Fieldset legend="Champs">
-        {entity.getFields().map((field) => (
-          <Fragment key={`entity-field-${field.getId()}`}>{field.renderComponent()}</Fragment>
-        ))}
+        <FieldTableComponent fields={entity.getFields()} />
       </Fieldset>
     </Form>
   );

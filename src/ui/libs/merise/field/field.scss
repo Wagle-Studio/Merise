@@ -1,4 +1,40 @@
-.field {
-  padding-bottom: 4px;
-  border-bottom: 1px solid gainsboro;
+.field-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  &__col--key {
+    width: 30px;
+  }
+
+  &__col--name {
+    width: 150px;
+  }
+
+  &__col--type,
+  &__col--nullable,
+  &__col--unique {
+    width: 120px;
+  }
+
+  thead th {
+    text-align: left;
+    font-weight: 600;
+    padding: 6px 8px;
+    border-bottom: 1px solid gainsboro;
+    color: #4a4a4a;
+  }
+
+  tbody td {
+    padding: 6px 8px;
+    border-bottom: 1px solid gainsboro;
+    vertical-align: middle;
+  }
+
+  &__rows {
+    &__item__data--name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
 }

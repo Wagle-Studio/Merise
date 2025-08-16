@@ -19,19 +19,27 @@ export enum MeriseRelationCardinalityType {
   ONE_N = "1,N",
 }
 
+// List of all available merise field type item types
+export enum MeriseFieldTypeType {
+  TEXT = "Texte",
+  NUMBER = "Nombre",
+  DATE = "Date",
+  BOOLEAN = "Boolean",
+}
+
 // Base interface implemented by all Merise items
 export interface MeriseItemInterface {
-  renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
   getId: () => string;
   getType: () => MeriseItemType;
-  getName: () => string;
 }
 
 // Interface for a Merise entity
 export interface MeriseEntityInterface extends MeriseItemInterface {
+  renderComponent: () => React.ReactElement;
   hydrate: (formData: EntityFormType) => void;
   getFlowId: () => string;
+  getName: () => string;
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
@@ -39,8 +47,10 @@ export interface MeriseEntityInterface extends MeriseItemInterface {
 
 // Interface for a Merise association
 export interface MeriseAssociationInterface extends MeriseItemInterface {
+  renderComponent: () => React.ReactElement;
   hydrate: (formData: AssociationFormType) => void;
   getFlowId: () => string;
+  getName: () => string;
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
@@ -48,6 +58,7 @@ export interface MeriseAssociationInterface extends MeriseItemInterface {
 
 // Interface for a Merise relation
 export interface MeriseRelationInterface extends MeriseItemInterface {
+  renderComponent: () => React.ReactElement;
   hydrate: (formData: RelationFormType) => void;
   getFlowId: () => string;
   getSource: () => string;
@@ -60,6 +71,11 @@ export interface MeriseFieldInterface extends MeriseItemInterface {
   hydrate: (formData: FieldFormType) => void;
   getMeriseItemId: () => string;
   getMeriseItemType: () => MeriseItemType;
+  getName: () => string | null;
+  isPrimary: () => boolean;
+  isNullable: () => boolean;
+  isUnique: () => boolean;
+  getTypeField: () => MeriseFieldTypeType | null;
 }
 
 // Mirror of the Core item types used in Merise

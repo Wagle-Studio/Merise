@@ -30,7 +30,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const entity = new Entity(flowId);
+    const entity = new Entity(flowId, "Entité");
     this.setMerise((prev) => prev.cloneWithAddedEntity(entity));
 
     return {
@@ -61,7 +61,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const association = new Association(flowId);
+    const association = new Association(flowId, "Association");
     this.setMerise((prev) => prev.cloneWithAddedAssociation(association));
 
     return {
