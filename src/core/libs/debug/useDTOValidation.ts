@@ -31,14 +31,14 @@ export function useDTOValidation(flow: FlowDTOInterface, merise: MeriseDTOInterf
 }
 
 function validateDTOConsistency(flow: FlowDTOInterface, merise: MeriseDTOInterface): DTOValidationReport {
-  const flowNodeIds = new Set(flow.nodes.map((node) => node.id));
-  const flowEdgeIds = new Set(flow.edges.map((edge) => edge.id));
+  const flowNodeIds = new Set(flow.getNodes().map((node) => node.id));
+  const flowEdgeIds = new Set(flow.getEdges().map((edge) => edge.id));
 
-  const meriseEntityFlowIds = new Set(merise.entities.map((entity) => entity.getFlowId()));
-  const meriseAssociationFlowIds = new Set(merise.associations?.map((association) => association.getFlowId()) || []);
+  const meriseEntityFlowIds = new Set(merise.getEntities().map((entity) => entity.getFlowId()));
+  const meriseAssociationFlowIds = new Set(merise.getAssociations().map((association) => association.getFlowId()) || []);
   const allMeriseItemFlowIds = new Set([...meriseEntityFlowIds, ...meriseAssociationFlowIds]);
 
-  const meriseRelationFlowIds = new Set(merise.relations.map((relation) => relation.getFlowId()));
+  const meriseRelationFlowIds = new Set(merise.getRelations().map((relation) => relation.getFlowId()));
 
   const orphanedFlowNodes = [...flowNodeIds].filter((id) => !allMeriseItemFlowIds.has(id));
   const orphanedMeriseItems = [...allMeriseItemFlowIds].filter((id) => !flowNodeIds.has(id));
@@ -69,18 +69,18 @@ function validateDTOConsistency(flow: FlowDTOInterface, merise: MeriseDTOInterfa
     details.push("✅ Cohérence parfaite entre Flow et Merise");
   }
 
-  const meriseAssociationsCount = merise.associations?.length || 0;
-  const meriseTotalItems = merise.entities.length + meriseAssociationsCount;
+  const meriseAssociationsCount = merise.getAssociations().length || 0;
+  const meriseTotalItems = merise.getEntities().length + meriseAssociationsCount;
 
   return {
     isValid: !hasInconsistencies,
     summary: {
-      flowNodes: flow.nodes.length,
-      flowEdges: flow.edges.length,
-      meriseEntities: merise.entities.length,
+      flowNodes: flow.getNodes().length,
+      flowEdges: flow.getEdges().length,
+      meriseEntities: merise.getEntities().length,
       meriseAssociations: meriseAssociationsCount,
       meriseTotalItems,
-      meriseRelations: merise.relations.length,
+      meriseRelations: merise.getRelations().length,
     },
     mismatches: {
       orphanedFlowNodes,

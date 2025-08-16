@@ -14,7 +14,7 @@ export const DialogField = ({ dialog }: DialogFieldProps) => {
       <div className="dialog-field">
         <div className="dialog-field__card">
           {dialog.title.length > 0 && (
-            <div className="dialog-entity__card-header">
+            <div className="dialog-field__card-header">
               <h3>{dialog.title}</h3>
             </div>
           )}

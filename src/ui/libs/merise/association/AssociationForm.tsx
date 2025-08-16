@@ -57,8 +57,8 @@ export const AssociationFormComponent = ({ association }: AssociationFormCompone
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset variant="horizontal">
-        <FieldSelect label="Emoji" htmlFor="association-emoji" defaultValue={association.getEmoji()} options={emojiOptions} error={fieldErrors.emoji} />
-        <FieldText label="Nom" htmlFor="association-name" defaultValue={association.getName()} placeholder={association.getName()} error={fieldErrors.name} />
+        <FieldSelect label="Emoji" labelDisplay={false} htmlFor="association-emoji" defaultValue={association.getEmoji()} options={emojiOptions} error={fieldErrors.emoji} />
+        <FieldText label="Nom" labelDisplay={false} htmlFor="association-name" defaultValue={association.getName()} placeholder={association.getName()} error={fieldErrors.name} />
       </Fieldset>
       <Fieldset legend="Champs">
         {association.getFields().map((field) => (

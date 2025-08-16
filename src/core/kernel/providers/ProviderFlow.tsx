@@ -7,7 +7,7 @@ import { ProviderFactoryFlow } from "./factories";
 
 // Provider for the Flow module, providing Flow context and dependencies within an error boundary
 export const ProviderFlow = ({ children }: { children: ReactNode }) => {
-  const { flowDTO, managers } = useKernelContext();
+  const { flowDTO, managers, settings } = useKernelContext();
 
   if (!managers) {
     return <FallbackLoading title="Initialisation de Flow" message="Chargement des services" />;
@@ -15,11 +15,12 @@ export const ProviderFlow = ({ children }: { children: ReactNode }) => {
 
   const contextValue = useMemo(
     () => ({
+      settings,
       flow: flowDTO,
       operations: ProviderFactoryFlow.createOperations(managers),
       dependencies: ProviderFactoryFlow.createDependencies(managers),
     }),
-    [flowDTO, managers]
+    [flowDTO, managers, settings]
   );
 
   return (

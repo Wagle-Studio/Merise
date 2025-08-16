@@ -5,20 +5,21 @@ interface FieldSelectProps {
   className?: string;
   variant?: "horizontal" | "vertical";
   label: string;
+  labelDisplay?: boolean;
   htmlFor: string;
   defaultValue: string;
   options: Record<"label" | "value", string>[];
   error?: string;
 }
 
-export const FieldSelect = ({ className, variant = "vertical", label, htmlFor, defaultValue, options, error }: FieldSelectProps) => {
+export const FieldSelect = ({ className, variant = "vertical", label, labelDisplay = true, htmlFor, defaultValue, options, error }: FieldSelectProps) => {
   return (
     <div
       className={clsx("field-select", `field-select--${variant}`, className, {
         "field-select--error": !!error,
       })}
     >
-      <label className="field-select__label" htmlFor={htmlFor}>
+      <label className={clsx("field-select__label", { "field-select__label--hide": !labelDisplay })} htmlFor={htmlFor}>
         {label}
       </label>
       <select

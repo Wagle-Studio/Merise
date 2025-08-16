@@ -13,12 +13,13 @@
   }
 
   &__label {
-    display: none;
+    &--hide {
+      display: none;
+    }
   }
 
   &__input {
     width: 100%;
-    max-width: max-content;
     padding: 6px 4px 6px 6px;
     margin-right: 4px;
     font-size: 16px;

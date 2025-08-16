@@ -1,0 +1,1 @@
+export { SettingsFormComponent } from "./SettingsForm";

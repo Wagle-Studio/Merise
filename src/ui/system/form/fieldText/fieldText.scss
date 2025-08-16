@@ -12,7 +12,9 @@
   }
 
   &__label {
-    display: none;
+    &--hide {
+      display: none;
+    }
   }
 
   &__input {

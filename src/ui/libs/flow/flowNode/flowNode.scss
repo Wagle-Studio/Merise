@@ -1,8 +1,10 @@
 .node {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 8px;
   padding: 4px 4px;
+  height: 47px;
   border: 1px solid transparent;
   border-radius: 4px;
   transition: border 0.15s ease;

@@ -1,10 +1,21 @@
 import type { FlowDTOInterface, TypedEdge, TypedNode } from "../types";
 
 export default class FlowDTO implements FlowDTOInterface {
-  constructor(
-    readonly nodes: TypedNode[] = [],
-    readonly edges: TypedEdge[] = []
-  ) {}
+  private nodes: TypedNode[] = [];
+  private edges: TypedEdge[] = [];
+
+  constructor(nodes: TypedNode[] = [], edges: TypedEdge[] = []) {
+    this.nodes = nodes;
+    this.edges = edges;
+  }
+
+  getNodes = (): TypedNode[] => {
+    return this.nodes;
+  };
+
+  getEdges = (): TypedEdge[] => {
+    return this.edges;
+  };
 
   cloneWithAddedEdge = (edge: TypedEdge): FlowDTOInterface => {
     return new FlowDTO(this.nodes, [...this.edges, edge]);

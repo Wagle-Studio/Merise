@@ -2,11 +2,27 @@ import type { Association, Entity, Relation } from "../models";
 import type { MeriseDTOInterface } from "../types";
 
 export default class MeriseDTO implements MeriseDTOInterface {
-  constructor(
-    readonly entities: Entity[] = [],
-    readonly associations: Association[] = [],
-    readonly relations: Relation[] = []
-  ) {}
+  private entities: Entity[] = [];
+  private associations: Association[] = [];
+  private relations: Relation[] = [];
+
+  constructor(entities: Entity[] = [], associations: Association[] = [], relations: Relation[] = []) {
+    this.entities = entities;
+    this.associations = associations;
+    this.relations = relations;
+  }
+
+  getEntities = (): Entity[] => {
+    return this.entities;
+  };
+
+  getAssociations = (): Association[] => {
+    return this.associations;
+  };
+
+  getRelations = (): Relation[] => {
+    return this.relations;
+  };
 
   cloneWithAddedEntity = (entity: Entity): MeriseDTOInterface => {
     return new MeriseDTO([...this.entities, entity], this.associations, this.relations);

@@ -2,9 +2,22 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 12px;
   width: 100%;
   height: max-content;
   border-bottom: 1px solid gray;
+
+  &__left {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
 }

@@ -13,7 +13,12 @@ export default class ToastManager implements ToastManagerInterface {
   ) {}
 
   addToast = (props: AddToastProps): void => {
-    const toast = this.createToast(props);
+    const toast = {
+      timestamp: Date.now(),
+      id: uuidv4(),
+      type: props.type,
+      message: props.message,
+    };
 
     this.setToasts([...this.getToasts(), toast].slice(0, MAX_TOASTS));
 
@@ -30,14 +35,5 @@ export default class ToastManager implements ToastManagerInterface {
       clearTimeout(this.timersRef.current[id]);
       delete this.timersRef.current[id];
     }
-  };
-
-  private createToast = (props: AddToastProps): Toast => {
-    return {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: props.type,
-      message: props.message,
-    };
   };
 }

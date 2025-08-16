@@ -1,7 +1,7 @@
 import { type ReactNode, memo, useMemo } from "react";
 import { useKernelContext } from "@/core";
 import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
-import { MeriseContextProvider } from "@/libs/merise";
+import { type MeriseContext, MeriseContextProvider } from "@/libs/merise";
 import { FallbackLoading } from "@/ui/libs/error";
 import { ProviderFactoryMerise } from "./factories";
 
@@ -13,7 +13,7 @@ export const ProviderMerise = memo(function ProviderMerise({ children }: { child
     return <FallbackLoading title="Initialisation de Merise" message="Chargement des services" />;
   }
 
-  const contextValue = useMemo(
+  const contextValue = useMemo<MeriseContext>(
     () => ({
       operations: ProviderFactoryMerise.createOperations(managers),
     }),

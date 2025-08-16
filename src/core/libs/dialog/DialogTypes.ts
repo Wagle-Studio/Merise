@@ -7,6 +7,7 @@ export enum DialogType {
   ASSOCIATION = "association",
   RELATION = "relation",
   FIELD = "field",
+  SETTINGS = "settings",
 }
 
 // Base interface shared by all dialog types
@@ -73,6 +74,16 @@ interface DialogFieldCallbacks {
   closeDialog: () => void;
 }
 
+// Interface for a settings dialog instance
+export interface DialogSettings extends Dialog {
+  component: () => ReactNode;
+  callbacks: DialogSettingsCallbacks;
+}
+
+interface DialogSettingsCallbacks {
+  closeDialog: () => void;
+}
+
 // Dispatcher type for updating the dialogs state
 export type DialogsDispatcher = React.Dispatch<React.SetStateAction<Dialog[]>>;
 
@@ -111,6 +122,13 @@ export interface AddFieldDialogProps {
   callbacks: DialogFieldCallbacks;
 }
 
+// Props required by the addSettingsDialog method in the manager
+export interface AddSettingsDialogProps {
+  title: DialogSettings["title"];
+  component: DialogSettings["component"];
+  callbacks: DialogSettingsCallbacks;
+}
+
 // Contract for the dialog manager implementation
 export interface DialogManagerInterface {
   addConfirmDialog: (props: AddConfirmDialogProps) => string;
@@ -118,5 +136,6 @@ export interface DialogManagerInterface {
   addAssociationDialog: (props: AddAssociationDialogProps) => string;
   addRelationDialog: (props: AddRelationDialogProps) => string;
   addFieldDialog: (props: AddFieldDialogProps) => string;
+  addSettingsDialog: (props: AddSettingsDialogProps) => string;
   removeDialogById: (id: string) => void;
 }

@@ -17,13 +17,13 @@ export default class FlowManager implements FlowManagerInterface {
   // FLOW FACTORY
   handleMove = (change: NodeChange<TypedNode>): void => {
     this.setFlow((prev) => {
-      return prev.cloneWithUpdatedNodes(applyNodeChanges<TypedNode>([change], prev.nodes));
+      return prev.cloneWithUpdatedNodes(applyNodeChanges<TypedNode>([change], prev.getNodes()));
     });
   };
 
   // CORE MANAGER
   triggerReRender = (): void => {
-    this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.edges, prev.nodes));
+    this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.getEdges(), prev.getNodes()));
   };
 
   // CORE MANAGER
@@ -94,7 +94,7 @@ export default class FlowManager implements FlowManagerInterface {
     }
 
     const flow = this.getFlow();
-    const index = flow.edges.findIndex((edge) => edge.id === edgeId);
+    const index = flow.getEdges().findIndex((edge) => edge.id === edgeId);
 
     if (index === -1) {
       return {
@@ -104,8 +104,8 @@ export default class FlowManager implements FlowManagerInterface {
       };
     }
 
-    const removedEdge = flow.edges[index];
-    const updatedEdges = flow.edges.filter((_, i) => i !== index);
+    const removedEdge = flow.getEdges()[index];
+    const updatedEdges = flow.getEdges().filter((_, i) => i !== index);
 
     this.setFlow((prev) => prev.cloneWithUpdatedEdges(updatedEdges));
 
@@ -126,7 +126,7 @@ export default class FlowManager implements FlowManagerInterface {
     }
 
     const flow = this.getFlow();
-    const index = flow.nodes.findIndex((node) => node.id === nodeId);
+    const index = flow.getNodes().findIndex((node) => node.id === nodeId);
 
     if (index === -1) {
       return {
@@ -136,9 +136,9 @@ export default class FlowManager implements FlowManagerInterface {
       };
     }
 
-    const removedNode = flow.nodes[index];
-    const updatedNodes = flow.nodes.filter((_, i) => i !== index);
-    const updatedEdges = flow.edges.filter((edge) => edge.target !== removedNode.id && edge.source !== removedNode.id);
+    const removedNode = flow.getNodes()[index];
+    const updatedNodes = flow.getNodes().filter((_, i) => i !== index);
+    const updatedEdges = flow.getEdges().filter((edge) => edge.target !== removedNode.id && edge.source !== removedNode.id);
 
     this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(updatedEdges, updatedNodes));
 
@@ -158,7 +158,9 @@ export default class FlowManager implements FlowManagerInterface {
       };
     }
 
-    const edge = this.getFlow().edges.find((edge) => edge.id === edgeId);
+    const edge = this.getFlow()
+      .getEdges()
+      .find((edge) => edge.id === edgeId);
 
     if (!edge) {
       return {
@@ -184,7 +186,9 @@ export default class FlowManager implements FlowManagerInterface {
       };
     }
 
-    const node = this.getFlow().nodes.find((node) => node.id === nodeId);
+    const node = this.getFlow()
+      .getNodes()
+      .find((node) => node.id === nodeId);
 
     if (!node) {
       return {
@@ -217,9 +221,11 @@ export default class FlowManager implements FlowManagerInterface {
       };
     }
 
-    const existingEdge = this.getFlow().edges.find((edge) => {
-      return (edge.source === params.source && edge.target === params.target) || (edge.source === params.target && edge.target === params.source);
-    });
+    const existingEdge = this.getFlow()
+      .getEdges()
+      .find((edge) => {
+        return (edge.source === params.source && edge.target === params.target) || (edge.source === params.target && edge.target === params.source);
+      });
 
     if (existingEdge) {
       return {
@@ -229,8 +235,12 @@ export default class FlowManager implements FlowManagerInterface {
       };
     }
 
-    const sourceNode = this.getFlow().nodes.find((node) => node.id === params.source);
-    const targetNode = this.getFlow().nodes.find((node) => node.id === params.target);
+    const sourceNode = this.getFlow()
+      .getNodes()
+      .find((node) => node.id === params.source);
+    const targetNode = this.getFlow()
+      .getNodes()
+      .find((node) => node.id === params.target);
 
     if (sourceNode && targetNode) {
       const isSourceEntity = sourceNode.data.type === FlowMeriseItemTypeEnum.ENTITY;
@@ -249,7 +259,9 @@ export default class FlowManager implements FlowManagerInterface {
   }
 
   private calculateNewNodePosition(): { x: number; y: number } {
-    const existingPositions = this.getFlow().nodes.map((n) => n.position.y);
+    const existingPositions = this.getFlow()
+      .getNodes()
+      .map((n) => n.position.y);
     const maxY = existingPositions.length > 0 ? Math.max(...existingPositions) : 0;
 
     return {

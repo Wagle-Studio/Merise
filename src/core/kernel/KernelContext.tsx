@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo } from "react";
 import { useDTOValidation } from "@/core/libs/debug";
 import type { KernelContext, KernelContextProps } from "./KernelTypes";
+import { ProviderFactoryKernel } from "./providers/factories";
 import { useKernelInitialization } from "./useKernelInitialization";
 
 const KernelContext = createContext<KernelContext | null>(null);
@@ -11,9 +12,13 @@ export const KernelContextProvider = ({ children }: KernelContextProps) => {
 
   useDTOValidation(kernel.flowDTO, kernel.meriseDTO, process.env.NODE_ENV === "development");
 
-  const contextValue = useMemo<KernelContext>(() => {
-    return kernel;
-  }, [kernel]);
+  const contextValue = useMemo<KernelContext>(
+    () => ({
+      ...kernel,
+      operations: ProviderFactoryKernel.createOperations(kernel.managers),
+    }),
+    [kernel]
+  );
 
   return <KernelContext.Provider value={contextValue}>{children}</KernelContext.Provider>;
 };

@@ -57,8 +57,8 @@ export const EntityFormComponent = ({ entity }: EntityFormComponentProps) => {
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset variant="horizontal" legend="Identité">
-        <FieldSelect label="Emoji" htmlFor="entity-emoji" defaultValue={entity.getEmoji()} options={emojiOptions} error={fieldErrors.emoji} />
-        <FieldText label="Nom" htmlFor="entity-name" defaultValue={entity.getName()} placeholder={entity.getName()} error={fieldErrors.name} />
+        <FieldSelect label="Emoji" labelDisplay={false} htmlFor="entity-emoji" defaultValue={entity.getEmoji()} options={emojiOptions} error={fieldErrors.emoji} />
+        <FieldText label="Nom" labelDisplay={false} htmlFor="entity-name" defaultValue={entity.getName()} placeholder={entity.getName()} error={fieldErrors.name} />
       </Fieldset>
       <Fieldset legend="Champs">
         {entity.getFields().map((field) => (

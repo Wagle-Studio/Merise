@@ -5,18 +5,19 @@ import { useFlowHandlers } from "./useFlowHandlers";
 const FlowContext = createContext<FlowContext | null>(null);
 
 // Provides the Flow context to the flow feature
-export const FlowContextProvider = ({ children, flow, operations, dependencies }: FlowContextProps) => {
+export const FlowContextProvider = ({ children, flow, operations, dependencies, settings }: FlowContextProps) => {
   const { onNodesChange, onConnect } = useFlowHandlers(operations); // Hooks for React Flow events
 
   const contextValue = useMemo(
     () => ({
+      settings,
       flow,
       operations,
       dependencies,
       onNodesChange,
       onConnect,
     }),
-    [flow, dependencies, onNodesChange, onConnect]
+    [flow, dependencies, onNodesChange, onConnect, settings]
   );
 
   return <FlowContext.Provider value={contextValue}>{children}</FlowContext.Provider>;

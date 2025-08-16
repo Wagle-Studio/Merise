@@ -4,22 +4,29 @@ import { Button } from "../../atoms";
 import "./toolbar.scss";
 
 export const Toolbar = () => {
-  const { managers } = useKernelContext();
-
-  if (!managers) return null;
+  const { operations } = useKernelContext();
 
   const handleCreateEntity = useCallback(() => {
-    managers.core.handleCreateFlowNodeAndMeriseEntity();
+    operations.onEntityCreate();
   }, []);
 
   const handleCreateAssociation = useCallback(() => {
-    managers.core.handleCreateFlowNodeAndMeriseAssociation();
+    operations.onAssociationCreate();
+  }, []);
+
+  const handleOpenSettings = useCallback(() => {
+    operations.onSettingsOpen();
   }, []);
 
   return (
     <div className="toolbar">
-      <Button onClick={handleCreateEntity}>Nouvelle entité</Button>
-      <Button onClick={handleCreateAssociation}>Nouvelle association</Button>
+      <div className="toolbar__left">
+        <Button onClick={handleCreateEntity}>Nouvelle entité</Button>
+        <Button onClick={handleCreateAssociation}>Nouvelle association</Button>
+      </div>
+      <div className="toolbar__right">
+        <Button onClick={handleOpenSettings}>Paramètres</Button>
+      </div>
     </div>
   );
 };

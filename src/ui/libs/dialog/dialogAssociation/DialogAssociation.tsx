@@ -16,7 +16,7 @@ export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
       <div className="dialog-association">
         <div className="dialog-association__card">
           {dialog.title.length > 0 && (
-            <div className="dialog-entity__card-header">
+            <div className="dialog-association__card-header">
               <h3>{dialog.title}</h3>
             </div>
           )}

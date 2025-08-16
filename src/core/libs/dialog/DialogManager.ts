@@ -1,19 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import type {
-  AddAssociationDialogProps,
-  AddConfirmDialogProps,
-  AddEntityDialogProps,
-  AddFieldDialogProps,
-  AddRelationDialogProps,
-  Dialog,
-  DialogAssociation,
-  DialogConfirm,
-  DialogEntity,
-  DialogField,
-  DialogManagerInterface,
-  DialogRelation,
-  DialogsDispatcher,
-} from "./DialogTypes";
+import type { AddAssociationDialogProps, AddConfirmDialogProps, AddEntityDialogProps, AddFieldDialogProps, AddRelationDialogProps, AddSettingsDialogProps, Dialog, DialogManagerInterface, DialogsDispatcher } from "./DialogTypes";
 import { DialogType as DialogTypeEnum } from "./DialogTypes";
 
 export default class DialogManager implements DialogManagerInterface {
@@ -23,41 +9,7 @@ export default class DialogManager implements DialogManagerInterface {
   ) {}
 
   addConfirmDialog = (props: AddConfirmDialogProps): string => {
-    const dialog = this.createConfirmDialog(props);
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
-  };
-
-  addEntityDialog = (props: AddEntityDialogProps): string => {
-    const dialog = this.createEntityDialog(props);
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
-  };
-
-  addAssociationDialog = (props: AddAssociationDialogProps): string => {
-    const dialog = this.createAssociationDialog(props);
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
-  };
-
-  addRelationDialog = (props: AddRelationDialogProps): string => {
-    const dialog = this.createRelationDialog(props);
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
-  };
-
-  addFieldDialog = (props: AddFieldDialogProps): string => {
-    const dialog = this.createFieldDialog(props);
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
-  };
-
-  removeDialogById = (id: string): void => {
-    this.setDialogs((prev) => prev.filter((dialog) => dialog.id !== id));
-  };
-
-  private createConfirmDialog = (props: AddConfirmDialogProps): DialogConfirm => {
-    return {
+    const dialog = {
       timestamp: Date.now(),
       id: uuidv4(),
       type: DialogTypeEnum.CONFIRM,
@@ -65,10 +17,12 @@ export default class DialogManager implements DialogManagerInterface {
       message: props.message,
       callbacks: props.callbacks,
     };
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
   };
 
-  private createEntityDialog = (props: AddEntityDialogProps): DialogEntity => {
-    return {
+  addEntityDialog = (props: AddEntityDialogProps): string => {
+    const dialog = {
       timestamp: Date.now(),
       id: uuidv4(),
       type: DialogTypeEnum.ENTITY,
@@ -76,10 +30,12 @@ export default class DialogManager implements DialogManagerInterface {
       component: props.component,
       callbacks: props.callbacks,
     };
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
   };
 
-  private createAssociationDialog = (props: AddAssociationDialogProps): DialogAssociation => {
-    return {
+  addAssociationDialog = (props: AddAssociationDialogProps): string => {
+    const dialog = {
       timestamp: Date.now(),
       id: uuidv4(),
       type: DialogTypeEnum.ASSOCIATION,
@@ -87,10 +43,12 @@ export default class DialogManager implements DialogManagerInterface {
       component: props.component,
       callbacks: props.callbacks,
     };
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
   };
 
-  private createRelationDialog = (props: AddRelationDialogProps): DialogRelation => {
-    return {
+  addRelationDialog = (props: AddRelationDialogProps): string => {
+    const dialog = {
       timestamp: Date.now(),
       id: uuidv4(),
       type: DialogTypeEnum.RELATION,
@@ -98,10 +56,12 @@ export default class DialogManager implements DialogManagerInterface {
       component: props.component,
       callbacks: props.callbacks,
     };
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
   };
 
-  private createFieldDialog = (props: AddFieldDialogProps): DialogField => {
-    return {
+  addFieldDialog = (props: AddFieldDialogProps): string => {
+    const dialog = {
       timestamp: Date.now(),
       id: uuidv4(),
       type: DialogTypeEnum.FIELD,
@@ -109,5 +69,24 @@ export default class DialogManager implements DialogManagerInterface {
       component: props.component,
       callbacks: props.callbacks,
     };
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
+  };
+
+  addSettingsDialog = (props: AddSettingsDialogProps): string => {
+    const dialog = {
+      timestamp: Date.now(),
+      id: uuidv4(),
+      type: DialogTypeEnum.SETTINGS,
+      title: props.title,
+      component: props.component,
+      callbacks: props.callbacks,
+    };
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
+  };
+
+  removeDialogById = (id: string): void => {
+    this.setDialogs((prev) => prev.filter((dialog) => dialog.id !== id));
   };
 }
