@@ -10,6 +10,7 @@ export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
   const handleCancel = () => dialog.callbacks.closeDialog();
   const handleDelete = () => dialog.callbacks.deleteAssociation();
   const handleAddField = () => dialog.callbacks.addField();
+  const handleAddFieldPrimaryKey = () => dialog.callbacks.addFieldPrimaryKey();
 
   return (
     <div className="dialog-overlay">
@@ -28,6 +29,9 @@ export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleAddField}>
             Ajouter un champ
+          </Button>
+          <Button className="dialog-entity__actions-item" onClick={handleAddFieldPrimaryKey}>
+            Ajouter une clé primaire
           </Button>
           <Button className="dialog-association__actions-item" onClick={handleDelete}>
             Supprimer

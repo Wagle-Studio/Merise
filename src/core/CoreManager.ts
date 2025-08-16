@@ -6,7 +6,7 @@ import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
 import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
-import { Field, MeriseErrorTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
+import { Field, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
 import type { Settings, SettingsManagerInterface } from "./libs/settings";
 
@@ -108,6 +108,9 @@ export default class CoreManager implements CoreManagerInterface {
             },
           });
         },
+        addFieldPrimaryKey: () => {
+          this.handleMeriseFieldCreatePrimaryKey(entity);
+        },
       },
     });
   };
@@ -133,6 +136,9 @@ export default class CoreManager implements CoreManagerInterface {
               },
             },
           });
+        },
+        addFieldPrimaryKey: () => {
+          this.handleMeriseFieldCreatePrimaryKey(association);
         },
       },
     });
@@ -192,6 +198,11 @@ export default class CoreManager implements CoreManagerInterface {
 
         break;
     }
+  };
+
+  handleMeriseFieldCreatePrimaryKey = (meriseItem: MeriseEntityInterface | MeriseAssociationInterface): void => {
+    const fieldPrimaryKey = new Field(meriseItem.getId(), meriseItem.getType(), uuidv4(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, true, false, true);
+    this.handleMeriseFieldCreate(fieldPrimaryKey);
   };
 
   handleSettingsOpen = (): void => {
@@ -369,5 +380,22 @@ export default class CoreManager implements CoreManagerInterface {
       default:
         return new CoreError(ErrorTypeEnum.ERROR, "Anomalie dans le système d'erreur");
     }
+  };
+
+  private primaryKeyFieldName = (entityName: string): string => {
+    let slug = entityName
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/['’]/g, "")
+      .replace(/([a-z\d])([A-Z])/g, "$1_$2")
+      .replace(/[^A-Za-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .toLowerCase();
+
+    if (!slug) slug = "entity";
+
+    slug = slug.replace(/_id$/, "");
+
+    return `${slug}_id`;
   };
 }

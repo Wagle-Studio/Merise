@@ -39,6 +39,7 @@ interface DialogEntityCallbacks {
   closeDialog: () => void;
   deleteEntity: () => void;
   addField: () => void;
+  addFieldPrimaryKey: () => void;
 }
 
 // Interface for an association dialog instance
@@ -51,6 +52,7 @@ interface DialogAssociationCallbacks {
   closeDialog: () => void;
   deleteAssociation: () => void;
   addField: () => void;
+  addFieldPrimaryKey: () => void;
 }
 
 // Interface for an relation dialog instance
