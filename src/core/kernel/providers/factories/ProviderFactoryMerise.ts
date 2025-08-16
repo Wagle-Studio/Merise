@@ -26,6 +26,9 @@ export default class ProviderFactoryMerise {
       onFieldCreate: (field: MeriseFieldInterface): void => {
         managers.core.handleMeriseFieldCreate(field);
       },
+      onFieldDelete: (field: MeriseFieldInterface): void => {
+        managers.core.handleMeriseFieldDelete(field);
+      },
     };
   }
 }

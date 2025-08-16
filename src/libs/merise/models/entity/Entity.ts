@@ -42,6 +42,11 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     this.fields = [...this.fields, field];
   };
 
+  deleteField = (field: MeriseFieldInterface): void => {
+    const index = this.fields.findIndex((f) => f.getId() === field.getId());
+    this.fields = [...this.fields.filter((_, i) => i !== index)];
+  };
+
   renderComponent = (): React.ReactElement => {
     return createElement(EntityComponent, { entity: this });
   };

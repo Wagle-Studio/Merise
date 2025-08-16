@@ -42,6 +42,11 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
     this.fields = [...this.fields, field];
   };
 
+  deleteField = (field: MeriseFieldInterface): void => {
+    const index = this.fields.findIndex((f) => f.getId() === field.getId());
+    this.fields = [...this.fields.filter((_, i) => i !== index)];
+  };
+
   renderComponent = (): React.ReactElement => {
     return createElement(AssociationComponent, { association: this });
   };
