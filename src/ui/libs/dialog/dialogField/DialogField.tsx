@@ -21,7 +21,7 @@ export const DialogField = ({ dialog }: DialogFieldProps) => {
           {dialog.component()}
         </div>
         <div className="dialog-field__actions">
-          <Button className="dialog-field__actions-item" onClick={handleCloseDialog}>
+          <Button className="dialog-field__actions-item" onClick={handleCloseDialog} width="full">
             Fermer
           </Button>
         </div>

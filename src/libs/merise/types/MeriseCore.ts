@@ -3,6 +3,12 @@ import type { EntityFormType } from "../models/entity/EntityFormSchema";
 import type { FieldFormType } from "../models/field/FieldFormSchema";
 import type { RelationFormType } from "../models/relation/RelationFormSchema";
 
+// List of all available merise form types
+export enum MeriseFormType {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+}
+
 // List of all available merise item types
 export enum MeriseItemType {
   ENTITY = "Entité",
@@ -29,7 +35,6 @@ export enum MeriseFieldTypeType {
 
 // Base interface implemented by all Merise items
 export interface MeriseItemInterface {
-  renderFormComponent: () => React.ReactElement;
   getId: () => string;
   getType: () => MeriseItemType;
 }
@@ -37,30 +42,35 @@ export interface MeriseItemInterface {
 // Interface for a Merise entity
 export interface MeriseEntityInterface extends MeriseItemInterface {
   renderComponent: () => React.ReactElement;
+  renderFormComponent: () => React.ReactElement;
   hydrate: (formData: EntityFormType) => void;
   getFlowId: () => string;
   getName: () => string;
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
+  updateField: (field: MeriseFieldInterface) => void;
   deleteField: (field: MeriseFieldInterface) => void;
 }
 
 // Interface for a Merise association
 export interface MeriseAssociationInterface extends MeriseItemInterface {
   renderComponent: () => React.ReactElement;
+  renderFormComponent: () => React.ReactElement;
   hydrate: (formData: AssociationFormType) => void;
   getFlowId: () => string;
   getName: () => string;
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
+  updateField: (field: MeriseFieldInterface) => void;
   deleteField: (field: MeriseFieldInterface) => void;
 }
 
 // Interface for a Merise relation
 export interface MeriseRelationInterface extends MeriseItemInterface {
   renderComponent: () => React.ReactElement;
+  renderFormComponent: () => React.ReactElement;
   hydrate: (formData: RelationFormType) => void;
   getFlowId: () => string;
   getSource: () => string;
@@ -70,6 +80,7 @@ export interface MeriseRelationInterface extends MeriseItemInterface {
 
 // Interface for a Merise field
 export interface MeriseFieldInterface extends MeriseItemInterface {
+  renderFormComponent: (formType: MeriseFormType) => React.ReactElement;
   hydrate: (formData: FieldFormType) => void;
   getMeriseItemId: () => string;
   getMeriseItemType: () => MeriseItemType;
@@ -109,9 +120,11 @@ export interface MeriseOperations {
   onEntitySelect: (entity: MeriseEntityInterface) => void;
   onAssociationSelect: (association: MeriseAssociationInterface) => void;
   onRelationSelect: (relation: MeriseRelationInterface) => void;
+  onFieldSelect: (field: MeriseFieldInterface) => void;
   onEntityUpdate: (entity: MeriseEntityInterface) => void;
   onAssociationUpdate: (association: MeriseAssociationInterface) => void;
   onRelationUpdate: (relation: MeriseRelationInterface) => void;
   onFieldCreate: (field: MeriseFieldInterface) => void;
+  onFieldUpdate: (field: MeriseFieldInterface) => void;
   onFieldDelete: (field: MeriseFieldInterface) => void;
 }

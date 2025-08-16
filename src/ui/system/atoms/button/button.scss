@@ -9,20 +9,20 @@
     box-sizing: border-box;
     cursor: pointer;
     transition: background-color 0.2s ease;
-
-    &--max-content {
-      width: max-content;
-    }
-
-    &--full {
-      width: 100%;
-    }
   }
 
   &--invisible {
     all: unset;
     display: inline-block;
     cursor: pointer;
+  }
+
+  &--max-content {
+    width: max-content;
+  }
+
+  &--full {
+    width: 100%;
   }
 }
 

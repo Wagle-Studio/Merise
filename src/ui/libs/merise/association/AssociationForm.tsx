@@ -62,7 +62,7 @@ export const AssociationFormComponent = ({ association }: AssociationFormCompone
         <FieldText label="Nom" labelDisplay={false} htmlFor="association-name" defaultValue={association.getName()} placeholder={association.getName()} error={fieldErrors.name} />
       </Fieldset>
       <Fieldset legend="Champs">
-        <FieldTableComponent fields={association.getFields()} />
+        <FieldTableComponent fields={association.getFields()} onSelect={operations.onFieldSelect} />
       </Fieldset>
     </Form>
   );

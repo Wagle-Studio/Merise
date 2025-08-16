@@ -10,8 +10,10 @@ export interface CoreManagerInterface {
   handleMeriseEntitySelect: (entity: MeriseEntityInterface) => void;
   handleMeriseAssociationSelect: (assocation: MeriseAssociationInterface) => void;
   handleMeriseRelationSelect: (relation: MeriseRelationInterface) => void;
+  handleMeriseFieldSelect: (field: MeriseFieldInterface) => void;
   handleMeriseFieldCreate: (field: MeriseFieldInterface) => void;
   handleMeriseFieldCreatePrimaryKey: (entity: MeriseEntityInterface) => void;
+  handleMeriseFieldUpdate: (field: MeriseFieldInterface) => void;
   handleMeriseFieldDelete: (field: MeriseFieldInterface) => void;
   handleSettingsOpen: () => void;
   handleSettingsUpdate: (settings: Settings) => void;

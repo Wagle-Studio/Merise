@@ -1,12 +1,13 @@
 import type { FormEvent } from "react";
-import { FieldFormTypeSchema, type MeriseFieldInterface, MeriseFieldTypeTypeEnum, useMeriseContext } from "@/libs/merise";
+import { FieldFormTypeSchema, type MeriseFieldInterface, MeriseFieldTypeTypeEnum, type MeriseFormType, MeriseFormTypeEnum, useMeriseContext } from "@/libs/merise";
 import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
 
 interface FieldFormComponentProps {
   field: MeriseFieldInterface;
+  formType: MeriseFormType;
 }
 
-export const FieldFormComponent = ({ field }: FieldFormComponentProps) => {
+export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps) => {
   const { operations } = useMeriseContext();
 
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
@@ -33,7 +34,10 @@ export const FieldFormComponent = ({ field }: FieldFormComponentProps) => {
     }
 
     field.hydrate(validationResult.data);
-    operations.onFieldCreate(field);
+
+    if (formType === MeriseFormTypeEnum.CREATE) operations.onFieldCreate(field);
+    if (formType === MeriseFormTypeEnum.UPDATE) operations.onFieldUpdate(field);
+
     e.currentTarget.reset();
   };
 
