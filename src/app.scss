@@ -1,9 +1,27 @@
 :root {
-  --white: white;
-  --error: red;
+  /* THEME */
+  --entity-dark: #a9740f;
   --entity: #d19814;
+  --entity-light: #f2c55d;
+  --association-dark: #2b5396;
   --association: #3a6cc2;
+  --association-light: #74a0e0;
+  --relation-dark: #8f2a86;
   --relation: #c23ab4;
+  --relation-light: #e07ad6;
+  --primary-key: #f2c55d;
+
+  /* SYSTEM */
+  --white: #fdfdfd;
+  --gray-darker: #393939;
+  --gray-dark: #808080;
+  --gray-base: #dcdcdc;
+  --gray-light: #f3f4f6;
+  --succes: #10b981;
+  --info: #3b82f6;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --dialog-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 *,

@@ -12,6 +12,9 @@
   }
 
   &__label {
+    font-weight: bold;
+    color: var(--gray-darker);
+
     &--hide {
       display: none;
     }
@@ -24,11 +27,11 @@
     box-sizing: border-box;
 
     &--error {
-      border: 1px solid red;
+      border: 1px solid var(--error);
     }
   }
 
   &__error {
-    color: red;
+    color: var(--error);
   }
 }

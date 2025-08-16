@@ -9,12 +9,9 @@
     gap: 24px;
     padding: 24px;
     min-width: 320px;
-    background: white;
+    background: var(--white);
     border-radius: 8px;
-    border: 2px solid gray;
-    box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.1),
-      0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--dialog-shadow);
     overflow-y: auto;
     box-sizing: border-box;
 

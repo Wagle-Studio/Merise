@@ -1,4 +1,5 @@
 import type { MeriseFieldInterface } from "@/libs/merise";
+import { CheckedIcon, KeyIcon, UnCheckedIcon } from "@/ui/system";
 import "./field.scss";
 
 interface FieldTableComponentProps {
@@ -29,11 +30,17 @@ export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
           {fields.length > 0 &&
             fields.map((field) => (
               <tr key={`field-table__row-${field.getId()}`} className="field-table__rows__item">
-                <td>{field.isPrimary() ? "P" : "X"}</td>
-                <td className="field-table__rows__item__data--name">{field.getName()}</td>
+                <td className={`field-table__rows__item--key--${field.isPrimary() ? "primary" : "foreign"}`}>{field.isPrimary() && <KeyIcon />}</td>
+                <td className="field-table__rows__item--name">{field.getName()}</td>
                 <td>{field.getTypeField()}</td>
-                <td>{field.isNullable() ? "Optionnel" : "Obligatoire"}</td>
-                <td>{field.isUnique() ? "Unique" : "Non unique"}</td>
+                <td>
+                  {field.isNullable() && <CheckedIcon />}
+                  {!field.isNullable() && <UnCheckedIcon />}
+                </td>
+                <td>
+                  {field.isUnique() && <CheckedIcon />}
+                  {!field.isUnique() && <UnCheckedIcon />}
+                </td>
               </tr>
             ))}
         </tbody>

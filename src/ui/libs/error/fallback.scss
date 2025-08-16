@@ -7,7 +7,7 @@
   flex-direction: column;
   gap: 16px;
   padding: 8px 16px;
-  border: 1px solid gray;
+  border: 1px solid var(--gray-dark);
   border-radius: 4px;
   box-sizing: border-box;
 
@@ -36,7 +36,7 @@
 
   &__error-msg {
     padding: 8px;
-    background-color: ghostwhite;
+    background-color: var(--white);
     border-radius: 4px;
     margin: 0;
     box-sizing: border-box;
@@ -48,11 +48,11 @@
   }
 
   &--error {
-    border-color: #e74c3c;
+    border-color: var(--error);
   }
 
   &--loading {
-    border-color: #3498db;
+    border-color: var(--gray-dark);
 
     .fallback__icon {
       animation: spin 1s linear infinite;
