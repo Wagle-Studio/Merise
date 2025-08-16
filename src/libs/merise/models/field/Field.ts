@@ -1,12 +1,17 @@
 import { createElement } from "react";
-import { FieldComponent, FieldFormComponent } from "@/ui";
-import { type MeriseFieldInterface, type MeriseItemType, MeriseItemTypeEnum } from "../../types";
+import { FieldFormComponent } from "@/ui";
+import { type MeriseFieldInterface, type MeriseFieldTypeType, type MeriseItemType, MeriseItemTypeEnum } from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
 import type { FieldFormType } from "./FieldFormSchema";
 
 export default class Field extends AbstractMeriseItem implements MeriseFieldInterface {
   private meriseItemId: string;
   private meriseItemType: MeriseItemType;
+  private name: string | null = null;
+  private typeField: MeriseFieldTypeType | null = null;
+  private primaryKey: boolean = false;
+  private nullable: boolean = true;
+  private unique: boolean = false;
 
   constructor(meriseItemId: string, meriseItemType: MeriseItemType, id?: string) {
     super(MeriseItemTypeEnum.FIELD, id);
@@ -16,6 +21,10 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
 
   hydrate = (formData: FieldFormType): void => {
     this.setName(formData.name);
+    this.setTypeField(formData.type);
+    this.setIsPrimary(formData.primary);
+    this.setIsNullable(formData.nullable);
+    this.setIsUnique(formData.unique);
   };
 
   getMeriseItemId = (): string => {
@@ -26,11 +35,47 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
     return this.meriseItemType;
   };
 
-  renderComponent = (): React.ReactElement => {
-    return createElement(FieldComponent, { field: this });
+  getName = (): string | null => {
+    return this.name;
+  };
+
+  getTypeField = (): MeriseFieldTypeType | null => {
+    return this.typeField;
+  };
+
+  isPrimary = (): boolean => {
+    return this.primaryKey;
+  };
+
+  isNullable = (): boolean => {
+    return this.nullable;
+  };
+
+  isUnique = (): boolean => {
+    return this.unique;
   };
 
   renderFormComponent = (): React.ReactElement => {
     return createElement(FieldFormComponent, { field: this });
+  };
+
+  private setName = (name: string): void => {
+    this.name = name;
+  };
+
+  private setTypeField = (typeField: MeriseFieldTypeType): void => {
+    this.typeField = typeField;
+  };
+
+  private setIsPrimary = (isPrimaryKey: boolean): void => {
+    this.primaryKey = isPrimaryKey;
+  };
+
+  private setIsNullable = (isNullable: boolean): void => {
+    this.nullable = isNullable;
+  };
+
+  private setIsUnique = (isUnique: boolean): void => {
+    this.unique = isUnique;
   };
 }

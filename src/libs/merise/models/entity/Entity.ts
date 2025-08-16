@@ -6,12 +6,14 @@ import { type EntityFormType } from "./EntityFormSchema";
 
 export default class Entity extends AbstractMeriseItem implements MeriseEntityInterface {
   private flowId: string;
+  private name: string;
   private emoji: string;
   private fields: MeriseFieldInterface[] = [];
 
-  constructor(flowId: string) {
+  constructor(flowId: string, name: string) {
     super(MeriseItemTypeEnum.ENTITY);
     this.flowId = flowId;
+    this.name = name;
     this.emoji = "🆕";
   }
 
@@ -22,6 +24,10 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
 
   getFlowId = (): string => {
     return this.flowId;
+  };
+
+  getName = (): string => {
+    return this.name;
   };
 
   getEmoji = (): string => {
@@ -42,6 +48,10 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
 
   renderFormComponent = (): React.ReactElement => {
     return createElement(EntityFormComponent, { entity: this });
+  };
+
+  private setName = (name: string): void => {
+    this.name = name;
   };
 
   private setEmoji = (emoji: string): void => {

@@ -6,12 +6,14 @@ import { type AssociationFormType } from "./AssociationFormSchema";
 
 export default class Association extends AbstractMeriseItem implements MeriseAssociationInterface {
   private flowId: string;
+  private name: string;
   private emoji: string;
   private fields: MeriseFieldInterface[] = [];
 
-  constructor(flowId: string) {
+  constructor(flowId: string, name: string) {
     super(MeriseItemTypeEnum.ASSOCIATION);
     this.flowId = flowId;
+    this.name = name;
     this.emoji = "🆕";
   }
 
@@ -22,6 +24,10 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
 
   getFlowId = (): string => {
     return this.flowId;
+  };
+
+  getName = (): string => {
+    return this.name;
   };
 
   getEmoji = (): string => {
@@ -44,6 +50,10 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
     return createElement(AssociationFormComponent, {
       association: this,
     });
+  };
+
+  private setName = (name: string): void => {
+    this.name = name;
   };
 
   private setEmoji = (emoji: string): void => {
