@@ -205,6 +205,35 @@ export default class CoreManager implements CoreManagerInterface {
     this.handleMeriseFieldCreate(fieldPrimaryKey);
   };
 
+  handleMeriseFieldDelete = (field: MeriseFieldInterface): void => {
+    switch (field.getMeriseItemType()) {
+      case MeriseItemTypeEnum.ENTITY:
+        const entityFindResult = this.meriseManager.findEntityById(field.getMeriseItemId());
+
+        if (!entityFindResult.success) {
+          this.errorManager.handleError(this.mapResultError(entityFindResult));
+          return;
+        }
+
+        entityFindResult.data?.deleteField(field);
+        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ supprimé", "Échec de la suppresion du champ");
+
+        break;
+      case MeriseItemTypeEnum.ASSOCIATION:
+        const associationFindResult = this.meriseManager.findAssociationById(field.getMeriseItemId());
+
+        if (!associationFindResult.success) {
+          this.errorManager.handleError(this.mapResultError(associationFindResult));
+          return;
+        }
+
+        associationFindResult.data?.deleteField(field);
+        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ supprimé", "Échec de la suppresion du champ");
+
+        break;
+    }
+  };
+
   handleSettingsOpen = (): void => {
     const dialogId = this.dialogManager.addSettingsDialog({
       title: "Paramètres",

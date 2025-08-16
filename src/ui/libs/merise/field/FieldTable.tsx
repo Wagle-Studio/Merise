@@ -1,5 +1,5 @@
-import type { MeriseFieldInterface } from "@/libs/merise";
-import { CheckedIcon, KeyIcon, UnCheckedIcon } from "@/ui/system";
+import { type MeriseFieldInterface, useMeriseContext } from "@/libs/merise";
+import { Button, CheckedIcon, EditIcon, KeyIcon, TrashIcon, UnCheckedIcon } from "@/ui/system";
 import "./field.scss";
 
 interface FieldTableComponentProps {
@@ -7,6 +7,12 @@ interface FieldTableComponentProps {
 }
 
 export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
+  const { operations } = useMeriseContext();
+
+  const handleFieldDelete = (field: MeriseFieldInterface) => {
+    operations.onFieldDelete(field);
+  };
+
   return (
     <table className="field-table">
       <colgroup>
@@ -15,6 +21,7 @@ export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
         <col className="field-table__col--type" />
         <col className="field-table__col--nullable" />
         <col className="field-table__col--unique" />
+        <col className="field-table__col--actions" />
       </colgroup>
       <thead>
         <tr>
@@ -23,6 +30,7 @@ export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
           <th>Type</th>
           <th>Nullable</th>
           <th>Unique</th>
+          <th></th>
         </tr>
       </thead>
       {fields.length > 0 && (
@@ -40,6 +48,14 @@ export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
                 <td>
                   {field.isUnique() && <CheckedIcon />}
                   {!field.isUnique() && <UnCheckedIcon />}
+                </td>
+                <td className="field-table__rows__item--actions">
+                  <Button variant="invisible" onClick={() => handleFieldDelete(field)}>
+                    <EditIcon />
+                  </Button>
+                  <Button variant="invisible" onClick={() => handleFieldDelete(field)}>
+                    <TrashIcon />
+                  </Button>
                 </td>
               </tr>
             ))}

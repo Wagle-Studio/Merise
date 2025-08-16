@@ -1,27 +1,35 @@
 .button {
-  padding: 8px 16px;
-  background-color: var(--white);
-  border: 1px solid var(--gray-dark);
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 14px;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  &--default {
+    padding: 8px 16px;
+    background-color: var(--white);
+    border: 1px solid var(--gray-dark);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 
-  &--max-content {
-    width: max-content;
+    &--max-content {
+      width: max-content;
+    }
+
+    &--full {
+      width: 100%;
+    }
   }
 
-  &--full {
-    width: 100%;
+  &--invisible {
+    all: unset;
+    display: inline-block;
+    cursor: pointer;
   }
 }
 
-.button:hover {
+.button--default:hover {
   background-color: var(--gray-light);
 }
 
-.button:active {
+.button--default:active {
   background-color: var(--gray-base);
 }

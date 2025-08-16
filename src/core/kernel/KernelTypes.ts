@@ -6,7 +6,7 @@ import type { Settings, SettingsDTOInterface } from "@/core/libs/settings";
 import type SettingManager from "@/core/libs/settings/SettingManager";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
-import type { MeriseDTOInterface, MeriseEntityInterface, MeriseManagerInterface } from "@/libs/merise";
+import type { MeriseDTOInterface, MeriseManagerInterface } from "@/libs/merise";
 
 // Managers available in the Kernel context
 export interface KernelManagers {

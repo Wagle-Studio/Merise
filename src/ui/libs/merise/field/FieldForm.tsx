@@ -70,7 +70,7 @@ export const FieldFormComponent = ({ field }: FieldFormComponentProps) => {
       <Fieldset legend="Champ">
         <FieldSelect label="Type" htmlFor="field-type" defaultValue={field.getTypeField() ?? ""} options={typeOptions} error={fieldErrors.type} />
       </Fieldset>
-      <Fieldset legend="Propriétés">
+      <Fieldset legend="Propriétés" variant="horizontal">
         <FieldCheckbox label="Clé primaire" htmlFor="field-primary" defaultChecked={field.isPrimary()} error={fieldErrors.primary} />
         <FieldCheckbox label="Nullable" htmlFor="field-nullable" defaultChecked={field.isNullable()} error={fieldErrors.nullable} />
         <FieldCheckbox label="Unique" htmlFor="field-unique" defaultChecked={field.isUnique()} error={fieldErrors.unique} />

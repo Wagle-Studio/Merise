@@ -43,6 +43,7 @@ export interface MeriseEntityInterface extends MeriseItemInterface {
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
+  deleteField: (field: MeriseFieldInterface) => void;
 }
 
 // Interface for a Merise association
@@ -54,6 +55,7 @@ export interface MeriseAssociationInterface extends MeriseItemInterface {
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
+  deleteField: (field: MeriseFieldInterface) => void;
 }
 
 // Interface for a Merise relation
@@ -111,4 +113,5 @@ export interface MeriseOperations {
   onAssociationUpdate: (association: MeriseAssociationInterface) => void;
   onRelationUpdate: (relation: MeriseRelationInterface) => void;
   onFieldCreate: (field: MeriseFieldInterface) => void;
+  onFieldDelete: (field: MeriseFieldInterface) => void;
 }
