@@ -20,12 +20,14 @@ export const Toolbar = () => {
 
   return (
     <div className="toolbar">
-      <div className="toolbar__left">
-        <Button onClick={handleCreateEntity}>Nouvelle entité</Button>
-        <Button onClick={handleCreateAssociation}>Nouvelle association</Button>
-      </div>
-      <div className="toolbar__right">
-        <Button onClick={handleOpenSettings}>Paramètres</Button>
+      <div className="toolbar__wrapper">
+        <div className="toolbar__left">
+          <Button onClick={handleCreateEntity}>Nouvelle entité</Button>
+          <Button onClick={handleCreateAssociation}>Nouvelle association</Button>
+        </div>
+        <div className="toolbar__right">
+          <Button onClick={handleOpenSettings}>Paramètres</Button>
+        </div>
       </div>
     </div>
   );

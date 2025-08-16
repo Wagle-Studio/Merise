@@ -22,12 +22,14 @@
     padding: 6px 8px;
     border-bottom: 1px solid gainsboro;
     color: #4a4a4a;
+    box-sizing: border-box;
   }
 
   tbody td {
     padding: 6px 8px;
     border-bottom: 1px solid gainsboro;
     vertical-align: middle;
+    box-sizing: border-box;
   }
 
   &__rows {

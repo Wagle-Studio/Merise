@@ -24,7 +24,7 @@ export const FieldSelect = ({ className, variant = "vertical", label, labelDispl
       </label>
       <select
         className={clsx("field-select__input", {
-          "field-select__field--error": !!error,
+          "field-select__input--error": !!error,
         })}
         id={htmlFor}
         name={htmlFor}

@@ -56,7 +56,11 @@ export const FieldFormComponent = ({ field }: FieldFormComponentProps) => {
     },
   ];
 
-  const formActions = <Button type="submit">Sauvegarder</Button>;
+  const formActions = (
+    <Button type="submit" width="full">
+      Sauvegarder
+    </Button>
+  );
 
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>

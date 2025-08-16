@@ -3,10 +3,11 @@
   padding: 12px;
   border-radius: 2px;
   border: 1px solid gainsboro;
+  box-sizing: border-box;
 
   &--horizontal {
     flex-direction: row;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 8px;
   }
 

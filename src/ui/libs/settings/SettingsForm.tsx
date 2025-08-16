@@ -48,7 +48,11 @@ export const SettingsFormComponent = ({ settings }: SettingsFormComponentProps) 
     },
   ];
 
-  const formActions = <Button type="submit">Sauvegarder</Button>;
+  const formActions = (
+    <Button type="submit" width="full">
+      Sauvegarder
+    </Button>
+  );
 
   return (
     <Form className="settings-form" onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
