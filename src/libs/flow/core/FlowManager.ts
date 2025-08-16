@@ -253,6 +253,17 @@ export default class FlowManager implements FlowManagerInterface {
           severity: FlowErrorTypeEnum.WARNING,
         };
       }
+
+      const isSourceAssociation = sourceNode.data.type === FlowMeriseItemTypeEnum.ASSOCIATION;
+      const isTargetAssociation = targetNode.data.type === FlowMeriseItemTypeEnum.ASSOCIATION;
+
+      if (isSourceAssociation && isTargetAssociation) {
+        return {
+          success: false,
+          message: "Impossible de créer une relation directe entre deux associations.",
+          severity: FlowErrorTypeEnum.WARNING,
+        };
+      }
     }
 
     return { success: true, data: undefined };
