@@ -10,6 +10,7 @@ export const DialogEntity = ({ dialog }: DialogEntityProps) => {
   const handleCloseDialog = () => dialog.callbacks.closeDialog();
   const handleDeleteEntity = () => dialog.callbacks.deleteEntity();
   const handleAddField = () => dialog.callbacks.addField();
+  const handleAddFieldPrimaryKey = () => dialog.callbacks.addFieldPrimaryKey();
 
   return (
     <div className="dialog-overlay">
@@ -28,6 +29,9 @@ export const DialogEntity = ({ dialog }: DialogEntityProps) => {
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleAddField}>
             Ajouter un champ
+          </Button>
+          <Button className="dialog-entity__actions-item" onClick={handleAddFieldPrimaryKey}>
+            Ajouter une clé primaire
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleDeleteEntity}>
             Supprimer

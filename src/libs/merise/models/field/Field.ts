@@ -13,10 +13,15 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
   private nullable: boolean = true;
   private unique: boolean = false;
 
-  constructor(meriseItemId: string, meriseItemType: MeriseItemType, id?: string) {
+  constructor(meriseItemId: string, meriseItemType: MeriseItemType, id?: string, name: string | null = null, typeField: MeriseFieldTypeType | null = null, primaryKey?: boolean, nullable?: boolean, unique?: boolean) {
     super(MeriseItemTypeEnum.FIELD, id);
     this.meriseItemId = meriseItemId;
     this.meriseItemType = meriseItemType;
+    this.name = name;
+    this.typeField = typeField;
+    this.primaryKey = primaryKey ?? false;
+    this.nullable = nullable ?? true;
+    this.unique = unique ?? false;
   }
 
   hydrate = (formData: FieldFormType): void => {
