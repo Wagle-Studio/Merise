@@ -1,13 +1,21 @@
 .toolbar {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px;
-  width: 100%;
+  margin: 12px 12px 0;
   height: max-content;
-  border-bottom: 1px solid gray;
+  box-sizing: border-box;
+
+  &__wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-grow: 1;
+    padding: 12px;
+    height: max-content;
+    border: 1px solid gray;
+    border-radius: 16px;
+    box-sizing: border-box;
+  }
 
   &__left {
     display: flex;

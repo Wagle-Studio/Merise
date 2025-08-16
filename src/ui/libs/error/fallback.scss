@@ -9,6 +9,7 @@
   padding: 8px 16px;
   border: 1px solid gray;
   border-radius: 4px;
+  box-sizing: border-box;
 
   &__header {
     display: flex;
@@ -38,6 +39,7 @@
     background-color: ghostwhite;
     border-radius: 4px;
     margin: 0;
+    box-sizing: border-box;
   }
 
   &__icon {

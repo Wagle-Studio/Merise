@@ -20,7 +20,7 @@ export const FieldCheckbox = ({ className, label, labelDisplay = true, htmlFor, 
       <input
         type="checkbox"
         className={clsx("field-checkbox__input", {
-          "field-checkbox__field--error": !!error,
+          "field-checkbox__input--error": !!error,
         })}
         id={htmlFor}
         name={htmlFor}

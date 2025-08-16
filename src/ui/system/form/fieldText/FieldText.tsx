@@ -25,7 +25,7 @@ export const FieldText = ({ className, variant = "vertical", label, labelDisplay
       <input
         type="text"
         className={clsx("field-text__input", {
-          "field-text__field--error": !!error,
+          "field-text__input--error": !!error,
         })}
         id={htmlFor}
         name={htmlFor}
