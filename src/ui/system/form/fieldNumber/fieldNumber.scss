@@ -1,0 +1,37 @@
+.field-number {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+
+  &--horizontal {
+    flex-direction: row;
+  }
+
+  &--vertical {
+    flex-direction: column;
+  }
+
+  &__label {
+    font-weight: bold;
+    color: var(--gray-darker);
+
+    &--hide {
+      display: none;
+    }
+  }
+
+  &__input {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+
+    &--error {
+      border: 1px solid var(--error);
+    }
+  }
+
+  &__error {
+    color: var(--error);
+  }
+}

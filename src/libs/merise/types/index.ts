@@ -1,5 +1,9 @@
 export type { MeriseContext, MeriseContextProps } from "./MeriseContextTypes";
 export {
+  FieldTypeDateOption as FieldTypeDateOptionEnum,
+  FieldTypeNumberOption as FieldTypeNumberOptionEnum,
+  FieldTypeOtherOption as FieldTypeOtherOptionEnum,
+  FieldTypeTextOption as FieldTypeTextOptionsEnum,
   MeriseErrorType as MeriseErrorTypeEnum,
   MeriseFieldTypeType as MeriseFieldTypeTypeEnum,
   MeriseFormType as MeriseFormTypeEnum,
@@ -7,10 +11,15 @@ export {
   MeriseRelationCardinalityType as MeriseRelationCardinalityTypeEnum,
 } from "./MeriseCore";
 export type {
+  FieldTypeDateOption,
+  FieldTypeNumberOption,
+  FieldTypeOtherOption,
+  FieldTypeTextOption,
   MeriseAssociationInterface,
   MeriseEntityInterface,
   MeriseErrorType,
   MeriseFieldInterface,
+  MeriseFieldTypeOption,
   MeriseFieldTypeType,
   MeriseFormType,
   MeriseItemInterface,

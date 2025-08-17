@@ -3,6 +3,27 @@ import type { EntityFormType } from "../models/entity/EntityFormSchema";
 import type { FieldFormType } from "../models/field/FieldFormSchema";
 import type { RelationFormType } from "../models/relation/RelationFormSchema";
 
+// Mirror of the Core item types used in Merise
+export enum MeriseErrorType {
+  INFO = "INFO",
+  WARNING = "WARNING",
+  ERROR = "ERROR",
+}
+
+// Represents a successful Merise operation
+export type MeriseResultSuccess<T> = {
+  success: true;
+  data: T;
+};
+
+// Represents a failed Merise operation
+export type MeriseResultFail<E> = {
+  success: false;
+  message: string;
+  severity: MeriseErrorType;
+  error?: E;
+};
+
 // List of all available merise form types
 export enum MeriseFormType {
   CREATE = "CREATE",
@@ -27,11 +48,44 @@ export enum MeriseRelationCardinalityType {
 
 // List of all available merise field type item types
 export enum MeriseFieldTypeType {
-  TEXT = "Texte",
-  NUMBER = "Nombre",
-  DATE = "Date",
-  BOOLEAN = "Boolean",
+  TEXT = "TEXT",
+  NUMBER = "NUMBER",
+  DATE = "DATE",
+  OTHER = "OTHER",
 }
+
+// WIP
+
+export type FieldTypeTextOptionObject = {
+  variant: FieldTypeTextOption;
+  maxLength?: number;
+};
+
+export type MeriseFieldTypeOption = FieldTypeTextOptionObject | FieldTypeNumberOption | FieldTypeDateOption | FieldTypeOtherOption;
+
+export enum FieldTypeTextOption {
+  VARIABLE = "VARIABLE",
+  FIXED = "FIXED",
+  LONG = "LONG",
+}
+
+export enum FieldTypeDateOption {
+  DATE = "DATE",
+  TIME = "TIME",
+  DATETIME = "DATETIME",
+}
+
+export enum FieldTypeNumberOption {
+  INTEGER = "INTEGER",
+  FLOAT = "FLOAT",
+  COMPTER = "COMPTER",
+}
+
+export enum FieldTypeOtherOption {
+  BOOLEAN = "BOOLEAN",
+}
+
+// WIP
 
 // Base interface implemented by all Merise items
 export interface MeriseItemInterface {
@@ -84,33 +138,13 @@ export interface MeriseFieldInterface extends MeriseItemInterface {
   hydrate: (formData: FieldFormType) => void;
   getMeriseItemId: () => string;
   getMeriseItemType: () => MeriseItemType;
+  getTypeField: () => MeriseFieldTypeType | null;
+  getTypeFieldOption: () => MeriseFieldTypeOption | null;
   getName: () => string | null;
   isPrimary: () => boolean;
   isNullable: () => boolean;
   isUnique: () => boolean;
-  getTypeField: () => MeriseFieldTypeType | null;
 }
-
-// Mirror of the Core item types used in Merise
-export enum MeriseErrorType {
-  INFO = "INFO",
-  WARNING = "WARNING",
-  ERROR = "ERROR",
-}
-
-// Represents a successful Merise operation
-export type MeriseResultSuccess<T> = {
-  success: true;
-  data: T;
-};
-
-// Represents a failed Merise operation
-export type MeriseResultFail<E> = {
-  success: false;
-  message: string;
-  severity: MeriseErrorType;
-  error?: E;
-};
 
 // Union type representing the result of a Merise operation
 export type MeriseResult<T, E = undefined> = MeriseResultSuccess<T> | MeriseResultFail<E>;

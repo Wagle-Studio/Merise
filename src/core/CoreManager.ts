@@ -6,7 +6,7 @@ import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
 import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
-import { Field, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
+import { Field, FieldTypeNumberOptionEnum, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
 import type { Settings, SettingsManagerInterface } from "./libs/settings";
 
@@ -215,7 +215,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleMeriseFieldCreatePrimaryKey = (meriseItem: MeriseEntityInterface | MeriseAssociationInterface): void => {
-    const fieldPrimaryKey = new Field(meriseItem.getId(), meriseItem.getType(), uuidv4(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, true, false, true);
+    const fieldPrimaryKey = new Field(meriseItem.getId(), meriseItem.getType(), uuidv4(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, FieldTypeNumberOptionEnum.COMPTER, true, false, true);
     this.handleMeriseFieldCreate(fieldPrimaryKey);
   };
 

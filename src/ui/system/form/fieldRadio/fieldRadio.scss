@@ -1,0 +1,55 @@
+.field-radio {
+  display: flex;
+  gap: 8px;
+  min-width: 55px;
+
+  &--horizontal {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &--vertical {
+    flex-direction: column;
+  }
+
+  &__label {
+    font-weight: bold;
+    color: var(--gray-darker);
+
+    &--hide {
+      display: none;
+    }
+  }
+
+  &__group {
+    display: flex;
+    gap: 24px;
+
+    &.field-radio--vertical & {
+      flex-direction: column;
+    }
+
+    &.field-radio--horizontal & {
+      flex-direction: row;
+    }
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+  }
+
+  &__input {
+    margin: 0;
+
+    &--error {
+      outline: 1px solid var(--error);
+    }
+  }
+
+  &__error {
+    color: var(--error);
+  }
+}
