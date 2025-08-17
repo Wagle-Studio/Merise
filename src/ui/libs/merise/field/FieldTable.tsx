@@ -1,5 +1,6 @@
-import { type MeriseFieldInterface, useMeriseContext } from "@/libs/merise";
+import { type MeriseFieldInterface, MeriseFieldTypeTypeEnum, useMeriseContext } from "@/libs/merise";
 import { Button, CheckedIcon, EditIcon, KeyIcon, TrashIcon, UnCheckedIcon } from "@/ui/system";
+import { fieldTypeLabel, formatFieldOption } from "./FieldTypeRegistry";
 import "./field.scss";
 
 interface FieldTableComponentProps {
@@ -45,7 +46,18 @@ export const FieldTableComponent = ({ fields, onSelect }: FieldTableComponentPro
               <tr key={`field-table__row-${field.getId()}`} className="field-table__rows__item">
                 <td className={`field-table__rows__item--key--${field.isPrimary() ? "primary" : "foreign"}`}>{field.isPrimary() && <KeyIcon />}</td>
                 <td className="field-table__rows__item--name">{field.getName()}</td>
-                <td>{field.getTypeField()}</td>
+                <td>
+                  {(() => {
+                    const safeType = (field.getTypeField() ?? MeriseFieldTypeTypeEnum.TEXT) as MeriseFieldTypeTypeEnum;
+                    const rawOption = field.getTypeFieldOption ? field.getTypeFieldOption() : null;
+                    return (
+                      <>
+                        <div>{fieldTypeLabel(safeType)}</div>
+                        <small>{formatFieldOption(safeType, rawOption)}</small>
+                      </>
+                    );
+                  })()}
+                </td>
                 <td>
                   {field.isNullable() && <CheckedIcon />}
                   {!field.isNullable() && <UnCheckedIcon />}

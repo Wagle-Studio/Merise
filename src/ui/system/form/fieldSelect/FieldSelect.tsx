@@ -1,3 +1,4 @@
+import type { ChangeEvent } from "react";
 import clsx from "clsx";
 import "./fieldSelect.scss";
 
@@ -10,9 +11,10 @@ interface FieldSelectProps {
   defaultValue: string;
   options: Record<"label" | "value", string>[];
   error?: string;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
 }
 
-export const FieldSelect = ({ className, variant = "vertical", label, labelDisplay = true, htmlFor, defaultValue, options, error }: FieldSelectProps) => {
+export const FieldSelect = ({ className, variant = "vertical", label, labelDisplay = true, htmlFor, defaultValue, options, error, onChange }: FieldSelectProps) => {
   return (
     <div
       className={clsx("field-select", `field-select--${variant}`, className, {
@@ -29,6 +31,9 @@ export const FieldSelect = ({ className, variant = "vertical", label, labelDispl
         id={htmlFor}
         name={htmlFor}
         defaultValue={defaultValue}
+        onChange={(e) => {
+          if (onChange) onChange(e);
+        }}
       >
         {options.map((option, index) => (
           <option key={`field-${htmlFor}-select-option-${index}`} value={option.value}>

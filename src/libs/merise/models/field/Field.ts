@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { FieldFormComponent } from "@/ui";
-import { type MeriseFieldInterface, type MeriseFieldTypeType, type MeriseFormType, type MeriseItemType, MeriseItemTypeEnum } from "../../types";
+import { type MeriseFieldInterface, type MeriseFieldTypeOption, type MeriseFieldTypeType, type MeriseFormType, type MeriseItemType, MeriseItemTypeEnum } from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
 import type { FieldFormType } from "./FieldFormSchema";
 
@@ -9,16 +9,28 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
   private meriseItemType: MeriseItemType;
   private name: string | null = null;
   private typeField: MeriseFieldTypeType | null = null;
+  private typeFieldOption: MeriseFieldTypeOption | null = null;
   private primaryKey: boolean = false;
   private nullable: boolean = true;
   private unique: boolean = false;
 
-  constructor(meriseItemId: string, meriseItemType: MeriseItemType, id?: string, name: string | null = null, typeField: MeriseFieldTypeType | null = null, primaryKey?: boolean, nullable?: boolean, unique?: boolean) {
+  constructor(
+    meriseItemId: string,
+    meriseItemType: MeriseItemType,
+    id?: string,
+    name: string | null = null,
+    typeField: MeriseFieldTypeType | null = null,
+    typeFieldOption: MeriseFieldTypeOption | null = null,
+    primaryKey?: boolean,
+    nullable?: boolean,
+    unique?: boolean
+  ) {
     super(MeriseItemTypeEnum.FIELD, id);
     this.meriseItemId = meriseItemId;
     this.meriseItemType = meriseItemType;
     this.name = name;
     this.typeField = typeField;
+    this.typeFieldOption = typeFieldOption;
     this.primaryKey = primaryKey ?? false;
     this.nullable = nullable ?? true;
     this.unique = unique ?? false;
@@ -27,6 +39,7 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
   hydrate = (formData: FieldFormType): void => {
     this.setName(formData.name);
     this.setTypeField(formData.type);
+    this.setTypeOption(formData.option);
     this.setIsPrimary(formData.primary);
     this.setIsNullable(formData.nullable);
     this.setIsUnique(formData.unique);
@@ -46,6 +59,10 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
 
   getTypeField = (): MeriseFieldTypeType | null => {
     return this.typeField;
+  };
+
+  getTypeFieldOption = (): MeriseFieldTypeOption | null => {
+    return this.typeFieldOption;
   };
 
   isPrimary = (): boolean => {
@@ -70,6 +87,10 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
 
   private setTypeField = (typeField: MeriseFieldTypeType): void => {
     this.typeField = typeField;
+  };
+
+  private setTypeOption = (typeFieldOption: MeriseFieldTypeOption): void => {
+    this.typeFieldOption = typeFieldOption;
   };
 
   private setIsPrimary = (isPrimaryKey: boolean): void => {
