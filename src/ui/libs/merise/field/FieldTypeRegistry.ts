@@ -48,9 +48,9 @@ export const fieldTypeRegistry: Record<MeriseFieldTypeTypeEnum, RegistryEntry<an
       return { variant: FieldTypeTextOptionsEnum.VARIABLE, maxLength: 50 };
     },
     format: (opt) => {
-      if (opt.variant === FieldTypeTextOptionsEnum.LONG) return "Volumineux";
-      const len = typeof opt.maxLength === "number" ? ` ${opt.maxLength}` : "";
-      return opt.variant === FieldTypeTextOptionsEnum.FIXED ? `Fixe${len}` : `Variable${len}`;
+      if (opt.variant === FieldTypeTextOptionsEnum.LONG) return "TEXT";
+      const len = typeof opt.maxLength === "number" ? opt.maxLength : 50;
+      return opt.variant === FieldTypeTextOptionsEnum.FIXED ? `CHAR(${len})` : `VARCHAR(${len})`;
     },
   },
   [MeriseFieldTypeTypeEnum.NUMBER]: {
@@ -64,11 +64,11 @@ export const fieldTypeRegistry: Record<MeriseFieldTypeTypeEnum, RegistryEntry<an
     format: (opt) => {
       switch (opt.variant) {
         case FieldTypeNumberOptionEnum.FLOAT:
-          return "Décimal";
+          return "DECIMAL";
         case FieldTypeNumberOptionEnum.COMPTER:
-          return "Compteur";
+          return "INT {auto}";
         default:
-          return "Entier";
+          return "INT";
       }
     },
   },
@@ -83,11 +83,11 @@ export const fieldTypeRegistry: Record<MeriseFieldTypeTypeEnum, RegistryEntry<an
     format: (opt) => {
       switch (opt.variant) {
         case FieldTypeDateOptionEnum.TIME:
-          return "Heure";
+          return "TIME";
         case FieldTypeDateOptionEnum.DATETIME:
-          return "Date et heure";
+          return "DATETIME";
         default:
-          return "Date";
+          return "DATE";
       }
     },
   },
@@ -116,10 +116,6 @@ export function buildConfigFromField(field: MeriseFieldInterface): FieldConfig {
     type,
     options: entry.normalize(raw),
   };
-}
-
-export function fieldTypeLabel(type: MeriseFieldTypeTypeEnum): string {
-  return fieldTypeRegistry[type].label;
 }
 
 export function formatFieldOption(type: MeriseFieldTypeTypeEnum, raw: unknown): string {

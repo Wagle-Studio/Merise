@@ -1,6 +1,6 @@
 import { type MeriseFieldInterface, MeriseFieldTypeTypeEnum, useMeriseContext } from "@/libs/merise";
 import { Button, CheckedIcon, EditIcon, KeyIcon, TrashIcon, UnCheckedIcon } from "@/ui/system";
-import { fieldTypeLabel, formatFieldOption } from "./FieldTypeRegistry";
+import { formatFieldOption } from "./FieldTypeRegistry";
 import "./field.scss";
 
 interface FieldTableComponentProps {
@@ -50,12 +50,7 @@ export const FieldTableComponent = ({ fields, onSelect }: FieldTableComponentPro
                   {(() => {
                     const safeType = (field.getTypeField() ?? MeriseFieldTypeTypeEnum.TEXT) as MeriseFieldTypeTypeEnum;
                     const rawOption = field.getTypeFieldOption ? field.getTypeFieldOption() : null;
-                    return (
-                      <>
-                        <div>{fieldTypeLabel(safeType)}</div>
-                        <small>{formatFieldOption(safeType, rawOption)}</small>
-                      </>
-                    );
+                    return <>{formatFieldOption(safeType, rawOption)}</>;
                   })()}
                 </td>
                 <td>
