@@ -17,7 +17,7 @@ export const DialogContainer = () => {
   }
 
   return (
-    <div className="dialog-container">
+    <>
       {dialogs.map((dialog) => (
         <Fragment key={`dialog-${dialog.id}`}>
           {dialog.type === DialogTypeEnum.CONFIRM && <DialogConfirmComponent dialog={dialog as DialogConfirm} />}
@@ -28,6 +28,6 @@ export const DialogContainer = () => {
           {dialog.type === DialogTypeEnum.SETTINGS && <DialogSettingsComponent dialog={dialog as DialogSettings} />}
         </Fragment>
       ))}
-    </div>
+    </>
   );
 };

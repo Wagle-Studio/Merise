@@ -3,12 +3,20 @@ import type { SettingsFormType } from "./SettingsFormSchema";
 
 // Interface defining settings type
 export interface Settings {
+  theme: SettingsThemeType;
   background: SettingsBackgroundType;
 }
 
-// List of all available settings enums
+// List of all available settings theme enums
+export enum SettingsThemeType {
+  LIGHT = "light",
+  DARK = "dark",
+  SYSTEM = "system",
+}
+
+// List of all available settings background enums
 export enum SettingsBackgroundType {
-  BLANK = "Blanc",
+  SOLID = "Uni",
   GRID = "Grille",
   DOTT = "Points",
 }
@@ -28,4 +36,6 @@ export type SettingsDispatcher = React.Dispatch<React.SetStateAction<SettingsDTO
 export interface SettingsManagerInterface {
   getCurrentSettings: () => SettingsDTOInterface;
   updateSettings: (settings: Settings) => void;
+  applyTheme: (theme: SettingsThemeType) => void;
+  bindSystemListener: (theme: SettingsThemeType) => () => void;
 }

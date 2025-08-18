@@ -2,15 +2,14 @@ import type { ReactNode } from "react";
 import type { CoreManagerInterface } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
-import type { Settings, SettingsDTOInterface } from "@/core/libs/settings";
-import type SettingManager from "@/core/libs/settings/SettingManager";
+import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
 import type { MeriseDTOInterface, MeriseManagerInterface } from "@/libs/merise";
 
 // Managers available in the Kernel context
 export interface KernelManagers {
-  settings: SettingManager;
+  settings: SettingsManager;
   dialog: DialogManagerInterface;
   toast: ToastManagerInterface;
   error: ErrorManagerInterface;

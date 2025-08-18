@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useLayoutEffect, useMemo } from "react";
 import { useKernelContext } from "@/core";
 import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
 import { FlowContextProvider } from "@/libs/flow";
@@ -12,6 +12,13 @@ export const ProviderFlow = ({ children }: { children: ReactNode }) => {
   if (!managers) {
     return <FallbackLoading title="Initialisation de Flow" message="Chargement des services" />;
   }
+
+  useLayoutEffect(() => {
+    const cur = managers.settings.getCurrentSettings().getSettings();
+    managers.settings.applyTheme(cur.theme);
+    const off = managers.settings.bindSystemListener(cur.theme);
+    return () => off();
+  }, [managers]);
 
   const contextValue = useMemo(
     () => ({
