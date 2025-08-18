@@ -20,7 +20,7 @@ export default class ToastManager implements ToastManagerInterface {
       message: props.message,
     };
 
-    this.setToasts([...this.getToasts(), toast].slice(0, MAX_TOASTS));
+    this.setToasts([toast, ...this.getToasts()].slice(0, MAX_TOASTS));
 
     this.timersRef.current[toast.id] = setTimeout(() => {
       this.setToasts((prev) => prev.filter((t) => t.id !== toast.id));
