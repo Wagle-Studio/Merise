@@ -12,6 +12,7 @@ export default class SettingsDTO implements SettingsDTOInterface {
   }
 
   hydrate = (formData: SettingsFormType): void => {
+    this.settings.theme = formData.theme;
     this.settings.background = formData.background;
   };
 

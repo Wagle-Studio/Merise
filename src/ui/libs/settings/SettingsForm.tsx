@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import { useKernelContext } from "@/core";
-import { SettingsBackgroundTypeEnum, type SettingsDTOInterface, SettingsFormTypeSchema } from "@/core/libs/settings";
-import { Button, FieldSelect, Form, useFormErrors } from "@/ui/system";
+import { SettingsBackgroundTypeEnum, type SettingsDTOInterface, SettingsFormTypeSchema, SettingsThemeTypeEnum } from "@/core/libs/settings";
+import { Button, FieldSelect, Fieldset, Form, useFormErrors } from "@/ui/system";
 
 interface SettingsFormComponentProps {
   settings: SettingsDTOInterface;
@@ -19,6 +19,7 @@ export const SettingsFormComponent = ({ settings }: SettingsFormComponentProps) 
     const formData = new FormData(e.currentTarget);
 
     const formValues = {
+      theme: formData.get("settings-theme") as SettingsThemeTypeEnum,
       background: formData.get("settings-background") as SettingsBackgroundTypeEnum,
     };
 
@@ -33,10 +34,16 @@ export const SettingsFormComponent = ({ settings }: SettingsFormComponentProps) 
     operations.onSettingsUpdate(settings.getSettings());
   };
 
+  const themeOptions = [
+    { value: SettingsThemeTypeEnum.LIGHT, label: "Claire" },
+    { value: SettingsThemeTypeEnum.DARK, label: "Sombre" },
+    { value: SettingsThemeTypeEnum.SYSTEM, label: "Système" },
+  ];
+
   const backgroundOptions = [
     {
-      value: SettingsBackgroundTypeEnum.BLANK,
-      label: "Blanc",
+      value: SettingsBackgroundTypeEnum.SOLID,
+      label: "Uni",
     },
     {
       value: SettingsBackgroundTypeEnum.GRID,
@@ -56,7 +63,10 @@ export const SettingsFormComponent = ({ settings }: SettingsFormComponentProps) 
 
   return (
     <Form className="settings-form" onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
-      <FieldSelect className="settings-form__select" label="Arrière-plan" htmlFor="settings-background" defaultValue={settings.getSettings().background} options={backgroundOptions} error={fieldErrors.background} />
+      <Fieldset>
+        <FieldSelect className="settings-form__select" label="Thème" htmlFor="settings-theme" defaultValue={settings.getSettings().theme} options={themeOptions} error={fieldErrors.theme} />
+        <FieldSelect className="settings-form__select" label="Arrière-plan" htmlFor="settings-background" defaultValue={settings.getSettings().background} options={backgroundOptions} error={fieldErrors.background} />
+      </Fieldset>
     </Form>
   );
 };

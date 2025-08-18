@@ -1,17 +1,4 @@
 :root {
-  /* THEME */
-  --entity-dark: #a9740f;
-  --entity: #d19814;
-  --entity-light: #f2c55d;
-  --association-dark: #2b5396;
-  --association: #3a6cc2;
-  --association-light: #74a0e0;
-  --relation-dark: #8f2a86;
-  --relation: #c23ab4;
-  --relation-light: #e07ad6;
-  --primary-key: #f2c55d;
-
-  /* SYSTEM */
   --white: #fdfdfd;
   --gray-darker: #393939;
   --gray-dark: #808080;
@@ -22,6 +9,30 @@
   --warning: #f59e0b;
   --error: #ef4444;
   --dialog-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --entity: #d19814;
+  --association: #3a6cc2;
+  --relation: #c23ab4;
+  --primary-key: #f2c55d;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --white: #0f141b;
+  --gray-darker: #e5e7eb;
+  --gray-dark: #9aa4b2;
+  --gray-base: #334155;
+  --gray-light: #1f2937;
+  --succes: #10b981;
+  --info: #3b82f6;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --dialog-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --entity: #d19814;
+  --association: #3a6cc2;
+  --relation: #c23ab4;
+  --primary-key: #f2c55d;
+  --primary-key: #f2c55d;
+  color-scheme: dark;
 }
 
 *,
@@ -36,6 +47,7 @@ html,
 body {
   height: 100%;
   width: 100%;
+  background-color: var(--white);
   font-family:
     system-ui,
     -apple-system,
@@ -50,9 +62,4 @@ body {
   height: 100vh;
   grid-template-columns: 1fr;
   grid-template-rows: max-content 1fr;
-}
-
-.react_flow {
-  width: 100%;
-  height: 100%;
 }

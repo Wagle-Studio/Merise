@@ -40,9 +40,9 @@ export default function Flow() {
   const getBackgroundVariant = (): ReactNode => {
     switch (settings.getSettings().background) {
       case SettingsBackgroundTypeEnum.GRID:
-        return <Background variant={BackgroundVariant.Lines} gap={16} size={1} color="#0000002e" />;
+        return <Background variant={BackgroundVariant.Lines} gap={16} size={1} color="var(--gray-base)" />;
       case SettingsBackgroundTypeEnum.DOTT:
-        return <Background variant={BackgroundVariant.Cross} gap={16} size={1} color="#000000" />;
+        return <Background variant={BackgroundVariant.Cross} gap={16} size={1} color="var(--gray-darker)" />;
       default:
         return <></>;
     }

@@ -2,7 +2,7 @@
   pointer-events: auto;
   background-color: var(--white);
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--dialog-shadow);
   overflow: hidden;
   transform: translateX(100%);
   transition:

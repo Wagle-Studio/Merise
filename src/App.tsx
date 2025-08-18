@@ -1,8 +1,8 @@
 import { KernelContextProvider, ProviderFlow, ProviderMerise } from "@/core/kernel";
+import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
+import { FlowComponent } from "@/libs/flow";
 import { DialogContainer, ToastContainer, Toolbar } from "@/ui";
 import "./app.scss";
-import { ErrorBoundary, FallBackPresetTypeEnum } from "./core/libs/error";
-import { FlowComponent } from "./libs/flow/components";
 
 function App() {
   return (
