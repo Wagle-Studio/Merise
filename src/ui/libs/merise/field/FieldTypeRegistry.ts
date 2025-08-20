@@ -103,12 +103,12 @@ export const fieldTypeRegistry: Record<MeriseFieldTypeTypeEnum, RegistryEntry<an
   },
 };
 
-export function buildDefaultConfig(type: MeriseFieldTypeTypeEnum): FieldConfig {
+export const buildDefaultConfig = (type: MeriseFieldTypeTypeEnum): FieldConfig => {
   const entry = fieldTypeRegistry[type];
   return { type, options: entry.defaultOption };
-}
+};
 
-export function buildConfigFromField(field: MeriseFieldInterface): FieldConfig {
+export const buildConfigFromField = (field: MeriseFieldInterface): FieldConfig => {
   const type = field.getTypeField() ?? MeriseFieldTypeTypeEnum.TEXT;
   const raw: unknown = field.getTypeFieldOption?.() as MeriseFieldTypeOption | unknown;
   const entry = fieldTypeRegistry[type];
@@ -116,10 +116,10 @@ export function buildConfigFromField(field: MeriseFieldInterface): FieldConfig {
     type,
     options: entry.normalize(raw),
   };
-}
+};
 
-export function formatFieldOption(type: MeriseFieldTypeTypeEnum, raw: unknown): string {
+export const formatFieldOption = (type: MeriseFieldTypeTypeEnum, raw: unknown): string => {
   const entry = fieldTypeRegistry[type];
   const normalized = entry.normalize(raw);
   return entry.format(normalized);
-}
+};

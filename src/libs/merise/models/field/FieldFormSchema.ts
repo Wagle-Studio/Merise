@@ -1,6 +1,15 @@
 import { z } from "zod";
 import { FieldTypeDateOptionEnum, FieldTypeNumberOptionEnum, FieldTypeOtherOptionEnum, FieldTypeTextOptionsEnum, MeriseFieldTypeTypeEnum } from "@/libs/merise";
 
+// Base fiel form schema
+const BaseFieldsShape = {
+  name: z.string().trim().min(1, "Nom requis"),
+  primary: z.boolean(),
+  nullable: z.boolean(),
+  unique: z.boolean(),
+};
+
+// Options schema for field type text
 const TextOptionSchema = z
   .object({
     variant: z.enum(FieldTypeTextOptionsEnum),
@@ -15,13 +24,7 @@ const TextOptionSchema = z
     { message: "maxLength requis pour VARIABLE ou FIXED", path: ["maxLength"] }
   );
 
-const BaseFieldsShape = {
-  name: z.string().trim().min(1, "Nom requis"),
-  primary: z.boolean(),
-  nullable: z.boolean(),
-  unique: z.boolean(),
-};
-
+// Field type text
 const TextVariant = z
   .object({
     type: z.literal(MeriseFieldTypeTypeEnum.TEXT),
@@ -29,6 +32,7 @@ const TextVariant = z
   })
   .extend(BaseFieldsShape);
 
+// Field type number
 const NumberVariant = z
   .object({
     type: z.literal(MeriseFieldTypeTypeEnum.NUMBER),
@@ -36,6 +40,7 @@ const NumberVariant = z
   })
   .extend(BaseFieldsShape);
 
+// Field type date
 const DateVariant = z
   .object({
     type: z.literal(MeriseFieldTypeTypeEnum.DATE),
@@ -43,6 +48,7 @@ const DateVariant = z
   })
   .extend(BaseFieldsShape);
 
+// Field type other
 const OtherVariant = z
   .object({
     type: z.literal(MeriseFieldTypeTypeEnum.OTHER),
@@ -50,6 +56,7 @@ const OtherVariant = z
   })
   .extend(BaseFieldsShape);
 
+// Discrimination union for field type form
 export const FieldFormTypeSchema = z.discriminatedUnion("type", [TextVariant, NumberVariant, DateVariant, OtherVariant]);
 
 export type FieldFormType = z.infer<typeof FieldFormTypeSchema>;

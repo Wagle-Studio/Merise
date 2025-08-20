@@ -50,6 +50,7 @@ export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps)
     };
 
     const validationResult = FieldFormTypeSchema.safeParse(formValues);
+
     if (!validationResult.success) {
       setZodErrors(validationResult.error);
       return;
@@ -99,6 +100,7 @@ export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps)
       <Fieldset legend="Champ">
         <FieldSelect label="Type" key={`field-type-${config.type}`} labelDisplay={false} htmlFor="field-type" defaultValue={config.type} options={typeOptions} error={fieldErrors.type} onChange={handleSelectTypeChanges} />
         <OptionForm key={`option-form-${config.type}`} value={config.options as any} onChange={(next) => setConfig((prev) => ({ ...prev, options: next }))} />
+        {fieldErrors.option && <span className="field-text__error">{fieldErrors.option}</span>}
       </Fieldset>
       <Fieldset legend="Propriétés" variant="horizontal">
         <FieldCheckbox label="Clé primaire" htmlFor="field-primary" defaultChecked={field.isPrimary()} error={fieldErrors.primary} />
