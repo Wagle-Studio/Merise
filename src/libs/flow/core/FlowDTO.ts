@@ -1,4 +1,4 @@
-import type { FlowDTOInterface, TypedEdge, TypedNode } from "../types";
+import type { FlowDTOInterface, FlowDTOObject, TypedEdge, TypedNode } from "../types";
 
 export default class FlowDTO implements FlowDTOInterface {
   private nodes: TypedNode[] = [];
@@ -9,20 +9,16 @@ export default class FlowDTO implements FlowDTOInterface {
     this.edges = edges;
   }
 
+  static fromRaw = (raw: FlowDTOObject): FlowDTO => {
+    return new FlowDTO(raw.nodes, raw.edges);
+  };
+
   getNodes = (): TypedNode[] => {
     return this.nodes;
   };
 
   getEdges = (): TypedEdge[] => {
     return this.edges;
-  };
-
-  getStringifiedNodes = (): string => {
-    return JSON.stringify(this.nodes);
-  };
-
-  getStringifiedEdges = (): string => {
-    return JSON.stringify(this.edges);
   };
 
   cloneWithAddedEdge = (edge: TypedEdge): FlowDTOInterface => {

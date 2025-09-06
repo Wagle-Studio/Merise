@@ -8,6 +8,18 @@ import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
 import type { MeriseDTOInterface, MeriseManagerInterface } from "@/libs/merise";
 
+// List of all available seed types
+export enum KernelSeedType {
+  NEW = "NEW",
+  SAVE_LOCAL = "SAVE_LOCAL",
+}
+
+// Interface for a seed from which a save will be initialized
+export interface KernelSeed {
+  id: string;
+  type: KernelSeedType;
+}
+
 // Managers available in the Kernel context
 export interface KernelManagers {
   settings: SettingsManager;
@@ -23,6 +35,7 @@ export interface KernelManagers {
 // Props required to initialize the Kernel context
 export interface KernelContextProps {
   children: ReactNode;
+  seed: KernelSeed;
 }
 
 // Result returned by the Kernel initialization hook

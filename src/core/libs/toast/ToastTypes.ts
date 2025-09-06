@@ -4,6 +4,7 @@ export enum ToastType {
   INFO = "INFO",
   WARNING = "WARNING",
   ERROR = "ERROR",
+  SAVE = "SAVE",
 }
 
 // Base interface shared by all toast types

@@ -1,4 +1,5 @@
 import { type ChangeEvent, type FormEvent, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { Field, FieldFormTypeSchema, type MeriseFieldInterface, type MeriseFieldTypeOption, MeriseFieldTypeTypeEnum, type MeriseFormType, MeriseFormTypeEnum, useMeriseContext } from "@/libs/merise";
 import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
 import { type FieldConfig, type FieldOptionUnion, type TextOptionValue, buildConfigFromField, buildDefaultConfig, fieldTypeRegistry } from "./FieldTypeRegistry";
@@ -57,7 +58,7 @@ export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps)
     }
 
     if (formType === MeriseFormTypeEnum.CREATE) {
-      const fresh = new Field(field.getMeriseItemId(), field.getMeriseItemType());
+      const fresh = new Field(uuidv4(), field.getMeriseItemId(), field.getMeriseItemType());
       fresh.hydrate(validationResult.data);
       operations.onFieldCreate(fresh);
 

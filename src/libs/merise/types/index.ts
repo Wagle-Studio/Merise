@@ -15,21 +15,26 @@ export type {
   FieldTypeNumberOption,
   FieldTypeOtherOption,
   FieldTypeTextOption,
+  MeriseAssociation,
   MeriseAssociationInterface,
+  MeriseEntity,
   MeriseEntityInterface,
   MeriseErrorType,
+  MeriseField,
   MeriseFieldInterface,
   MeriseFieldTypeOption,
   MeriseFieldTypeType,
   MeriseFormType,
+  MeriseItem,
   MeriseItemInterface,
   MeriseItemType,
   MeriseOperations,
+  MeriseRelation,
   MeriseRelationCardinalityType,
   MeriseRelationInterface,
   MeriseResult,
   MeriseResultFail,
   MeriseResultSuccess,
 } from "./MeriseCore";
-export type { MeriseDTOInterface } from "./MeriseDTOTypes";
+export type { MeriseDTOInterface, MeriseDTOObject } from "./MeriseDTOTypes";
 export type { MeriseDTODispatcher, MeriseManagerInterface } from "./MeriseManagerTypes";

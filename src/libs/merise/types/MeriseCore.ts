@@ -54,7 +54,7 @@ export enum MeriseFieldTypeType {
   OTHER = "OTHER",
 }
 
-// WIP
+// TODO : WIP
 
 export type FieldTypeTextOptionObject = {
   variant: FieldTypeTextOption;
@@ -85,15 +85,21 @@ export enum FieldTypeOtherOption {
   BOOLEAN = "BOOLEAN",
 }
 
-// WIP
+// TODO : WIP
 
-// Base interface implemented by all Merise items
+// Base contract implemented by all Merise items
 export interface MeriseItemInterface {
   getId: () => string;
   getType: () => MeriseItemType;
 }
 
-// Interface for a Merise entity
+// Base interface implemented by all Merise objects
+export interface MeriseItem {
+  id: string;
+  type: string;
+}
+
+// Contract for the Merise entity implementation
 export interface MeriseEntityInterface extends MeriseItemInterface {
   renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
@@ -107,7 +113,15 @@ export interface MeriseEntityInterface extends MeriseItemInterface {
   deleteField: (field: MeriseFieldInterface) => void;
 }
 
-// Interface for a Merise association
+// Interface for a Merise entity object
+export interface MeriseEntity extends MeriseItem {
+  flowId: string;
+  name: string;
+  emoji: string;
+  fields: MeriseField[];
+}
+
+// Contract for the Merise association implementation
 export interface MeriseAssociationInterface extends MeriseItemInterface {
   renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
@@ -121,7 +135,15 @@ export interface MeriseAssociationInterface extends MeriseItemInterface {
   deleteField: (field: MeriseFieldInterface) => void;
 }
 
-// Interface for a Merise relation
+// Interface for a Merise association object
+export interface MeriseAssociation extends MeriseItem {
+  flowId: string;
+  name: string;
+  emoji: string;
+  fields: MeriseField[];
+}
+
+// Contract for the Merise relation implementation
 export interface MeriseRelationInterface extends MeriseItemInterface {
   renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
@@ -132,7 +154,15 @@ export interface MeriseRelationInterface extends MeriseItemInterface {
   getCardinality: () => MeriseRelationCardinalityType;
 }
 
-// Interface for a Merise field
+// Interface for a Merise relation object
+export interface MeriseRelation extends MeriseItem {
+  flowId: string;
+  source: string;
+  target: string;
+  cardinality: string;
+}
+
+// Contract for the Merise field implementation
 export interface MeriseFieldInterface extends MeriseItemInterface {
   renderFormComponent: (formType: MeriseFormType) => React.ReactElement;
   hydrate: (formData: FieldFormType) => void;
@@ -144,6 +174,18 @@ export interface MeriseFieldInterface extends MeriseItemInterface {
   isPrimary: () => boolean;
   isNullable: () => boolean;
   isUnique: () => boolean;
+}
+
+// Interface for a Merise field object
+export interface MeriseField extends MeriseItem {
+  meriseItemId: string;
+  meriseItemType: MeriseItemType;
+  name: string | null;
+  typeField: MeriseFieldTypeType | null;
+  typeFieldOption: MeriseFieldTypeOption | null;
+  primaryKey: boolean;
+  nullable: boolean;
+  unique: boolean;
 }
 
 // Union type representing the result of a Merise operation

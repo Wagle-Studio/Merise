@@ -23,15 +23,19 @@ export type TypedNode = Node<NodeData> & {
   data: NodeData;
 };
 
-// Interface defining the Flow DTO structure
+// Contract for the Flow DTO implementation
 export interface FlowDTOInterface {
   getNodes: () => TypedNode[];
   getEdges: () => TypedEdge[];
-  getStringifiedNodes: () => string;
-  getStringifiedEdges: () => string;
   cloneWithAddedEdge: (edge: TypedEdge) => FlowDTOInterface;
   cloneWithAddedNode: (node: TypedNode) => FlowDTOInterface;
   cloneWithUpdatedEdges: (edges: TypedEdge[]) => FlowDTOInterface;
   cloneWithUpdatedNodes: (nodes: TypedNode[]) => FlowDTOInterface;
   cloneWithUpdatedEdgesAndNodes: (edges: TypedEdge[], nodes: TypedNode[]) => FlowDTOInterface;
+}
+
+// Interface for a Flow DTO object
+export interface FlowDTOObject {
+  edges: TypedEdge[];
+  nodes: TypedNode[];
 }

@@ -1,12 +1,11 @@
-import { v4 as uuidv4 } from "uuid";
 import type { MeriseItemType } from "../types";
 
 export default abstract class AbstractMeriseItem {
   private id: string;
   private type: MeriseItemType;
 
-  constructor(type: MeriseItemType, id?: string) {
-    this.id = id ?? uuidv4();
+  constructor(type: MeriseItemType, id: string) {
+    this.id = id;
     this.type = type;
   }
 
