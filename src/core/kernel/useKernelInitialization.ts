@@ -67,6 +67,7 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
   }, []);
 
   return {
+    save,
     settings,
     dialogs,
     toasts,
