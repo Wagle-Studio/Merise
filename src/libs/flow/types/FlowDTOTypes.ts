@@ -27,6 +27,8 @@ export type TypedNode = Node<NodeData> & {
 export interface FlowDTOInterface {
   getNodes: () => TypedNode[];
   getEdges: () => TypedEdge[];
+  getStringifiedNodes: () => string;
+  getStringifiedEdges: () => string;
   cloneWithAddedEdge: (edge: TypedEdge) => FlowDTOInterface;
   cloneWithAddedNode: (node: TypedNode) => FlowDTOInterface;
   cloneWithUpdatedEdges: (edges: TypedEdge[]) => FlowDTOInterface;

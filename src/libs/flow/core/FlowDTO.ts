@@ -17,6 +17,14 @@ export default class FlowDTO implements FlowDTOInterface {
     return this.edges;
   };
 
+  getStringifiedNodes = (): string => {
+    return JSON.stringify(this.nodes);
+  };
+
+  getStringifiedEdges = (): string => {
+    return JSON.stringify(this.edges);
+  };
+
   cloneWithAddedEdge = (edge: TypedEdge): FlowDTOInterface => {
     return new FlowDTO(this.nodes, [...this.edges, edge]);
   };

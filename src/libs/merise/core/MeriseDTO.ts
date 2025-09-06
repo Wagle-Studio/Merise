@@ -24,6 +24,18 @@ export default class MeriseDTO implements MeriseDTOInterface {
     return this.relations;
   };
 
+  getStringifiedEntities = (): string => {
+    return JSON.stringify(this.entities);
+  };
+
+  getStringifiedAssociations = (): string => {
+    return JSON.stringify(this.associations);
+  };
+
+  getStringifiedRelations = (): string => {
+    return JSON.stringify(this.relations);
+  };
+
   cloneWithAddedEntity = (entity: Entity): MeriseDTOInterface => {
     return new MeriseDTO([...this.entities, entity], this.associations, this.relations);
   };
@@ -54,5 +66,9 @@ export default class MeriseDTO implements MeriseDTOInterface {
 
   cloneWithUpdatedAssociationsAndRelations = (associations: Association[], relations: Relation[]): MeriseDTOInterface => {
     return new MeriseDTO(this.entities, associations, relations);
+  };
+
+  cloneWithUpdatedEntitiesAndRelationsAndAssociations = (entities: Entity[], associations: Association[], relations: Relation[]): MeriseDTOInterface => {
+    return new MeriseDTO(entities, associations, relations);
   };
 }

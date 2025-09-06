@@ -26,12 +26,8 @@
     box-sizing: border-box;
   }
 
-  &__left {
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-  }
-
+  &__left,
+  &__center,
   &__right {
     display: flex;
     flex-direction: row;
