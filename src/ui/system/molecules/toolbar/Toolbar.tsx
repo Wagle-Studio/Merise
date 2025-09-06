@@ -10,6 +10,10 @@ export const Toolbar = () => {
     operations.onEntityCreate();
   }, []);
 
+  const handleSave = useCallback(() => {
+    operations.onSave();
+  }, []);
+
   const handleCreateAssociation = useCallback(() => {
     operations.onAssociationCreate();
   }, []);
@@ -26,6 +30,7 @@ export const Toolbar = () => {
           <Button onClick={handleCreateAssociation}>Nouvelle association</Button>
         </div>
         <div className="toolbar__right">
+          <Button onClick={handleSave}>Sauvegarder</Button>
           <Button onClick={handleOpenSettings}>Paramètres</Button>
         </div>
       </div>

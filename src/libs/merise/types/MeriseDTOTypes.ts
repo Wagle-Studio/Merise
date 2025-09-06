@@ -5,6 +5,9 @@ export interface MeriseDTOInterface {
   getEntities: () => Entity[];
   getAssociations: () => Association[];
   getRelations: () => Relation[];
+  getStringifiedEntities: () => string;
+  getStringifiedAssociations: () => string;
+  getStringifiedRelations: () => string;
   cloneWithAddedEntity: (entity: Entity) => MeriseDTOInterface;
   cloneWithAddedAssociation: (association: Association) => MeriseDTOInterface;
   cloneWithAddedRelation: (relation: Relation) => MeriseDTOInterface;
@@ -13,4 +16,5 @@ export interface MeriseDTOInterface {
   cloneWithUpdatedRelations: (relations: Relation[]) => MeriseDTOInterface;
   cloneWithUpdatedEntitiesAndRelations: (entities: Entity[], relations: Relation[]) => MeriseDTOInterface;
   cloneWithUpdatedAssociationsAndRelations: (associations: Association[], relations: Relation[]) => MeriseDTOInterface;
+  cloneWithUpdatedEntitiesAndRelationsAndAssociations: (entities: Entity[], associations: Association[], relations: Relation[]) => MeriseDTOInterface;
 }

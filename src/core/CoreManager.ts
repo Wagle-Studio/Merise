@@ -2,6 +2,7 @@ import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
+import type { SaverManagerInterface } from "@/core/libs/saver";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
@@ -17,6 +18,7 @@ export default class CoreManager implements CoreManagerInterface {
     private toastManager: ToastManagerInterface,
     private dialogManager: DialogManagerInterface,
     private errorManager: ErrorManagerInterface,
+    private saverManager: SaverManagerInterface,
     private settingsManager: SettingsManagerInterface
   ) {}
 
@@ -275,6 +277,10 @@ export default class CoreManager implements CoreManagerInterface {
 
         break;
     }
+  };
+
+  handleOnSave = (): void => {
+    this.saverManager.onSave();
   };
 
   handleSettingsOpen = (): void => {

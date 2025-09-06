@@ -12,6 +12,9 @@ export default class ProviderFactoryKernel {
       onAssociationCreate: (): void => {
         managers.core.handleCreateFlowNodeAndMeriseAssociation();
       },
+      onSave: (): void => {
+        managers.core.handleOnSave();
+      },
       onSettingsOpen: (): void => {
         managers.core.handleSettingsOpen();
       },

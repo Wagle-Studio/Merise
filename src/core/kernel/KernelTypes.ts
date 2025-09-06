@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { CoreManagerInterface } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
+import type { SaverManagerInterface } from "@/core/libs/saver";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
@@ -13,6 +14,7 @@ export interface KernelManagers {
   dialog: DialogManagerInterface;
   toast: ToastManagerInterface;
   error: ErrorManagerInterface;
+  saver: SaverManagerInterface;
   flow: FlowManagerInterface;
   merise: MeriseManagerInterface;
   core: CoreManagerInterface;
@@ -48,6 +50,7 @@ export interface KernelContext {
 export interface KernelOperations {
   onEntityCreate: () => void;
   onAssociationCreate: () => void;
+  onSave: () => void;
   onSettingsOpen: () => void;
   onSettingsUpdate: (settings: Settings) => void;
 }
