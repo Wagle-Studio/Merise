@@ -100,7 +100,7 @@ export default class CoreManager implements CoreManagerInterface {
           this.handleFlowNodeRemove(entity.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
         },
         addField: () => {
-          const field = new Field(entity.getId(), entity.getType(), uuidv4());
+          const field = new Field(uuidv4(), entity.getId(), entity.getType());
           const addFieldDialogId = this.dialogManager.addFieldDialog({
             title: "Ajouter un champ",
             component: () => field.renderFormComponent(MeriseFormTypeEnum.CREATE),
@@ -130,7 +130,7 @@ export default class CoreManager implements CoreManagerInterface {
           this.handleFlowNodeRemove(association.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
         },
         addField: () => {
-          const field = new Field(association.getId(), association.getType(), uuidv4());
+          const field = new Field(uuidv4(), association.getId(), association.getType());
           const addFieldDialogId = this.dialogManager.addFieldDialog({
             title: "Ajouter un champ",
             component: () => field.renderFormComponent(MeriseFormTypeEnum.CREATE),
@@ -217,7 +217,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleMeriseFieldCreatePrimaryKey = (meriseItem: MeriseEntityInterface | MeriseAssociationInterface): void => {
-    const fieldPrimaryKey = new Field(meriseItem.getId(), meriseItem.getType(), uuidv4(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, FieldTypeNumberOptionEnum.COMPTER, true, false, true);
+    const fieldPrimaryKey = new Field(uuidv4(), meriseItem.getId(), meriseItem.getType(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, FieldTypeNumberOptionEnum.COMPTER, true, false, true);
     this.handleMeriseFieldCreate(fieldPrimaryKey);
   };
 
@@ -281,6 +281,11 @@ export default class CoreManager implements CoreManagerInterface {
 
   handleOnSave = (): void => {
     this.saverManager.onSave();
+
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Diagramme sauvegardé",
+    });
   };
 
   handleSettingsOpen = (): void => {

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { Association, Entity, Relation } from "../models";
 import type { MeriseAssociationInterface, MeriseDTODispatcher, MeriseDTOInterface, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult } from "../types";
 import { MeriseErrorTypeEnum, MeriseRelationCardinalityTypeEnum } from "../types";
@@ -30,7 +31,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const entity = new Entity(flowId, "Entité");
+    const entity = new Entity(uuidv4(), flowId, "Entité");
     this.setMerise((prev) => prev.cloneWithAddedEntity(entity));
 
     return {
@@ -61,7 +62,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    const association = new Association(flowId, "Association");
+    const association = new Association(uuidv4(), flowId, "Association");
     this.setMerise((prev) => prev.cloneWithAddedAssociation(association));
 
     return {
@@ -86,7 +87,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return validationResult as MeriseResult<MeriseRelationInterface>;
     }
 
-    const relation = new Relation(flowId, source, target, MeriseRelationCardinalityTypeEnum.ZERO_N);
+    const relation = new Relation(uuidv4(), flowId, source, target, MeriseRelationCardinalityTypeEnum.ZERO_N);
 
     this.setMerise((prev) => prev.cloneWithAddedRelation(relation));
 

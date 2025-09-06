@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { RelationComponent, RelationFormComponent } from "@/ui";
-import { MeriseItemTypeEnum, type MeriseRelationCardinalityType, type MeriseRelationInterface } from "../../types";
+import { MeriseItemTypeEnum, type MeriseRelation, type MeriseRelationCardinalityType, MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface } from "../../types";
 import AbstractMeriseItem from "./../AbstractMeriseItem";
 import { type RelationFormType } from "./RelationFormSchema";
 
@@ -10,13 +10,17 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
   private target: string;
   private cardinality: MeriseRelationCardinalityType;
 
-  constructor(flowId: string, source: string, target: string, cardinality: MeriseRelationCardinalityType) {
-    super(MeriseItemTypeEnum.RELATION);
+  constructor(id: string, flowId: string, source: string, target: string, cardinality: MeriseRelationCardinalityType) {
+    super(MeriseItemTypeEnum.RELATION, id);
     this.flowId = flowId;
     this.source = source;
     this.target = target;
     this.cardinality = cardinality;
   }
+
+  static fromRaw = (raw: MeriseRelation): Relation => {
+    return new Relation(raw.id, raw.flowId, raw.source, raw.target, raw.cardinality as MeriseRelationCardinalityTypeEnum);
+  };
 
   hydrate = (formData: RelationFormType): void => {
     this.setCardinality(formData.cardinality);
