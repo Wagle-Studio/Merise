@@ -12,10 +12,13 @@ export default class SaverManager implements SaverManagerInterface {
   onSave = () => {
     const save = {
       id: this.save.id,
+      name: this.save.name,
       data: {
         flow: JSON.stringify(this.getFlow()),
         merise: JSON.stringify(this.getMerise()),
       },
+      created: this.save.created,
+      updated: new Date(),
     };
 
     localStorage.setItem(save.id, JSON.stringify(save));

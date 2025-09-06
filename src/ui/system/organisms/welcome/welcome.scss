@@ -23,8 +23,8 @@
       box-shadow: var(--dialog-shadow);
 
       &__col {
-        &--key {
-          width: 300px;
+        &--name {
+          width: 250px;
         }
       }
 
@@ -47,8 +47,8 @@
 
       &__rows {
         &__item {
-          &--key {
-            width: 300px;
+          &--name {
+            width: 250px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;

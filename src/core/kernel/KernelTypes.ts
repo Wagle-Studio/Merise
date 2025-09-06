@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { CoreManagerInterface } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
-import type { SaverManagerInterface } from "@/core/libs/saver";
+import type { SaverManagerInterface, SaverStoreItem } from "@/core/libs/saver";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
@@ -17,7 +17,10 @@ export enum KernelSeedType {
 // Interface for a seed from which a save will be initialized
 export interface KernelSeed {
   id: string;
+  name: string;
   type: KernelSeedType;
+  created: Date;
+  updated: Date;
 }
 
 // Managers available in the Kernel context
@@ -40,6 +43,7 @@ export interface KernelContextProps {
 
 // Result returned by the Kernel initialization hook
 export interface UseKernelInitializationResult {
+  save: SaverStoreItem;
   settings: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
@@ -50,6 +54,7 @@ export interface UseKernelInitializationResult {
 
 // Values exposed by the Kernel context
 export interface KernelContext {
+  save: SaverStoreItem;
   settings: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];

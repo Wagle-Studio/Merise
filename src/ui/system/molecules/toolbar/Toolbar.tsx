@@ -4,7 +4,7 @@ import { Button } from "../../atoms";
 import "./toolbar.scss";
 
 export const Toolbar = () => {
-  const { operations } = useKernelContext();
+  const { save, operations } = useKernelContext();
 
   const handleCreateEntity = useCallback(() => {
     operations.onEntityCreate();
@@ -28,6 +28,11 @@ export const Toolbar = () => {
         <div className="toolbar__left">
           <Button onClick={handleCreateEntity}>Nouvelle entité</Button>
           <Button onClick={handleCreateAssociation}>Nouvelle association</Button>
+        </div>
+        <div className="toolbar__center">
+          <p className="toolbar__center__diagram_name" onClick={handleOpenSettings}>
+            {save.name}
+          </p>
         </div>
         <div className="toolbar__right">
           <Button onClick={handleSave}>Sauvegarder</Button>
