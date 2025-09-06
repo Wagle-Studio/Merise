@@ -15,13 +15,13 @@ const TextOptionSchema = z
     variant: z.enum(FieldTypeTextOptionsEnum),
     maxLength: z.number().int().positive().max(65535).optional(),
   })
-  .refine((val) => !(val.variant === FieldTypeTextOptionsEnum.LONG && typeof val.maxLength !== "undefined"), { message: "maxLength interdit pour LONG", path: ["maxLength"] })
+  .refine((val) => !(val.variant === FieldTypeTextOptionsEnum.LONG && typeof val.maxLength !== "undefined"), { message: "Pas de longueur maximum pour un champ texte volumineux", path: ["maxLength"] })
   .refine(
     (val) => {
       const needs = val.variant === FieldTypeTextOptionsEnum.VARIABLE || val.variant === FieldTypeTextOptionsEnum.FIXED;
       return !needs || typeof val.maxLength === "number";
     },
-    { message: "maxLength requis pour VARIABLE ou FIXED", path: ["maxLength"] }
+    { message: "Une longueur maximale est requise", path: ["maxLength"] }
   );
 
 // Field type text
