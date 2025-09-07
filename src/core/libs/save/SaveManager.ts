@@ -18,7 +18,17 @@ export default class SaveManager implements SaveManagerInterface {
 
   saveDemoInit = (): void => {
     if (!localStorage.getItem("save_demo")) {
-      localStorage.setItem(SaveDefault.id, JSON.stringify(SaveDefault));
+      const save: Save = {
+        id: SaveDefault.id,
+        name: SaveDefault.name,
+        settings: JSON.parse(SaveDefault.settings),
+        flow: JSON.parse(SaveDefault.flow),
+        merise: JSON.parse(SaveDefault.merise),
+        created: new Date(SaveDefault.created),
+        updated: new Date(SaveDefault.updated),
+      };
+
+      localStorage.setItem(save.id, JSON.stringify(save));
     }
   };
 

@@ -1,4 +1,5 @@
 import type { FormEvent } from "react";
+import { format } from "date-fns";
 import { useKernelContext } from "@/core";
 import { type SaveDTOInterface, SaveFormTypeSchema } from "@/core/libs/save";
 import { Button, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
@@ -43,6 +44,16 @@ export const SaveFormComponent = ({ save }: SaveFormComponentProps) => {
     <Form className="save-form" onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset>
         <FieldText label="Nom du diagramme" htmlFor="save-name" defaultValue={save.getName()} error={fieldErrors.name} />
+      </Fieldset>
+      <Fieldset>
+        <p>
+          <span className="field-text__label">Création : </span>
+          {format(save.getCreated(), "dd/MM/yyyy k:mm")}
+        </p>
+        <p>
+          <span className="field-text__label">Modification : </span>
+          {format(save.getUpdated(), "dd/MM/yyyy k:mm")}
+        </p>
       </Fieldset>
     </Form>
   );

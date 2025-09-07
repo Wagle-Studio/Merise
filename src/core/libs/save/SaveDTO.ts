@@ -31,6 +31,7 @@ export default class SaveDTO implements SaveDTOInterface {
 
   hydrate = (formData: SaveFormType): void => {
     this.save.name = formData.name;
+    this.save.updated = new Date();
   };
 
   getSave = (): Save => {
