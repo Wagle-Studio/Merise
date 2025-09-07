@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import { useKernelContext } from "@/core";
 import { SettingsBackgroundTypeEnum, type SettingsDTOInterface, SettingsFormTypeSchema, SettingsThemeTypeEnum } from "@/core/libs/settings";
-import { Button, FieldSelect, Fieldset, Form, useFormErrors } from "@/ui/system";
+import { Button, FieldSelect, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 
 interface SettingsFormComponentProps {
   settings: SettingsDTOInterface;
@@ -57,7 +57,7 @@ export const SettingsFormComponent = ({ settings }: SettingsFormComponentProps) 
 
   const formActions = (
     <Button type="submit" width="full">
-      Sauvegarder
+      <SaveIcon /> Sauvegarder
     </Button>
   );
 

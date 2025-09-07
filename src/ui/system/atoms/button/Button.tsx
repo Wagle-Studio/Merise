@@ -5,7 +5,7 @@ import "./button.scss";
 type ButtonProps = {
   children: ReactNode;
   className?: string;
-  variant?: "default" | "invisible";
+  variant?: "default" | "ghost";
   onClick?: MouseEventHandler<HTMLButtonElement>;
   type?: "button" | "submit" | "reset";
   width?: "max-content" | "full";

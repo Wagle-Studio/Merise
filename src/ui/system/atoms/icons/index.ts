@@ -1,5 +1,11 @@
+export { AddIcon } from "./AddIcon";
 export { CheckedIcon } from "./CheckedIcon";
+export { CheckIcon } from "./CheckIcon";
+export { CloseIcon } from "./CloseIcon";
 export { EditIcon } from "./EditIcon";
+export { HomeIcon } from "./HomeIcon";
 export { KeyIcon } from "./KeyIcon";
+export { SaveIcon } from "./SaveIcon";
+export { SettingsIcon } from "./SettingsIcon";
 export { TrashIcon } from "./TrashIcon";
 export { UnCheckedIcon } from "./UnCheckedIcon";

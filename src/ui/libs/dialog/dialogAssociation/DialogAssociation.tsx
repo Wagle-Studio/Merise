@@ -1,5 +1,5 @@
 import type { DialogAssociation as DialogAssociationType } from "@/core/libs/dialog";
-import { Button } from "@/ui/system";
+import { AddIcon, Button, CloseIcon, KeyIcon, TrashIcon } from "@/ui/system";
 import "./dialogAssociation.scss";
 
 interface DialogAssociationProps {
@@ -7,8 +7,8 @@ interface DialogAssociationProps {
 }
 
 export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
-  const handleCancel = () => dialog.callbacks.closeDialog();
-  const handleDelete = () => dialog.callbacks.deleteAssociation();
+  const handleCloseDialog = () => dialog.callbacks.closeDialog();
+  const handleDeleteAssociation = () => dialog.callbacks.deleteAssociation();
   const handleAddField = () => dialog.callbacks.addField();
   const handleAddFieldPrimaryKey = () => dialog.callbacks.addFieldPrimaryKey();
 
@@ -24,17 +24,17 @@ export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
           {dialog.component()}
         </div>
         <div className="dialog-association__actions">
-          <Button className="dialog-association__actions-item" onClick={handleCancel}>
-            Fermer
+          <Button className="dialog-entity__actions-item" onClick={handleCloseDialog}>
+            <CloseIcon /> Fermer
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleAddField}>
-            Ajouter un champ
+            <AddIcon /> Un champ
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleAddFieldPrimaryKey}>
-            Ajouter une clé primaire
+            <KeyIcon /> Clé primaire
           </Button>
-          <Button className="dialog-association__actions-item" onClick={handleDelete}>
-            Supprimer
+          <Button className="dialog-entity__actions-item" onClick={handleDeleteAssociation}>
+            <TrashIcon /> Supprimer
           </Button>
         </div>
       </div>

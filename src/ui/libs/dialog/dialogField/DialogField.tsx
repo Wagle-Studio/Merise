@@ -1,5 +1,5 @@
 import type { DialogField as DialogFieldType } from "@/core/libs/dialog";
-import { Button } from "@/ui/system";
+import { Button, CloseIcon } from "@/ui/system";
 import "./dialogField.scss";
 
 interface DialogFieldProps {
@@ -22,7 +22,7 @@ export const DialogField = ({ dialog }: DialogFieldProps) => {
         </div>
         <div className="dialog-field__actions">
           <Button className="dialog-field__actions-item" onClick={handleCloseDialog} width="full">
-            Fermer
+            <CloseIcon /> Fermer
           </Button>
         </div>
       </div>

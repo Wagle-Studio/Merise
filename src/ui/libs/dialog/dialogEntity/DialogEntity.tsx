@@ -1,5 +1,5 @@
 import type { DialogEntity as DialogEntityType } from "@/core/libs/dialog";
-import { Button } from "@/ui/system";
+import { AddIcon, Button, CloseIcon, KeyIcon, TrashIcon } from "@/ui/system";
 import "./dialogEntity.scss";
 
 interface DialogEntityProps {
@@ -25,16 +25,16 @@ export const DialogEntity = ({ dialog }: DialogEntityProps) => {
         </div>
         <div className="dialog-entity__actions">
           <Button className="dialog-entity__actions-item" onClick={handleCloseDialog}>
-            Fermer
+            <CloseIcon /> Fermer
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleAddField}>
-            Ajouter un champ
+            <AddIcon /> Un champ
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleAddFieldPrimaryKey}>
-            Ajouter une clé primaire
+            <KeyIcon /> Clé primaire
           </Button>
           <Button className="dialog-entity__actions-item" onClick={handleDeleteEntity}>
-            Supprimer
+            <TrashIcon /> Supprimer
           </Button>
         </div>
       </div>

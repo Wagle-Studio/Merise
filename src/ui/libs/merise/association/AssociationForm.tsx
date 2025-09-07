@@ -1,6 +1,6 @@
 import { type FormEvent } from "react";
 import { AssociationFormTypeSchema, type MeriseAssociationInterface, useMeriseContext } from "@/libs/merise";
-import { Button, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
+import { Button, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 import { FieldTableComponent } from "../field/FieldTable";
 
 interface AssociationFormComponentProps {
@@ -53,7 +53,11 @@ export const AssociationFormComponent = ({ association }: AssociationFormCompone
     },
   ];
 
-  const formActions = <Button type="submit">Sauvegarder</Button>;
+  const formActions = (
+    <Button type="submit">
+      <SaveIcon /> Sauvegarder
+    </Button>
+  );
 
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>

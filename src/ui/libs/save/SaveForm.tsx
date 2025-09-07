@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import { useKernelContext } from "@/core";
 import { type SaveDTOInterface, SaveFormTypeSchema } from "@/core/libs/save";
-import { Button, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
+import { Button, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 
 interface SaveFormComponentProps {
   save: SaveDTOInterface;
@@ -35,7 +35,7 @@ export const SaveFormComponent = ({ save }: SaveFormComponentProps) => {
 
   const formActions = (
     <Button type="submit" width="full">
-      Sauvegarder
+      <SaveIcon /> Sauvegarder
     </Button>
   );
 

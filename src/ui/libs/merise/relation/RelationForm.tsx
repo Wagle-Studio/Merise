@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface, RelationFormTypeSchema, useMeriseContext } from "@/libs/merise";
-import { Button, FieldSelect, Form, useFormErrors } from "@/ui/system";
+import { Button, FieldSelect, Form, SaveIcon, useFormErrors } from "@/ui/system";
 
 interface RelationFormComponentProps {
   relation: MeriseRelationInterface;
@@ -51,7 +51,11 @@ export const RelationFormComponent = ({ relation }: RelationFormComponentProps) 
     },
   ];
 
-  const formActions = <Button type="submit">Sauvegarder</Button>;
+  const formActions = (
+    <Button type="submit">
+      <SaveIcon /> Sauvegarder
+    </Button>
+  );
 
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>

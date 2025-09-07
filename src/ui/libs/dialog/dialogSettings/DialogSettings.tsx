@@ -1,5 +1,5 @@
 import type { DialogSettings as DialogSettingsType } from "@/core/libs/dialog";
-import { Button } from "@/ui/system";
+import { Button, CloseIcon } from "@/ui/system";
 import "./dialogSettings.scss";
 
 interface DialogSettingsProps {
@@ -22,7 +22,7 @@ export const DialogSettings = ({ dialog }: DialogSettingsProps) => {
         </div>
         <div className="dialog-settings">
           <Button className="dialog-settings__actions-item" onClick={handleCancel}>
-            Fermer
+            <CloseIcon /> Fermer
           </Button>
         </div>
       </div>

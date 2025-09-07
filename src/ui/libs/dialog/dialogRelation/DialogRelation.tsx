@@ -1,5 +1,5 @@
 import type { DialogRelation as DialogRelationType } from "@/core/libs/dialog";
-import { Button } from "@/ui/system";
+import { Button, CloseIcon, TrashIcon } from "@/ui/system";
 import "./dialogRelation.scss";
 
 interface DialogRelationProps {
@@ -7,8 +7,8 @@ interface DialogRelationProps {
 }
 
 export const DialogRelation = ({ dialog }: DialogRelationProps) => {
-  const handleCancel = () => dialog.callbacks.closeDialog();
-  const handleDelete = () => dialog.callbacks.deleteRelation();
+  const handleCloseDialog = () => dialog.callbacks.closeDialog();
+  const handleDeleteRelation = () => dialog.callbacks.deleteRelation();
 
   return (
     <div className="dialog-overlay">
@@ -22,11 +22,11 @@ export const DialogRelation = ({ dialog }: DialogRelationProps) => {
           {dialog.component()}
         </div>
         <div className="dialog-relation__actions">
-          <Button className="dialog-relation__actions-item" onClick={handleCancel}>
-            Fermer
+          <Button className="dialog-relation__actions-item" onClick={handleCloseDialog}>
+            <CloseIcon /> Fermer
           </Button>
-          <Button className="dialog-relation__actions-item" onClick={handleDelete}>
-            Supprimer
+          <Button className="dialog-relation__actions-item" onClick={handleDeleteRelation}>
+            <TrashIcon /> Supprimer
           </Button>
         </div>
       </div>

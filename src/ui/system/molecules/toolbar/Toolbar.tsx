@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useKernelContext } from "@/core";
-import { Button } from "../../atoms";
+import { AddIcon, Button, EditIcon, HomeIcon, SaveIcon, SettingsIcon } from "../../atoms";
 import "./toolbar.scss";
 
 export const Toolbar = () => {
@@ -30,19 +30,28 @@ export const Toolbar = () => {
     <div className="toolbar">
       <div className="toolbar__wrapper">
         <div className="toolbar__left">
-          <Button onClick={handleCreateEntity}>Nouvelle entité</Button>
-          <Button onClick={handleCreateAssociation}>Nouvelle association</Button>
+          <Button onClick={handleCreateEntity}>
+            <AddIcon /> Entité
+          </Button>
+          <Button onClick={handleCreateAssociation}>
+            <AddIcon /> Association
+          </Button>
         </div>
         <div className="toolbar__center">
-          <p className="toolbar__center__diagram_name" onClick={handleOpenSave}>
-            {save.getName()}
-          </p>
+          <Button variant="ghost" className="toolbar__center__diagram_name" onClick={handleOpenSave} disabled={save.getId() == "save_demo"}>
+            {save.getName()} <EditIcon />
+          </Button>
         </div>
         <div className="toolbar__right">
-          <Button onClick={handleSave} disabled={save.getId() == "save_demo"}>
-            Sauvegarder
+          <Button onClick={handleSave}>
+            <HomeIcon />
           </Button>
-          <Button onClick={handleOpenSettings}>Paramètres</Button>
+          <Button onClick={handleSave} disabled={save.getId() == "save_demo"}>
+            <SaveIcon />
+          </Button>
+          <Button onClick={handleOpenSettings}>
+            <SettingsIcon />
+          </Button>
         </div>
       </div>
     </div>

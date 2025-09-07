@@ -1,7 +1,7 @@
 import { type ChangeEvent, type FormEvent, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Field, FieldFormTypeSchema, type MeriseFieldInterface, type MeriseFieldTypeOption, MeriseFieldTypeTypeEnum, type MeriseFormType, MeriseFormTypeEnum, useMeriseContext } from "@/libs/merise";
-import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
+import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 import { type FieldConfig, type FieldOptionUnion, type TextOptionValue, buildConfigFromField, buildDefaultConfig, fieldTypeRegistry } from "./FieldTypeRegistry";
 
 interface FieldFormComponentProps {
@@ -89,7 +89,7 @@ export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps)
 
   const formActions = (
     <Button type="submit" width="full">
-      Sauvegarder
+      <SaveIcon /> Sauvegarder
     </Button>
   );
 
