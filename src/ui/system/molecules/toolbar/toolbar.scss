@@ -36,7 +36,14 @@
 
   &__center {
     &__diagram_name {
+      padding: 4px 16px;
+      border-radius: 4px;
       cursor: pointer;
+
+      &:hover {
+        background-color: var(--gray-light);
+        border: 1px solid var(--gray-dark);
+      }
     }
   }
 }
