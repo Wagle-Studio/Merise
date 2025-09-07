@@ -2,8 +2,6 @@
 
 Ce projet permet de créer et modifier des modèles entité-relation de manière intuitive.
 
-![diagramme réaliser avec l'app](./public/readme_gif.gif)
-
 ## Fonctionnalités principales
 
 - **Création d'entités et associations** - Interface drag-and-drop pour modéliser des diagrammes Merise
