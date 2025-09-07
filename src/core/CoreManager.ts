@@ -2,7 +2,7 @@ import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
-import type { SaverManagerInterface, SaverStoreItem } from "@/core/libs/saver";
+import type { SaveManagerInterface, SaveStoreItem } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
@@ -18,7 +18,7 @@ export default class CoreManager implements CoreManagerInterface {
     private toastManager: ToastManagerInterface,
     private dialogManager: DialogManagerInterface,
     private errorManager: ErrorManagerInterface,
-    private saverManager: SaverManagerInterface,
+    private saveManager: SaveManagerInterface,
     private settingsManager: SettingsManagerInterface
   ) {}
 
@@ -280,7 +280,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handlSave = (): void => {
-    this.saverManager.save();
+    this.saveManager.save();
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
@@ -291,7 +291,7 @@ export default class CoreManager implements CoreManagerInterface {
   handleSaveOpen = (): void => {
     const dialogId = this.dialogManager.addSettingsDialog({
       title: "Sauvegarde",
-      component: () => this.saverManager.getCurrentSave().renderFormComponent(),
+      component: () => this.saveManager.getCurrentSave().renderFormComponent(),
       callbacks: {
         closeDialog: () => {
           this.dialogManager.removeDialogById(dialogId);
@@ -300,9 +300,9 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveUpdate = (save: SaverStoreItem): void => {
-    this.saverManager.updateCurrentSave(save);
-    this.saverManager.save();
+  handleSaveUpdate = (save: SaveStoreItem): void => {
+    this.saveManager.updateCurrentSave(save);
+    this.saveManager.save();
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
@@ -324,7 +324,7 @@ export default class CoreManager implements CoreManagerInterface {
 
   handleSettingsUpdate = (settings: Settings): void => {
     this.settingsManager.updateSettings(settings);
-    this.saverManager.save();
+    this.saveManager.save();
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,

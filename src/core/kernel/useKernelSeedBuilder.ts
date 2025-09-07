@@ -1,12 +1,11 @@
 import { type KernelSeed, KernelSeedTypeEnum } from "..";
-import type { SaverStoreItem } from "@/core/libs/saver";
-import type { SaverStoreItemRaw } from "@/core/libs/saver/SaverTypes";
+import type { SaveStoreItem, SaveStoreItemRaw } from "@/core/libs/save";
 import { FlowDTO, type FlowDTOObject } from "@/libs/flow";
 import { MeriseDTO, type MeriseDTOObject } from "@/libs/merise";
 import { SettingsDTO, type SettingsDTOObject } from "../libs/settings";
 
 // Builds save store item from a seed to provide the Kernel initialization
-export const useKernelSeedBuilder = (seed: KernelSeed): SaverStoreItem => {
+export const useKernelSeedBuilder = (seed: KernelSeed): SaveStoreItem => {
   if (seed.type !== KernelSeedTypeEnum.SAVE_LOCAL) {
     return { ...DEFAULT_SAVE(seed), id: seed.id };
   }
@@ -15,7 +14,7 @@ export const useKernelSeedBuilder = (seed: KernelSeed): SaverStoreItem => {
 
   if (!raw) throw new Error("Impossible de trouver la sauvegarde");
 
-  const stored = safeParse<SaverStoreItemRaw>(raw);
+  const stored = safeParse<SaveStoreItemRaw>(raw);
 
   if (!stored) throw new Error("Impossible de consulter la sauvegarde");
 
@@ -40,7 +39,7 @@ export const useKernelSeedBuilder = (seed: KernelSeed): SaverStoreItem => {
   };
 };
 
-const DEFAULT_SAVE = (seed: KernelSeed): SaverStoreItem => ({
+const DEFAULT_SAVE = (seed: KernelSeed): SaveStoreItem => ({
   id: seed.id,
   name: seed.name,
   settings: new SettingsDTO(),

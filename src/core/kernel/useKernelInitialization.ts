@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import CoreManager from "@/core/CoreManager";
 import { type Dialog, DialogManager } from "@/core/libs/dialog";
 import { ErrorManager } from "@/core/libs/error";
-import { SaverDTO, type SaverDTOInterface, SaverManager } from "@/core/libs/saver";
+import { SaveDTO, type SaveDTOInterface, SaveManager } from "@/core/libs/save";
 import { type SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import { type Toast, ToastManager } from "@/core/libs/toast";
 import { type FlowDTOInterface, FlowManager } from "@/libs/flow";
@@ -14,7 +14,7 @@ import { useKernelSeedBuilder } from "./useKernelSeedBuilder";
 export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializationResult => {
   const storedItem = useKernelSeedBuilder(seed);
 
-  const [save, setSave] = useState<SaverDTOInterface>(new SaverDTO(storedItem));
+  const [save, setSave] = useState<SaveDTOInterface>(new SaveDTO(storedItem));
   const [settings, setSettings] = useState<SettingsDTOInterface>(save.getSettings());
   const [dialogs, setDialogs] = useState<Dialog[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -61,16 +61,16 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
   const getMeriseDTO = () => meriseDTORef.current;
 
   const managers = useMemo<KernelManagers>(() => {
+    const save = new SaveManager(getSave, setSave, getSettings, getFlowDTO, getMeriseDTO);
     const settings = new SettingsManager(getSettings, setSettings);
     const dialog = new DialogManager(getDialogs, setDialogs);
     const toast = new ToastManager(getToats, setToasts, toastsTimersRef);
     const error = new ErrorManager(toast);
-    const saver = new SaverManager(getSave, setSave, getSettings, getFlowDTO, getMeriseDTO);
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
     const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
-    const core = new CoreManager(flow, merise, toast, dialog, error, saver, settings);
+    const core = new CoreManager(flow, merise, toast, dialog, error, save, settings);
 
-    return { settings, dialog, toast, error, saver, flow, merise, core };
+    return { settings, dialog, toast, error, save, flow, merise, core };
   }, []);
 
   return {

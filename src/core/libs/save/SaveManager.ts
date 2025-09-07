@@ -1,22 +1,22 @@
 import type { SettingsDTOInterface } from "@/core/libs/settings";
 import type { FlowDTOInterface } from "@/libs/flow";
 import type { MeriseDTOInterface } from "@/libs/merise";
-import type { SaverDTOInterface, SaverDispatcher, SaverManagerInterface, SaverStoreItem } from "./SaverTypes";
+import type { SaveDTOInterface, SaveDispatcher, SaveManagerInterface, SaveStoreItem } from "./SaveTypes";
 
-export default class SaverManager implements SaverManagerInterface {
+export default class SaveManager implements SaveManagerInterface {
   constructor(
-    private getSave: () => SaverDTOInterface,
-    private setSave: SaverDispatcher,
+    private getSave: () => SaveDTOInterface,
+    private setSave: SaveDispatcher,
     private getSettings: () => SettingsDTOInterface,
     private getFlow: () => FlowDTOInterface,
     private getMerise: () => MeriseDTOInterface
   ) {}
 
-  getCurrentSave = (): SaverDTOInterface => {
+  getCurrentSave = (): SaveDTOInterface => {
     return this.getSave();
   };
 
-  updateCurrentSave = (save: SaverStoreItem) => {
+  updateCurrentSave = (save: SaveStoreItem) => {
     this.setSave((prev) => prev.cloneWithUpdatedSave(save));
   };
 

@@ -1,10 +1,10 @@
 import type { SettingsDTO, SettingsDTOInterface } from "@/core/libs/settings";
 import type { FlowDTOInterface, FlowDTOObject } from "@/libs/flow";
 import type { MeriseDTOInterface, MeriseDTOObject } from "@/libs/merise";
-import type { SaverFormType } from "./SaverFormSchema";
+import type { SaveFormType } from "./SaveFormSchema";
 
 // Interface for a raw save that will be parsed to build a clean save
-export interface SaverStoreItemRaw {
+export interface SaveStoreItemRaw {
   id: string;
   name: string;
   settings: SettingsDTO;
@@ -15,7 +15,7 @@ export interface SaverStoreItemRaw {
 }
 
 // Interface for a save that will provide data to the application
-export interface SaverStoreItem {
+export interface SaveStoreItem {
   id: string;
   name: string;
   settings: SettingsDTOInterface;
@@ -25,10 +25,10 @@ export interface SaverStoreItem {
   updated: Date;
 }
 
-// Contract for the Saver DTO implementation
-export interface SaverDTOInterface {
-  hydrate: (formData: SaverFormType) => void;
-  getSave: () => SaverStoreItem;
+// Contract for the Save DTO implementation
+export interface SaveDTOInterface {
+  hydrate: (formData: SaveFormType) => void;
+  getSave: () => SaveStoreItem;
   getId: () => string;
   getName: () => string;
   getSettings: () => SettingsDTOInterface;
@@ -36,16 +36,16 @@ export interface SaverDTOInterface {
   getMerise: () => MeriseDTOInterface;
   getCreated: () => Date;
   getUpdated: () => Date;
-  cloneWithUpdatedSave: (save: SaverStoreItem) => SaverDTOInterface;
+  cloneWithUpdatedSave: (save: SaveStoreItem) => SaveDTOInterface;
   renderFormComponent: () => React.ReactElement;
 }
 
 // Dispatcher type for updating the save state
-export type SaverDispatcher = React.Dispatch<React.SetStateAction<SaverDTOInterface>>;
+export type SaveDispatcher = React.Dispatch<React.SetStateAction<SaveDTOInterface>>;
 
-// Contract for the saver manager implementation
-export interface SaverManagerInterface {
-  getCurrentSave: () => SaverDTOInterface;
-  updateCurrentSave: (save: SaverStoreItem) => void;
+// Contract for the save manager implementation
+export interface SaveManagerInterface {
+  getCurrentSave: () => SaveDTOInterface;
+  updateCurrentSave: (save: SaveStoreItem) => void;
   save: () => void;
 }

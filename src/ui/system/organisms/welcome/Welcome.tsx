@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import { type KernelSeed, KernelSeedTypeEnum } from "@/core";
-import type { SaverStoreItemRaw } from "@/core/libs/saver/SaverTypes";
+import type { SaveStoreItemRaw } from "@/core/libs/save/SaveTypes";
 import { Button } from "../../atoms";
 import "./welcome.scss";
 
@@ -11,10 +11,10 @@ interface WelcomeProps {
 }
 
 export const Welcome = ({ seedDispatcher }: WelcomeProps) => {
-  const [localSaves, setLocalSaves] = useState<SaverStoreItemRaw[]>([]);
+  const [localSaves, setLocalSaves] = useState<SaveStoreItemRaw[]>([]);
 
   useEffect(() => {
-    const saves: SaverStoreItemRaw[] = [];
+    const saves: SaveStoreItemRaw[] = [];
 
     for (let i = 0; i < localStorage.length; i++) {
       const currentKey = localStorage.key(i);
@@ -41,7 +41,7 @@ export const Welcome = ({ seedDispatcher }: WelcomeProps) => {
     });
   };
 
-  const handleSelectLocalSave = (localSave: SaverStoreItemRaw) => {
+  const handleSelectLocalSave = (localSave: SaveStoreItemRaw) => {
     seedDispatcher({
       id: localSave.id,
       name: localSave.name,

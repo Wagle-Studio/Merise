@@ -1,5 +1,5 @@
 import type { KernelManagers } from "@/core";
-import type { SaverStoreItem } from "@/core/libs/saver";
+import type { SaveStoreItem } from "@/core/libs/save";
 import type { Settings } from "@/core/libs/settings";
 import type { KernelOperations } from "../../KernelTypes";
 
@@ -19,7 +19,7 @@ export default class ProviderFactoryKernel {
       onSaveOpen: (): void => {
         managers.core.handleSaveOpen();
       },
-      onSaveUpdate: (save: SaverStoreItem): void => {
+      onSaveUpdate: (save: SaveStoreItem): void => {
         managers.core.handleSaveUpdate(save);
       },
       onSettingsOpen: (): void => {

@@ -1,13 +1,13 @@
 import type { FormEvent } from "react";
 import { useKernelContext } from "@/core";
-import { type SaverDTOInterface, SaverFormTypeSchema } from "@/core/libs/saver";
+import { type SaveDTOInterface, SaveFormTypeSchema } from "@/core/libs/save";
 import { Button, FieldText, Fieldset, Form, useFormErrors } from "@/ui/system";
 
-interface SaverFormComponentProps {
-  saver: SaverDTOInterface;
+interface SaveFormComponentProps {
+  save: SaveDTOInterface;
 }
 
-export const SaverFormComponent = ({ saver }: SaverFormComponentProps) => {
+export const SaveFormComponent = ({ save }: SaveFormComponentProps) => {
   const { operations } = useKernelContext();
 
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
@@ -22,15 +22,15 @@ export const SaverFormComponent = ({ saver }: SaverFormComponentProps) => {
       name: formData.get("save-name"),
     };
 
-    const validationResult = SaverFormTypeSchema.safeParse(formValues);
+    const validationResult = SaveFormTypeSchema.safeParse(formValues);
 
     if (!validationResult.success) {
       setZodErrors(validationResult.error);
       return;
     }
 
-    saver.hydrate(validationResult.data);
-    operations.onSaveUpdate(saver.getSave());
+    save.hydrate(validationResult.data);
+    operations.onSaveUpdate(save.getSave());
   };
 
   const formActions = (
@@ -42,7 +42,7 @@ export const SaverFormComponent = ({ saver }: SaverFormComponentProps) => {
   return (
     <Form className="save-form" onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset>
-        <FieldText label="Nom du diagramme" htmlFor="save-name" defaultValue={saver.getName()} error={fieldErrors.name} />
+        <FieldText label="Nom du diagramme" htmlFor="save-name" defaultValue={save.getName()} error={fieldErrors.name} />
       </Fieldset>
     </Form>
   );

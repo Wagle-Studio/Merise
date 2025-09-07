@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { CoreManagerInterface } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
-import type { SaverDTOInterface, SaverManagerInterface, SaverStoreItem } from "@/core/libs/saver";
+import type { SaveDTOInterface, SaveManagerInterface, SaveStoreItem } from "@/core/libs/save";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
@@ -29,7 +29,7 @@ export interface KernelManagers {
   dialog: DialogManagerInterface;
   toast: ToastManagerInterface;
   error: ErrorManagerInterface;
-  saver: SaverManagerInterface;
+  save: SaveManagerInterface;
   flow: FlowManagerInterface;
   merise: MeriseManagerInterface;
   core: CoreManagerInterface;
@@ -43,7 +43,7 @@ export interface KernelContextProps {
 
 // Result returned by the Kernel initialization hook
 export interface UseKernelInitializationResult {
-  save: SaverDTOInterface;
+  save: SaveDTOInterface;
   settings: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
@@ -54,7 +54,7 @@ export interface UseKernelInitializationResult {
 
 // Values exposed by the Kernel context
 export interface KernelContext {
-  save: SaverDTOInterface;
+  save: SaveDTOInterface;
   settings: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
@@ -70,7 +70,7 @@ export interface KernelOperations {
   onAssociationCreate: () => void;
   onSave: () => void;
   onSaveOpen: () => void;
-  onSaveUpdate: (save: SaverStoreItem) => void;
+  onSaveUpdate: (save: SaveStoreItem) => void;
   onSettingsOpen: () => void;
   onSettingsUpdate: (settings: Settings) => void;
 }
