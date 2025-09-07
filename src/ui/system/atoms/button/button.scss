@@ -17,6 +17,10 @@
     cursor: pointer;
   }
 
+  &--disabled {
+    cursor: not-allowed;
+  }
+
   &--max-content {
     width: max-content;
   }

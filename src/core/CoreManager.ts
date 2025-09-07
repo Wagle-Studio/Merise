@@ -289,7 +289,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleSaveOpen = (): void => {
-    const dialogId = this.dialogManager.addSettingsDialog({
+    const dialogId = this.dialogManager.addSaveDialog({
       title: "Sauvegarde",
       component: () => this.saveManager.getCurrentSave().renderFormComponent(),
       callbacks: {

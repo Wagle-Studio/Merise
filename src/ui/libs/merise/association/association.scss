@@ -1,8 +1,56 @@
 .association {
-  padding: 4px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 18px 8px 16px;
   background-color: var(--white);
   border: 1px solid var(--association);
   border-radius: 4px;
   box-sizing: border-box;
   pointer-events: all;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+  }
+
+  &__body {
+    &__field-table {
+      border-collapse: collapse;
+      table-layout: fixed;
+
+      &__col--key {
+        width: 25px;
+      }
+
+      &__rows {
+        &__item {
+          &--key {
+            &--primary {
+              > svg > path {
+                fill: var(--primary-key);
+              }
+            }
+          }
+
+          &--name {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            &--unique {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
 }

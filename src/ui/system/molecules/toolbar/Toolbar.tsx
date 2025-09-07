@@ -39,7 +39,9 @@ export const Toolbar = () => {
           </p>
         </div>
         <div className="toolbar__right">
-          <Button onClick={handleSave}>Sauvegarder</Button>
+          <Button onClick={handleSave} disabled={save.getId() == "save_demo"}>
+            Sauvegarder
+          </Button>
           <Button onClick={handleOpenSettings}>Paramètres</Button>
         </div>
       </div>

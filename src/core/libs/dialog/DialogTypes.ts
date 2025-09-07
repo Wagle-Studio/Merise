@@ -7,6 +7,7 @@ export enum DialogType {
   ASSOCIATION = "association",
   RELATION = "relation",
   FIELD = "field",
+  SAVE = "save",
   SETTINGS = "settings",
 }
 
@@ -76,6 +77,16 @@ interface DialogFieldCallbacks {
   closeDialog: () => void;
 }
 
+// Interface for a save dialog instance
+export interface DialogSave extends Dialog {
+  component: () => ReactNode;
+  callbacks: DialogSaveCallbacks;
+}
+
+interface DialogSaveCallbacks {
+  closeDialog: () => void;
+}
+
 // Interface for a settings dialog instance
 export interface DialogSettings extends Dialog {
   component: () => ReactNode;
@@ -124,6 +135,13 @@ export interface AddFieldDialogProps {
   callbacks: DialogFieldCallbacks;
 }
 
+// Props required by the addSaveDialog method in the manager
+export interface AddSaveDialogProps {
+  title: DialogSettings["title"];
+  component: DialogSettings["component"];
+  callbacks: DialogSettingsCallbacks;
+}
+
 // Props required by the addSettingsDialog method in the manager
 export interface AddSettingsDialogProps {
   title: DialogSettings["title"];
@@ -138,6 +156,7 @@ export interface DialogManagerInterface {
   addAssociationDialog: (props: AddAssociationDialogProps) => string;
   addRelationDialog: (props: AddRelationDialogProps) => string;
   addFieldDialog: (props: AddFieldDialogProps) => string;
+  addSaveDialog: (props: AddSaveDialogProps) => string;
   addSettingsDialog: (props: AddSettingsDialogProps) => string;
   removeDialogById: (id: string) => void;
 }
