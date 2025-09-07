@@ -2,7 +2,7 @@ import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
-import type { SaverManagerInterface } from "@/core/libs/saver";
+import type { SaverManagerInterface, SaverStoreItem } from "@/core/libs/saver";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
@@ -279,7 +279,29 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
-  handleOnSave = (): void => {
+  handlSave = (): void => {
+    this.saverManager.save();
+
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Diagramme sauvegardé",
+    });
+  };
+
+  handleSaveOpen = (): void => {
+    const dialogId = this.dialogManager.addSettingsDialog({
+      title: "Sauvegarde",
+      component: () => this.saverManager.getCurrentSave().renderFormComponent(),
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+      },
+    });
+  };
+
+  handleSaveUpdate = (save: SaverStoreItem): void => {
+    this.saverManager.updateCurrentSave(save);
     this.saverManager.save();
 
     this.toastManager.addToast({

@@ -14,7 +14,7 @@ import { useKernelSeedBuilder } from "./useKernelSeedBuilder";
 export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializationResult => {
   const storedItem = useKernelSeedBuilder(seed);
 
-  const [save] = useState<SaverDTOInterface>(new SaverDTO(storedItem));
+  const [save, setSave] = useState<SaverDTOInterface>(new SaverDTO(storedItem));
   const [settings, setSettings] = useState<SettingsDTOInterface>(save.getSettings());
   const [dialogs, setDialogs] = useState<Dialog[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -65,7 +65,7 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
     const dialog = new DialogManager(getDialogs, setDialogs);
     const toast = new ToastManager(getToats, setToasts, toastsTimersRef);
     const error = new ErrorManager(toast);
-    const saver = new SaverManager(getSave, getSettings, getFlowDTO, getMeriseDTO);
+    const saver = new SaverManager(getSave, setSave, getSettings, getFlowDTO, getMeriseDTO);
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
     const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
     const core = new CoreManager(flow, merise, toast, dialog, error, saver, settings);

@@ -1,4 +1,5 @@
 import type { KernelManagers } from "@/core";
+import type { SaverStoreItem } from "@/core/libs/saver";
 import type { Settings } from "@/core/libs/settings";
 import type { KernelOperations } from "../../KernelTypes";
 
@@ -13,7 +14,13 @@ export default class ProviderFactoryKernel {
         managers.core.handleCreateFlowNodeAndMeriseAssociation();
       },
       onSave: (): void => {
-        managers.core.handleOnSave();
+        managers.core.handlSave();
+      },
+      onSaveOpen: (): void => {
+        managers.core.handleSaveOpen();
+      },
+      onSaveUpdate: (save: SaverStoreItem): void => {
+        managers.core.handleSaveUpdate(save);
       },
       onSettingsOpen: (): void => {
         managers.core.handleSettingsOpen();

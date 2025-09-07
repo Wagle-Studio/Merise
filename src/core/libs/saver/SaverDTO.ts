@@ -1,6 +1,9 @@
+import { createElement } from "react";
+import type { SettingsDTOInterface } from "@/core/libs/settings";
 import type { FlowDTOInterface } from "@/libs/flow";
 import type { MeriseDTOInterface } from "@/libs/merise";
-import type { SettingsDTOInterface } from "../settings";
+import { SaverFormComponent } from "@/ui/libs/saver";
+import type { SaverFormType } from "./SaverFormSchema";
 import type { SaverDTOInterface, SaverStoreItem } from "./SaverTypes";
 
 export default class SaverDTO implements SaverDTOInterface {
@@ -9,6 +12,14 @@ export default class SaverDTO implements SaverDTOInterface {
   constructor(save: SaverStoreItem) {
     this.save = save;
   }
+
+  hydrate = (formData: SaverFormType): void => {
+    this.save.name = formData.name;
+  };
+
+  getSave = (): SaverStoreItem => {
+    return this.save;
+  };
 
   getId = (): string => {
     return this.save.id;
@@ -40,5 +51,9 @@ export default class SaverDTO implements SaverDTOInterface {
 
   cloneWithUpdatedSave = (save: SaverStoreItem): SaverDTOInterface => {
     return new SaverDTO(save);
+  };
+
+  renderFormComponent = (): React.ReactElement => {
+    return createElement(SaverFormComponent, { saver: this });
   };
 }
