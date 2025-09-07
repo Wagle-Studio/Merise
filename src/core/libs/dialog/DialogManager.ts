@@ -1,5 +1,16 @@
 import { v4 as uuidv4 } from "uuid";
-import type { AddAssociationDialogProps, AddConfirmDialogProps, AddEntityDialogProps, AddFieldDialogProps, AddRelationDialogProps, AddSettingsDialogProps, Dialog, DialogManagerInterface, DialogsDispatcher } from "./DialogTypes";
+import type {
+  AddAssociationDialogProps,
+  AddConfirmDialogProps,
+  AddEntityDialogProps,
+  AddFieldDialogProps,
+  AddRelationDialogProps,
+  AddSaveDialogProps,
+  AddSettingsDialogProps,
+  Dialog,
+  DialogManagerInterface,
+  DialogsDispatcher,
+} from "./DialogTypes";
 import { DialogType as DialogTypeEnum } from "./DialogTypes";
 
 export default class DialogManager implements DialogManagerInterface {
@@ -65,6 +76,19 @@ export default class DialogManager implements DialogManagerInterface {
       timestamp: Date.now(),
       id: uuidv4(),
       type: DialogTypeEnum.FIELD,
+      title: props.title,
+      component: props.component,
+      callbacks: props.callbacks,
+    };
+    this.setDialogs([...this.getDialogs(), dialog]);
+    return dialog.id;
+  };
+
+  addSaveDialog = (props: AddSaveDialogProps): string => {
+    const dialog = {
+      timestamp: Date.now(),
+      id: uuidv4(),
+      type: DialogTypeEnum.SAVE,
       title: props.title,
       component: props.component,
       callbacks: props.callbacks,

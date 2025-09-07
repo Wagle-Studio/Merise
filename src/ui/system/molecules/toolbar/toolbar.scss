@@ -9,10 +9,8 @@
     left: 50%;
     transform: translate(-50%, 0);
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
     padding: 12px;
     width: 95%;
     height: max-content;
@@ -24,10 +22,10 @@
       0 10px 20px rgba(0, 0, 0, 0.1),
       10px 0px 20px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
+    position: relative;
   }
 
   &__left,
-  &__center,
   &__right {
     display: flex;
     flex-direction: row;
@@ -35,6 +33,12 @@
   }
 
   &__center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+
     &__diagram_name {
       padding: 4px 16px;
       border-radius: 4px;
