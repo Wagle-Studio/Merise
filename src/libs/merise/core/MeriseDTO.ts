@@ -1,5 +1,5 @@
-import type { Association, Entity, Relation } from "../models";
-import type { MeriseDTOInterface } from "../types";
+import { Association, Entity, Relation } from "../models";
+import type { MeriseDTOInterface, MeriseDTOObject } from "../types";
 
 export default class MeriseDTO implements MeriseDTOInterface {
   private entities: Entity[] = [];
@@ -11,6 +11,22 @@ export default class MeriseDTO implements MeriseDTOInterface {
     this.associations = associations;
     this.relations = relations;
   }
+
+  static fromRaw = (raw: MeriseDTOObject): MeriseDTO => {
+    const entities = raw.entities.map((entity) => {
+      return Entity.fromRaw(entity);
+    });
+
+    const associations = raw.associations.map((association) => {
+      return Association.fromRaw(association);
+    });
+
+    const relations = raw.relations.map((relation) => {
+      return Relation.fromRaw(relation);
+    });
+
+    return new MeriseDTO(entities, associations, relations);
+  };
 
   getEntities = (): Entity[] => {
     return this.entities;
@@ -54,5 +70,9 @@ export default class MeriseDTO implements MeriseDTOInterface {
 
   cloneWithUpdatedAssociationsAndRelations = (associations: Association[], relations: Relation[]): MeriseDTOInterface => {
     return new MeriseDTO(this.entities, associations, relations);
+  };
+
+  cloneWithUpdatedEntitiesAndRelationsAndAssociations = (entities: Entity[], associations: Association[], relations: Relation[]): MeriseDTOInterface => {
+    return new MeriseDTO(entities, associations, relations);
   };
 }

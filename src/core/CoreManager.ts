@@ -2,13 +2,14 @@ import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
+import type { SaveManagerInterface, SaveStoreItem } from "@/core/libs/save";
+import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
 import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
 import { Field, FieldTypeNumberOptionEnum, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
-import type { Settings, SettingsManagerInterface } from "./libs/settings";
 
 export default class CoreManager implements CoreManagerInterface {
   constructor(
@@ -17,6 +18,7 @@ export default class CoreManager implements CoreManagerInterface {
     private toastManager: ToastManagerInterface,
     private dialogManager: DialogManagerInterface,
     private errorManager: ErrorManagerInterface,
+    private saveManager: SaveManagerInterface,
     private settingsManager: SettingsManagerInterface
   ) {}
 
@@ -98,7 +100,7 @@ export default class CoreManager implements CoreManagerInterface {
           this.handleFlowNodeRemove(entity.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
         },
         addField: () => {
-          const field = new Field(entity.getId(), entity.getType(), uuidv4());
+          const field = new Field(uuidv4(), entity.getId(), entity.getType());
           const addFieldDialogId = this.dialogManager.addFieldDialog({
             title: "Ajouter un champ",
             component: () => field.renderFormComponent(MeriseFormTypeEnum.CREATE),
@@ -128,7 +130,7 @@ export default class CoreManager implements CoreManagerInterface {
           this.handleFlowNodeRemove(association.getFlowId(), () => this.dialogManager.removeDialogById(dialogId));
         },
         addField: () => {
-          const field = new Field(association.getId(), association.getType(), uuidv4());
+          const field = new Field(uuidv4(), association.getId(), association.getType());
           const addFieldDialogId = this.dialogManager.addFieldDialog({
             title: "Ajouter un champ",
             component: () => field.renderFormComponent(MeriseFormTypeEnum.CREATE),
@@ -215,7 +217,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleMeriseFieldCreatePrimaryKey = (meriseItem: MeriseEntityInterface | MeriseAssociationInterface): void => {
-    const fieldPrimaryKey = new Field(meriseItem.getId(), meriseItem.getType(), uuidv4(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, FieldTypeNumberOptionEnum.COMPTER, true, false, true);
+    const fieldPrimaryKey = new Field(uuidv4(), meriseItem.getId(), meriseItem.getType(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, FieldTypeNumberOptionEnum.COMPTER, true, false, true);
     this.handleMeriseFieldCreate(fieldPrimaryKey);
   };
 
@@ -277,6 +279,37 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
+  handlSave = (): void => {
+    this.saveManager.save();
+
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Diagramme sauvegardé",
+    });
+  };
+
+  handleSaveOpen = (): void => {
+    const dialogId = this.dialogManager.addSettingsDialog({
+      title: "Sauvegarde",
+      component: () => this.saveManager.getCurrentSave().renderFormComponent(),
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+      },
+    });
+  };
+
+  handleSaveUpdate = (save: SaveStoreItem): void => {
+    this.saveManager.updateCurrentSave(save);
+    this.saveManager.save();
+
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Diagramme sauvegardé",
+    });
+  };
+
   handleSettingsOpen = (): void => {
     const dialogId = this.dialogManager.addSettingsDialog({
       title: "Paramètres",
@@ -289,10 +322,14 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  // TODO : handle error
   handleSettingsUpdate = (settings: Settings): void => {
     this.settingsManager.updateSettings(settings);
-    // "Paramètres mis à jour", "Échec de la mise à jour des paramètres"
+    this.saveManager.save();
+
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Paramètres sauvegardé",
+    });
   };
 
   private handleItemUpdate<TInput, TOutput>(item: TInput, updateFn: (item: TInput) => MeriseResult<TOutput>, successMessage: string, errorMessage: string): void {

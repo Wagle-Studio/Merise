@@ -2,10 +2,26 @@ import type { ReactNode } from "react";
 import type { CoreManagerInterface } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
+import type { SaveDTOInterface, SaveManagerInterface, SaveStoreItem } from "@/core/libs/save";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
 import type { MeriseDTOInterface, MeriseManagerInterface } from "@/libs/merise";
+
+// List of all available seed types
+export enum KernelSeedType {
+  NEW = "NEW",
+  SAVE_LOCAL = "SAVE_LOCAL",
+}
+
+// Interface for a seed from which a save will be initialized
+export interface KernelSeed {
+  id: string;
+  name: string;
+  type: KernelSeedType;
+  created: Date;
+  updated: Date;
+}
 
 // Managers available in the Kernel context
 export interface KernelManagers {
@@ -13,6 +29,7 @@ export interface KernelManagers {
   dialog: DialogManagerInterface;
   toast: ToastManagerInterface;
   error: ErrorManagerInterface;
+  save: SaveManagerInterface;
   flow: FlowManagerInterface;
   merise: MeriseManagerInterface;
   core: CoreManagerInterface;
@@ -21,10 +38,12 @@ export interface KernelManagers {
 // Props required to initialize the Kernel context
 export interface KernelContextProps {
   children: ReactNode;
+  seed: KernelSeed;
 }
 
 // Result returned by the Kernel initialization hook
 export interface UseKernelInitializationResult {
+  save: SaveDTOInterface;
   settings: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
@@ -35,6 +54,7 @@ export interface UseKernelInitializationResult {
 
 // Values exposed by the Kernel context
 export interface KernelContext {
+  save: SaveDTOInterface;
   settings: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
@@ -48,6 +68,9 @@ export interface KernelContext {
 export interface KernelOperations {
   onEntityCreate: () => void;
   onAssociationCreate: () => void;
+  onSave: () => void;
+  onSaveOpen: () => void;
+  onSaveUpdate: (save: SaveStoreItem) => void;
   onSettingsOpen: () => void;
   onSettingsUpdate: (settings: Settings) => void;
 }

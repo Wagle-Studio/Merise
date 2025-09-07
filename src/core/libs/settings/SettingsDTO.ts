@@ -2,7 +2,7 @@ import { createElement } from "react";
 import { SettingsFormComponent } from "@/ui/libs/settings";
 import { SettingsDefault } from "./SettingsDefault";
 import type { SettingsFormType } from "./SettingsFormSchema";
-import type { Settings, SettingsDTOInterface } from "./SettingsTypes";
+import type { Settings, SettingsDTOInterface, SettingsDTOObject } from "./SettingsTypes";
 
 export default class SettingsDTO implements SettingsDTOInterface {
   private settings: Settings;
@@ -10,6 +10,10 @@ export default class SettingsDTO implements SettingsDTOInterface {
   constructor(settings: Settings = SettingsDefault) {
     this.settings = settings;
   }
+
+  static fromRaw = (raw: SettingsDTOObject): SettingsDTO => {
+    return new SettingsDTO(raw.settings);
+  };
 
   hydrate = (formData: SettingsFormType): void => {
     this.settings.theme = formData.theme;

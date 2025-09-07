@@ -1,6 +1,7 @@
 import { createElement } from "react";
 import { AssociationComponent, AssociationFormComponent } from "@/ui";
-import { type MeriseAssociationInterface, type MeriseFieldInterface, MeriseItemTypeEnum } from "../../types";
+import { type MeriseAssociation, type MeriseAssociationInterface, type MeriseFieldInterface, MeriseItemTypeEnum } from "../../types";
+import Field from "../field/Field";
 import AbstractMeriseItem from "./../AbstractMeriseItem";
 import { type AssociationFormType } from "./AssociationFormSchema";
 
@@ -8,14 +9,21 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
   private flowId: string;
   private name: string;
   private emoji: string;
-  private fields: MeriseFieldInterface[] = [];
+  private fields: MeriseFieldInterface[];
 
-  constructor(flowId: string, name: string) {
-    super(MeriseItemTypeEnum.ASSOCIATION);
+  constructor(id: string, flowId: string, name: string, fields: MeriseFieldInterface[] = [], emoji: string = "🆕") {
+    super(MeriseItemTypeEnum.ASSOCIATION, id);
     this.flowId = flowId;
     this.name = name;
-    this.emoji = "🆕";
+    this.fields = fields;
+    this.emoji = emoji;
   }
+
+  static fromRaw = (raw: MeriseAssociation): Association => {
+    const fields = raw.fields.map((f) => Field.fromRaw(f));
+
+    return new Association(raw.id, raw.flowId, raw.name, fields, raw.emoji);
+  };
 
   hydrate = (formData: AssociationFormType): void => {
     this.setName(formData.name);

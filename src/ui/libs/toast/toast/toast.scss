@@ -55,7 +55,8 @@
     background-color: #10b981;
   }
 
-  &--info &__progress-bar {
+  &--info &__progress-bar,
+  &--save &__progress-bar {
     background-color: #3b82f6;
   }
 

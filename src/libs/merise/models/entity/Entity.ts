@@ -1,21 +1,29 @@
 import { createElement } from "react";
 import { EntityComponent, EntityFormComponent } from "@/ui";
-import { type MeriseEntityInterface, type MeriseFieldInterface, MeriseItemTypeEnum } from "../../types";
+import { type MeriseEntity, type MeriseEntityInterface, type MeriseFieldInterface, MeriseItemTypeEnum } from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
+import Field from "../field/Field";
 import { type EntityFormType } from "./EntityFormSchema";
 
 export default class Entity extends AbstractMeriseItem implements MeriseEntityInterface {
   private flowId: string;
   private name: string;
   private emoji: string;
-  private fields: MeriseFieldInterface[] = [];
+  private fields: MeriseFieldInterface[];
 
-  constructor(flowId: string, name: string) {
-    super(MeriseItemTypeEnum.ENTITY);
+  constructor(id: string, flowId: string, name: string, fields: MeriseFieldInterface[] = [], emoji: string = "🆕") {
+    super(MeriseItemTypeEnum.ENTITY, id);
     this.flowId = flowId;
     this.name = name;
-    this.emoji = "🆕";
+    this.fields = fields;
+    this.emoji = emoji;
   }
+
+  static fromRaw = (raw: MeriseEntity): Entity => {
+    const fields = raw.fields.map((f) => Field.fromRaw(f));
+
+    return new Entity(raw.id, raw.flowId, raw.name, fields, raw.emoji);
+  };
 
   hydrate = (formData: EntityFormType): void => {
     this.setName(formData.name);

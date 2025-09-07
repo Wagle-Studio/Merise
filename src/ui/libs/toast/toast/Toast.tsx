@@ -39,6 +39,8 @@ export const Toast = ({ toast }: ToastProps) => {
         return "⚠️";
       case "ERROR":
         return "❌";
+      case "SAVE":
+        return "💾";
       default:
         return "📄";
     }

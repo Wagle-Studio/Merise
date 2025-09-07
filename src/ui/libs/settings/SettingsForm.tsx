@@ -19,8 +19,8 @@ export const SettingsFormComponent = ({ settings }: SettingsFormComponentProps) 
     const formData = new FormData(e.currentTarget);
 
     const formValues = {
-      theme: formData.get("settings-theme") as SettingsThemeTypeEnum,
-      background: formData.get("settings-background") as SettingsBackgroundTypeEnum,
+      theme: formData.get("settings-theme"),
+      background: formData.get("settings-background"),
     };
 
     const validationResult = SettingsFormTypeSchema.safeParse(formValues);
