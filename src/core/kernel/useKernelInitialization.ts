@@ -2,27 +2,24 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import CoreManager from "@/core/CoreManager";
 import { type Dialog, DialogManager } from "@/core/libs/dialog";
 import { ErrorManager } from "@/core/libs/error";
-import { SaveDTO, type SaveDTOInterface, SaveManager } from "@/core/libs/save";
-import { type SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
+import { type SaveDTOInterface, SaveManager } from "@/core/libs/save";
+import { SettingsDTO, type SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import { type Toast, ToastManager } from "@/core/libs/toast";
-import { type FlowDTOInterface, FlowManager } from "@/libs/flow";
-import { type MeriseDTOInterface, MeriseManager } from "@/libs/merise";
-import type { KernelManagers, KernelSeed, UseKernelInitializationResult } from "./KernelTypes";
-import { useKernelSeedBuilder } from "./useKernelSeedBuilder";
+import { FlowDTO, type FlowDTOInterface, FlowManager } from "@/libs/flow";
+import { MeriseDTO, type MeriseDTOInterface, MeriseManager } from "@/libs/merise";
+import type { KernelManagers, UseKernelInitializationResult } from "./KernelTypes";
 
 // Initializes and provides all Kernel-related state and managers
-export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializationResult => {
-  const storedItem = useKernelSeedBuilder(seed);
-
-  const [save, setSave] = useState<SaveDTOInterface>(new SaveDTO(storedItem));
-  const [settings, setSettings] = useState<SettingsDTOInterface>(save.getSettings());
+export const useKernelInitialization = (): UseKernelInitializationResult => {
+  const [save, setSave] = useState<SaveDTOInterface | undefined>();
+  const [settingsDTO, setSettingsDTO] = useState<SettingsDTOInterface>(new SettingsDTO());
   const [dialogs, setDialogs] = useState<Dialog[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
-  const [flowDTO, setFlowDTO] = useState<FlowDTOInterface>(save.getFlow());
-  const [meriseDTO, setMeriseDTO] = useState<MeriseDTOInterface>(save.getMerise());
+  const [flowDTO, setFlowDTO] = useState<FlowDTOInterface>(new FlowDTO());
+  const [meriseDTO, setMeriseDTO] = useState<MeriseDTOInterface>(new MeriseDTO());
 
   const saveRef = useRef(save);
-  const settingsRef = useRef(settings);
+  const settingsRef = useRef(settingsDTO);
   const dialogsRef = useRef(dialogs);
   const toastsRef = useRef(toasts);
   const toastsTimersRef = useRef<Record<string, NodeJS.Timeout>>({});
@@ -31,11 +28,17 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
 
   useEffect(() => {
     saveRef.current = save;
+
+    if (save) {
+      setSettingsDTO(save.getSettingsDTO());
+      setFlowDTO(save.getFlowDTO());
+      setMeriseDTO(save.getMeriseDTO());
+    }
   }, [save]);
 
   useEffect(() => {
-    settingsRef.current = settings;
-  }, [settings]);
+    settingsRef.current = settingsDTO;
+  }, [settingsDTO]);
 
   useEffect(() => {
     dialogsRef.current = dialogs;
@@ -54,15 +57,15 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
   }, [meriseDTO]);
 
   const getSave = () => saveRef.current;
-  const getSettings = () => settingsRef.current;
+  const getSettingsDTO = () => settingsRef.current;
   const getDialogs = () => dialogsRef.current;
   const getToats = () => toastsRef.current;
   const getFlowDTO = () => flowDTORef.current;
   const getMeriseDTO = () => meriseDTORef.current;
 
   const managers = useMemo<KernelManagers>(() => {
-    const save = new SaveManager(getSave, setSave, getSettings, getFlowDTO, getMeriseDTO);
-    const settings = new SettingsManager(getSettings, setSettings);
+    const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO);
+    const settings = new SettingsManager(getSettingsDTO, setSettingsDTO);
     const dialog = new DialogManager(getDialogs, setDialogs);
     const toast = new ToastManager(getToats, setToasts, toastsTimersRef);
     const error = new ErrorManager(toast);
@@ -75,7 +78,7 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
 
   return {
     save,
-    settings,
+    settingsDTO,
     dialogs,
     toasts,
     flowDTO,

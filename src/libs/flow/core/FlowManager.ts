@@ -14,24 +14,21 @@ export default class FlowManager implements FlowManagerInterface {
     private setFlow: FlowDTODispatcher
   ) {}
 
-  // FLOW FACTORY
   handleMove = (change: NodeChange<TypedNode>): void => {
     this.setFlow((prev) => {
       return prev.cloneWithUpdatedNodes(applyNodeChanges<TypedNode>([change], prev.getNodes()));
     });
   };
 
-  // CORE MANAGER
   triggerReRender = (): void => {
     this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.getEdges(), prev.getNodes()));
   };
 
-  // CORE MANAGER
-  addEdge = (params: Connection, itemType: FlowMeriseItemType): FlowResult<TypedEdge> => {
+  addEdge = (params: Connection, itemType: FlowMeriseItemType): FlowResult<TypedEdge, null> => {
     const validationResult = this.validateConnection(params);
 
     if (!validationResult.success) {
-      return validationResult as FlowResult<TypedEdge>;
+      return validationResult;
     }
 
     const edgeId = uuidv4();
@@ -59,8 +56,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  addNode = (itemType: FlowMeriseItemType): FlowResult<TypedNode> => {
+  addNode = (itemType: FlowMeriseItemType): FlowResult<TypedNode, null> => {
     const nodeId = uuidv4();
 
     const node: TypedNode = {
@@ -83,8 +79,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  removeEdgeByEdgeId = (edgeId: string): FlowResult<TypedEdge | null> => {
+  removeEdgeByEdgeId = (edgeId: string): FlowResult<TypedEdge, null> => {
     if (!edgeId?.trim()) {
       return {
         success: false,
@@ -115,8 +110,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  removeNodeByNodeId = (nodeId: string): FlowResult<TypedNode | null> => {
+  removeNodeByNodeId = (nodeId: string): FlowResult<TypedNode, null> => {
     if (!nodeId?.trim()) {
       return {
         success: false,
@@ -148,8 +142,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  findEdgeByEdgeId = (edgeId: string): FlowResult<TypedEdge | null> => {
+  findEdgeByEdgeId = (edgeId: string): FlowResult<TypedEdge, null> => {
     if (!edgeId?.trim()) {
       return {
         success: false,
@@ -176,8 +169,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  findNodeByNodeId = (nodeId: string): FlowResult<TypedNode | null> => {
+  findNodeByNodeId = (nodeId: string): FlowResult<TypedNode, null> => {
     if (!nodeId?.trim()) {
       return {
         success: false,
@@ -204,7 +196,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  private validateConnection(params: Connection): FlowResult<void> {
+  private validateConnection(params: Connection): FlowResult<null, null> {
     if (!params.source || !params.target) {
       return {
         success: false,
@@ -238,6 +230,7 @@ export default class FlowManager implements FlowManagerInterface {
     const sourceNode = this.getFlow()
       .getNodes()
       .find((node) => node.id === params.source);
+
     const targetNode = this.getFlow()
       .getNodes()
       .find((node) => node.id === params.target);
@@ -266,7 +259,7 @@ export default class FlowManager implements FlowManagerInterface {
       }
     }
 
-    return { success: true, data: undefined };
+    return { success: true, data: null };
   }
 
   private calculateNewNodePosition(): { x: number; y: number } {

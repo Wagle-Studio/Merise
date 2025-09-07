@@ -62,10 +62,10 @@ export const FieldTableComponent = ({ fields, onSelect }: FieldTableComponentPro
                   {!field.isUnique() && <UnCheckedIcon />}
                 </td>
                 <td className="field-table__rows__item--actions">
-                  <Button variant="invisible" onClick={() => handleFieldSelect(field)}>
+                  <Button variant="ghost" onClick={() => handleFieldSelect(field)}>
                     <EditIcon />
                   </Button>
-                  <Button variant="invisible" onClick={() => handleFieldDelete(field)}>
+                  <Button variant="ghost" onClick={() => handleFieldDelete(field)}>
                     <TrashIcon />
                   </Button>
                 </td>

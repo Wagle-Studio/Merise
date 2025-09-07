@@ -2,7 +2,7 @@ import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
-import type { SaveManagerInterface, SaveStoreItem } from "@/core/libs/save";
+import type { Save, SaveManagerInterface } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
@@ -279,8 +279,41 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
+  handleSaveCreate = (): void => {
+    const newSaveId = this.saveManager.createSave();
+    const openSaveResult = this.saveManager.openSave(newSaveId);
+
+    if (!openSaveResult.success) {
+      this.toastManager.addToast({
+        type: ToastTypeEnum.ERROR,
+        message: "Erreur lors de la création du diagramme",
+      });
+      return;
+    }
+
+    this.saveManager.updateCurrentSave(openSaveResult.data);
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Diagramme créé",
+    });
+  };
+
+  handleSaveOpen = (saveId: string): void => {
+    const openSaveResult = this.saveManager.openSave(saveId);
+
+    if (!openSaveResult.success) {
+      this.toastManager.addToast({
+        type: ToastTypeEnum.ERROR,
+        message: "Erreur lors de l'ouverture du diagramme",
+      });
+      return;
+    }
+
+    this.saveManager.updateCurrentSave(openSaveResult.data);
+  };
+
   handlSave = (): void => {
-    this.saveManager.save();
+    this.saveManager.saveCurrent();
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
@@ -288,10 +321,10 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveOpen = (): void => {
+  handleSaveSelect = (): void => {
     const dialogId = this.dialogManager.addSaveDialog({
       title: "Sauvegarde",
-      component: () => this.saveManager.getCurrentSave().renderFormComponent(),
+      component: () => this.saveManager.getCurrentSave()?.renderFormComponent(),
       callbacks: {
         closeDialog: () => {
           this.dialogManager.removeDialogById(dialogId);
@@ -300,13 +333,27 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveUpdate = (save: SaveStoreItem): void => {
+  handleSaveUpdate = (save: Save): void => {
     this.saveManager.updateCurrentSave(save);
-    this.saveManager.save();
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
       message: "Diagramme sauvegardé",
+    });
+  };
+
+  handleSaveRemove = (saveId: string): void => {
+    const dialogId = this.dialogManager.addConfirmDialog({
+      title: "Sauvegarde",
+      message: "Êtes-vous sûr de vouloir supprimer ce diagramme ?",
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+        onConfirm: () => {
+          this.saveManager.removeSave(saveId);
+        },
+      },
     });
   };
 
@@ -324,7 +371,7 @@ export default class CoreManager implements CoreManagerInterface {
 
   handleSettingsUpdate = (settings: Settings): void => {
     this.settingsManager.updateSettings(settings);
-    this.saveManager.save();
+    this.saveManager.saveCurrent();
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
@@ -332,7 +379,7 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  private handleItemUpdate<TInput, TOutput>(item: TInput, updateFn: (item: TInput) => MeriseResult<TOutput>, successMessage: string, errorMessage: string): void {
+  private handleItemUpdate<TInput, TOutput>(item: TInput, updateFn: (item: TInput) => MeriseResult<TOutput, null>, successMessage: string, errorMessage: string): void {
     const updateResult = updateFn(item);
 
     if (!updateResult.success) {
@@ -475,7 +522,7 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
-  private mapResultError = (flowResultFail: FlowResultFail | MeriseResultFail<any>): CoreError => {
+  private mapResultError = (flowResultFail: FlowResultFail<unknown> | MeriseResultFail<any>): CoreError => {
     switch (flowResultFail.severity) {
       case FlowErrorTypeEnum.INFO:
       case MeriseErrorTypeEnum.INFO:

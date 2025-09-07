@@ -1,23 +1,39 @@
 import { createElement } from "react";
-import type { SettingsDTOInterface } from "@/core/libs/settings";
-import type { FlowDTOInterface } from "@/libs/flow";
-import type { MeriseDTOInterface } from "@/libs/merise";
+import { SettingsDTO, type SettingsDTOInterface } from "@/core/libs/settings";
+import { FlowDTO, type FlowDTOInterface } from "@/libs/flow";
+import { MeriseDTO, type MeriseDTOInterface } from "@/libs/merise";
 import { SaveFormComponent } from "@/ui/libs/save";
 import type { SaveFormType } from "./SaveFormSchema";
-import type { SaveDTOInterface, SaveStoreItem } from "./SaveTypes";
+import type { Save, SaveDTOInterface, SaveDTOObject } from "./SaveTypes";
 
 export default class SaveDTO implements SaveDTOInterface {
-  private save: SaveStoreItem;
+  private save: Save;
 
-  constructor(save: SaveStoreItem) {
+  constructor(save: Save) {
     this.save = save;
   }
+
+  static fromRaw = (raw: SaveDTOObject): SaveDTOInterface => {
+    return new SaveDTO({
+      id: raw.id,
+      name: raw.name,
+      settings: SettingsDTO.fromRaw(raw.settings),
+      flow: FlowDTO.fromRaw(raw.flow),
+      merise: MeriseDTO.fromRaw(raw.merise),
+      created: raw.created,
+      updated: raw.updated,
+    });
+  };
+
+  static cloneWithUpdatedSave = (save: Save): SaveDTOInterface => {
+    return new SaveDTO(save);
+  };
 
   hydrate = (formData: SaveFormType): void => {
     this.save.name = formData.name;
   };
 
-  getSave = (): SaveStoreItem => {
+  getSave = (): Save => {
     return this.save;
   };
 
@@ -29,15 +45,15 @@ export default class SaveDTO implements SaveDTOInterface {
     return this.save.name;
   };
 
-  getSettings = (): SettingsDTOInterface => {
+  getSettingsDTO = (): SettingsDTOInterface => {
     return this.save.settings;
   };
 
-  getFlow = (): FlowDTOInterface => {
+  getFlowDTO = (): FlowDTOInterface => {
     return this.save.flow;
   };
 
-  getMerise = (): MeriseDTOInterface => {
+  getMeriseDTO = (): MeriseDTOInterface => {
     return this.save.merise;
   };
 
@@ -47,10 +63,6 @@ export default class SaveDTO implements SaveDTOInterface {
 
   getUpdated = (): Date => {
     return this.save.updated;
-  };
-
-  cloneWithUpdatedSave = (save: SaveStoreItem): SaveDTOInterface => {
-    return new SaveDTO(save);
   };
 
   renderFormComponent = (): React.ReactElement => {

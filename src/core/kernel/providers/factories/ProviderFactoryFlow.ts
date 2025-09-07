@@ -17,14 +17,14 @@ export default class ProviderFactoryFlow {
 
   static createDependencies(managers: KernelManagers): FlowDependencies {
     return {
-      findMeriseEntityByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface | null> => {
-        return managers.merise.findEntityByFlowId(flowId) as FlowResult<FlowMeriseItemInterface | null>;
+      findMeriseEntityByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface, null> => {
+        return managers.merise.findEntityByFlowId(flowId);
       },
-      findMeriseAssociationByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface | null> => {
-        return managers.merise.findAssociationByFlowId(flowId) as FlowResult<FlowMeriseItemInterface | null>;
+      findMeriseAssociationByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface, null> => {
+        return managers.merise.findAssociationByFlowId(flowId);
       },
-      findMeriseRelationByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface | null> => {
-        return managers.merise.findRelationByFlowId(flowId) as FlowResult<FlowMeriseItemInterface | null>;
+      findMeriseRelationByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface, null> => {
+        return managers.merise.findRelationByFlowId(flowId) as FlowResult<FlowMeriseItemInterface, null>;
       },
     };
   }

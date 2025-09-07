@@ -1,27 +1,12 @@
 import type { ReactNode } from "react";
-import type { CoreManagerInterface } from "@/core/CoreTypes";
+import type { CoreManagerInterface, CoreResult } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
-import type { SaveDTOInterface, SaveManagerInterface, SaveStoreItem } from "@/core/libs/save";
+import type { Save, SaveDTOInterface, SaveManagerInterface, SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
 import type { MeriseDTOInterface, MeriseManagerInterface } from "@/libs/merise";
-
-// List of all available seed types
-export enum KernelSeedType {
-  NEW = "NEW",
-  SAVE_LOCAL = "SAVE_LOCAL",
-}
-
-// Interface for a seed from which a save will be initialized
-export interface KernelSeed {
-  id: string;
-  name: string;
-  type: KernelSeedType;
-  created: Date;
-  updated: Date;
-}
 
 // Managers available in the Kernel context
 export interface KernelManagers {
@@ -38,13 +23,12 @@ export interface KernelManagers {
 // Props required to initialize the Kernel context
 export interface KernelContextProps {
   children: ReactNode;
-  seed: KernelSeed;
 }
 
 // Result returned by the Kernel initialization hook
 export interface UseKernelInitializationResult {
-  save: SaveDTOInterface;
-  settings: SettingsDTOInterface;
+  save: SaveDTOInterface | undefined;
+  settingsDTO: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
   flowDTO: FlowDTOInterface;
@@ -54,23 +38,32 @@ export interface UseKernelInitializationResult {
 
 // Values exposed by the Kernel context
 export interface KernelContext {
-  save: SaveDTOInterface;
-  settings: SettingsDTOInterface;
+  save: SaveDTOInterface | undefined;
+  settingsDTO: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
   flowDTO: FlowDTOInterface;
   meriseDTO: MeriseDTOInterface;
   managers: KernelManagers;
   operations: KernelOperations;
+  dependencies: KernelDependencies;
 }
 
 // Kernel operations contract provided by the provider factory
 export interface KernelOperations {
   onEntityCreate: () => void;
   onAssociationCreate: () => void;
+  onSaveCreate: () => void;
   onSave: () => void;
-  onSaveOpen: () => void;
-  onSaveUpdate: (save: SaveStoreItem) => void;
+  onSaveOpen: (saveId: string) => void;
+  onSaveSelect: () => void;
+  onSaveUpdate: (save: Save) => void;
+  onSaveRemove: (saveId: string) => void;
   onSettingsOpen: () => void;
   onSettingsUpdate: (settings: Settings) => void;
+}
+
+// Kernel dependencies contract provided by the provider factory
+export interface KernelDependencies {
+  findLocalSaves: () => CoreResult<SaveRawDTOObject[], null>;
 }

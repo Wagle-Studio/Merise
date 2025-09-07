@@ -3,8 +3,8 @@ import type { EntityFormType } from "../models/entity/EntityFormSchema";
 import type { FieldFormType } from "../models/field/FieldFormSchema";
 import type { RelationFormType } from "../models/relation/RelationFormSchema";
 
-// Mirror of the Core item types used in Merise
-export enum MeriseErrorType {
+// List of all available Merise error types
+export enum ErrorType {
   INFO = "INFO",
   WARNING = "WARNING",
   ERROR = "ERROR",
@@ -20,9 +20,12 @@ export type MeriseResultSuccess<T> = {
 export type MeriseResultFail<E> = {
   success: false;
   message: string;
-  severity: MeriseErrorType;
+  severity: ErrorType;
   error?: E;
 };
+
+// Union type representing the result of a Merise operation
+export type MeriseResult<T, E = undefined> = MeriseResultSuccess<T> | MeriseResultFail<E>;
 
 // List of all available merise form types
 export enum MeriseFormType {
@@ -187,9 +190,6 @@ export interface MeriseField extends MeriseItem {
   nullable: boolean;
   unique: boolean;
 }
-
-// Union type representing the result of a Merise operation
-export type MeriseResult<T, E = undefined> = MeriseResultSuccess<T> | MeriseResultFail<E>;
 
 // Merise operations contract provided by the provider factory
 export interface MeriseOperations {

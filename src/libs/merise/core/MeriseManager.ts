@@ -9,8 +9,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     private setMerise: MeriseDTODispatcher
   ) {}
 
-  // CORE MANAGER
-  addEntity = (flowId: string): MeriseResult<MeriseEntityInterface> => {
+  addEntity = (flowId: string): MeriseResult<MeriseEntityInterface, null> => {
     if (!flowId?.trim()) {
       return {
         success: false,
@@ -40,8 +39,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  addAssociation = (flowId: string): MeriseResult<MeriseAssociationInterface> => {
+  addAssociation = (flowId: string): MeriseResult<MeriseAssociationInterface, null> => {
     if (!flowId?.trim()) {
       return {
         success: false,
@@ -71,8 +69,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  addRelation = (flowId: string, source: string, target: string): MeriseResult<MeriseRelationInterface> => {
+  addRelation = (flowId: string, source: string, target: string): MeriseResult<MeriseRelationInterface, null> => {
     if (!flowId?.trim() || !source?.trim() || !target?.trim()) {
       return {
         success: false,
@@ -84,7 +81,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     const validationResult = this.validateRelationCreation(source, target);
 
     if (!validationResult.success) {
-      return validationResult as MeriseResult<MeriseRelationInterface>;
+      return validationResult;
     }
 
     const relation = new Relation(uuidv4(), flowId, source, target, MeriseRelationCardinalityTypeEnum.ZERO_N);
@@ -97,8 +94,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  updateEntity = (updatedEntity: Entity): MeriseResult<MeriseEntityInterface> => {
+  updateEntity = (updatedEntity: Entity): MeriseResult<MeriseEntityInterface, null> => {
     if (!updatedEntity?.getId()?.trim()) {
       return {
         success: false,
@@ -128,8 +124,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  updateAssociation = (updatedAssociation: Association): MeriseResult<MeriseAssociationInterface> => {
+  updateAssociation = (updatedAssociation: Association): MeriseResult<MeriseAssociationInterface, null> => {
     if (!updatedAssociation?.getId()?.trim()) {
       return {
         success: false,
@@ -159,8 +154,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  updateRelation = (updatedRelation: Relation): MeriseResult<MeriseRelationInterface> => {
+  updateRelation = (updatedRelation: Relation): MeriseResult<MeriseRelationInterface, null> => {
     if (!updatedRelation?.getId()?.trim()) {
       return {
         success: false,
@@ -190,78 +184,123 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  // CORE MANAGER
-  removeEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface | null> => {
-    return this.removeItemByFlowId(this.getMerise().getEntities(), flowId, "l'entité", (updatedEntities, updatedRelations) => {
+  removeEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface, null> => {
+    const meriseUpdateFunction = (updatedEntities: Entity[], updatedRelations: Relation[]) => {
       this.setMerise((prev) => prev.cloneWithUpdatedEntitiesAndRelations(updatedEntities, updatedRelations));
-    });
-  };
+    };
 
-  // CORE MANAGER
-  removeAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface | null> => {
-    return this.removeItemByFlowId(this.getMerise().getAssociations(), flowId, "l'association", (updatedAssociations, updatedRelations) => {
-      this.setMerise((prev) => prev.cloneWithUpdatedAssociationsAndRelations(updatedAssociations, updatedRelations));
-    });
-  };
+    const removeItemResult = this.removeItemByFlowId<Entity>(this.getMerise().getEntities(), flowId, "l'entité", meriseUpdateFunction);
 
-  // CORE MANAGER
-  removeRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface | null> => {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: "Suppression de la relation impossible",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
+    if (!removeItemResult.success || !removeItemResult.data) {
+      return removeItemResult;
     }
-
-    const merise = this.getMerise();
-    const index = merise.getRelations().findIndex((relation) => relation.getFlowId() === flowId);
-
-    if (index === -1) {
-      return {
-        success: false,
-        message: "Relation introuvable",
-        severity: MeriseErrorTypeEnum.ERROR,
-      };
-    }
-
-    const removedRelation = merise.getRelations()[index];
-    const updatedRelations = merise.getRelations().filter((_, i) => i !== index);
-
-    this.setMerise((prev) => prev.cloneWithUpdatedRelations(updatedRelations));
 
     return {
       success: true,
-      data: removedRelation,
+      data: removeItemResult.data,
     };
   };
 
-  // CORE MANAGER
-  findEntityById = (id: string): MeriseResult<MeriseEntityInterface | null> => {
-    return this.findItemId(this.getMerise().getEntities(), id, "l'entité") as MeriseResult<MeriseEntityInterface | null>;
+  removeAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface, null> => {
+    const meriseUpdateFunction = (updatedAssociations: Association[], updatedRelations: Relation[]) => {
+      this.setMerise((prev) => prev.cloneWithUpdatedAssociationsAndRelations(updatedAssociations, updatedRelations));
+    };
+
+    const removeItemResult = this.removeItemByFlowId<Association>(this.getMerise().getAssociations(), flowId, "l'association", meriseUpdateFunction);
+
+    if (!removeItemResult.success || !removeItemResult.data) {
+      return removeItemResult;
+    }
+
+    return {
+      success: true,
+      data: removeItemResult.data,
+    };
   };
 
-  // CORE MANAGER
-  findAssociationById = (id: string): MeriseResult<MeriseAssociationInterface | null> => {
-    return this.findItemId(this.getMerise().getAssociations(), id, "l'association") as MeriseResult<MeriseAssociationInterface | null>;
+  removeRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface, null> => {
+    const meriseUpdateFunction = (updatedRelations: Relation[]) => {
+      this.setMerise((prev) => prev.cloneWithUpdatedRelations(updatedRelations));
+    };
+
+    const removeItemResult = this.removeItemByFlowId<Relation>(this.getMerise().getRelations(), flowId, "la relation", meriseUpdateFunction);
+
+    if (!removeItemResult.success || !removeItemResult.data) {
+      return removeItemResult;
+    }
+
+    return {
+      success: true,
+      data: removeItemResult.data,
+    };
   };
 
-  // FLOW FACTORY
-  findEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface | null> => {
-    return this.findItemByFlowId(this.getMerise().getEntities(), flowId, "l'entité") as MeriseResult<MeriseEntityInterface | null>;
+  findEntityById = (id: string): MeriseResult<MeriseEntityInterface, null> => {
+    const findResult = this.findItemId(this.getMerise().getEntities(), id, "l'entité");
+
+    if (!findResult.success) {
+      return findResult;
+    }
+
+    return {
+      success: true,
+      data: findResult.data,
+    };
   };
 
-  // FLOW FACTORY
-  findAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface | null> => {
-    return this.findItemByFlowId(this.getMerise().getAssociations(), flowId, "l'association") as MeriseResult<MeriseAssociationInterface | null>;
+  findAssociationById = (id: string): MeriseResult<MeriseAssociationInterface, null> => {
+    const findResult = this.findItemId(this.getMerise().getAssociations(), id, "l'association");
+
+    if (!findResult.success) {
+      return findResult;
+    }
+
+    return {
+      success: true,
+      data: findResult.data,
+    };
   };
 
-  // FLOW FACTORY
-  findRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface | null> => {
-    return this.findItemByFlowId(this.getMerise().getRelations(), flowId, "la relation") as MeriseResult<MeriseRelationInterface | null>;
+  findEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface, null> => {
+    const findResult = this.findItemByFlowId(this.getMerise().getEntities(), flowId, "l'entité");
+
+    if (!findResult.success) {
+      return findResult;
+    }
+
+    return {
+      success: true,
+      data: findResult.data,
+    };
   };
 
-  private validateRelationCreation(source: string, target: string): MeriseResult<void> {
+  findAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface, null> => {
+    const findResult = this.findItemByFlowId(this.getMerise().getAssociations(), flowId, "l'association");
+
+    if (!findResult.success) {
+      return findResult;
+    }
+
+    return {
+      success: true,
+      data: findResult.data,
+    };
+  };
+
+  findRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface, null> => {
+    const findResult = this.findItemByFlowId(this.getMerise().getRelations(), flowId, "la relation");
+
+    if (!findResult.success) {
+      return findResult;
+    }
+
+    return {
+      success: true,
+      data: findResult.data,
+    };
+  };
+
+  private validateRelationCreation(source: string, target: string): MeriseResult<null, null> {
     if (source === target) {
       return {
         success: false,
@@ -282,10 +321,10 @@ export default class MeriseManager implements MeriseManagerInterface {
       };
     }
 
-    return { success: true, data: undefined };
+    return { success: true, data: null };
   }
 
-  private removeItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string, updateFn: (items: T[], relations: Relation[]) => void): MeriseResult<T | null> {
+  private removeItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string, updateFn: (items: T[], relations: Relation[]) => void): MeriseResult<T, null> {
     if (!flowId?.trim()) {
       return {
         success: false,
@@ -318,7 +357,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   }
 
-  private findItemId<T extends { getId(): string }>(collection: T[], id: string, itemType: string): MeriseResult<T | null> {
+  private findItemId<T extends { getId(): string }>(collection: T[], id: string, itemType: string): MeriseResult<T, null> {
     if (!id?.trim()) {
       return {
         success: false,
@@ -339,7 +378,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     return { success: true, data: item };
   }
 
-  private findItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string): MeriseResult<T | null> {
+  private findItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string): MeriseResult<T, null> {
     if (!flowId?.trim()) {
       return {
         success: false,

@@ -1,94 +1,46 @@
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
-import { type KernelSeed, KernelSeedTypeEnum } from "@/core";
-import type { SaveStoreItemRaw } from "@/core/libs/save/SaveTypes";
+import { useKernelContext } from "@/core";
+import { type SaveRawDTOObject } from "@/core/libs/save";
+import { LocalSaveTable } from "@/ui";
 import { Button } from "../../atoms";
 import "./welcome.scss";
 
-interface WelcomeProps {
-  seedDispatcher: React.Dispatch<React.SetStateAction<KernelSeed | null>>;
-}
+export const Welcome = () => {
+  const [localSaves, setLocalSaves] = useState<SaveRawDTOObject[]>([]);
 
-export const Welcome = ({ seedDispatcher }: WelcomeProps) => {
-  const [localSaves, setLocalSaves] = useState<SaveStoreItemRaw[]>([]);
+  const { operations, dependencies } = useKernelContext();
 
   useEffect(() => {
-    const saves: SaveStoreItemRaw[] = [];
+    const findLocalSavesResult = dependencies.findLocalSaves();
 
-    for (let i = 0; i < localStorage.length; i++) {
-      const currentKey = localStorage.key(i);
+    // TODO : handle error
+    if (!findLocalSavesResult.success) return;
 
-      if (!currentKey) throw new Error("Impossible d'accéder aux sauvegardes locales");
-
-      const currentSave = localStorage.getItem(currentKey);
-
-      if (!currentSave) throw new Error("Impossible d'accéder aux sauvegardes locales");
-
-      saves.push(JSON.parse(currentSave));
-    }
-
-    setLocalSaves(saves);
+    setLocalSaves(findLocalSavesResult.data);
   }, []);
 
   const handleSelectNewSave = () => {
-    seedDispatcher({
-      id: uuidv4(),
-      name: "Nouveau diagramme",
-      type: KernelSeedTypeEnum.NEW,
-      created: new Date(),
-      updated: new Date(),
-    });
+    operations.onSaveCreate();
   };
 
-  const handleSelectLocalSave = (localSave: SaveStoreItemRaw) => {
-    seedDispatcher({
-      id: localSave.id,
-      name: localSave.name,
-      type: KernelSeedTypeEnum.SAVE_LOCAL,
-      created: localSave.created,
-      updated: localSave.created,
-    });
+  const handleSaveOpen = (save: SaveRawDTOObject) => {
+    operations.onSaveOpen(save.id);
+  };
+
+  const handleSaveRemove = (save: SaveRawDTOObject) => {
+    operations.onSaveRemove(save.id);
   };
 
   return (
     <div className="welcome">
       <div className="welcome__header">
-        <Button onClick={handleSelectNewSave}>Nouveau diagramme</Button>
+        <h1>Merise</h1>
+        <div className="welcome__header__actions">
+          <Button onClick={handleSelectNewSave}>Nouveau diagramme</Button>
+        </div>
       </div>
       <div className="welcome__saves">
-        <h2>Sauvegardes locales</h2>
-        <table className="welcome__saves__table">
-          <colgroup>
-            <col className="welcome__saves__table__col--name" />
-            <col className="welcome__saves__table__col--updated" />
-            <col className="welcome__saves__table__col--actions" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Modification</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody className="welcome__saves__table__rows">
-            {localSaves.length > 0 &&
-              localSaves.map((save) => (
-                <tr key={`welcome__saves__table__rows-${save.id}`} className="welcome__saves__table__rows__item">
-                  <td className="welcome__saves__table__rows__item--name">{save.name}</td>
-                  <td className="welcome__saves__table__rows__item--updated">{format(save.updated, "dd/MM/yyyy")}</td>
-                  <td className="welcome__saves__table__rows__item--actions">
-                    <Button onClick={() => handleSelectLocalSave(save)}>Ouvrir</Button>
-                  </td>
-                </tr>
-              ))}
-            {localSaves.length === 0 && (
-              <tr className="welcome__saves__table__rows__item">
-                <td className="welcome__saves__table__rows__item--empty">Aucune sauvegarde</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <LocalSaveTable saves={localSaves} handleSaveOpen={handleSaveOpen} handleSaveRemove={handleSaveRemove} />
       </div>
     </div>
   );

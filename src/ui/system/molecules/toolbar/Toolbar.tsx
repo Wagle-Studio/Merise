@@ -14,8 +14,15 @@ export const Toolbar = () => {
     operations.onAssociationCreate();
   }, []);
 
-  const handleOpenSave = useCallback(() => {
-    operations.onSaveOpen();
+  const handleOpenSelect = useCallback(() => {
+    operations.onSaveSelect();
+  }, []);
+
+  const handleClose = useCallback(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("save");
+    window.history.pushState({}, "", url.toString());
+    window.location.reload();
   }, []);
 
   const handleSave = useCallback(() => {
@@ -28,32 +35,34 @@ export const Toolbar = () => {
 
   return (
     <div className="toolbar">
-      <div className="toolbar__wrapper">
-        <div className="toolbar__left">
-          <Button onClick={handleCreateEntity}>
-            <AddIcon /> Entité
-          </Button>
-          <Button onClick={handleCreateAssociation}>
-            <AddIcon /> Association
-          </Button>
+      {save && (
+        <div className="toolbar__wrapper">
+          <div className="toolbar__left">
+            <Button onClick={handleCreateEntity}>
+              <AddIcon /> Entité
+            </Button>
+            <Button onClick={handleCreateAssociation}>
+              <AddIcon /> Association
+            </Button>
+          </div>
+          <div className="toolbar__center">
+            <Button variant="ghost" className="toolbar__center__diagram_name" onClick={handleOpenSelect} disabled={save.getId() == "save_demo"}>
+              {save.getName()} <EditIcon />
+            </Button>
+          </div>
+          <div className="toolbar__right">
+            <Button onClick={handleClose}>
+              <HomeIcon />
+            </Button>
+            <Button onClick={handleSave} disabled={save.getId() == "save_demo"}>
+              <SaveIcon />
+            </Button>
+            <Button onClick={handleOpenSettings}>
+              <SettingsIcon />
+            </Button>
+          </div>
         </div>
-        <div className="toolbar__center">
-          <Button variant="ghost" className="toolbar__center__diagram_name" onClick={handleOpenSave} disabled={save.getId() == "save_demo"}>
-            {save.getName()} <EditIcon />
-          </Button>
-        </div>
-        <div className="toolbar__right">
-          <Button onClick={handleSave}>
-            <HomeIcon />
-          </Button>
-          <Button onClick={handleSave} disabled={save.getId() == "save_demo"}>
-            <SaveIcon />
-          </Button>
-          <Button onClick={handleOpenSettings}>
-            <SettingsIcon />
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

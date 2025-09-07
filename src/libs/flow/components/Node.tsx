@@ -10,7 +10,7 @@ export default memo(
   function Node(props: NodeProps<TypedNode>): React.ReactElement | null {
     const { dependencies } = useFlowContext();
 
-    let meriseItemFindResult: FlowResult<FlowMeriseItemInterface | null>;
+    let meriseItemFindResult: FlowResult<FlowMeriseItemInterface, null>;
 
     switch (props.data.type) {
       case FlowMeriseItemTypeEnum.ENTITY:
@@ -23,6 +23,7 @@ export default memo(
         return null;
     }
 
+    // TODO : handle error, with an error node ?
     if (!meriseItemFindResult.success || !meriseItemFindResult.data) {
       return null;
     }

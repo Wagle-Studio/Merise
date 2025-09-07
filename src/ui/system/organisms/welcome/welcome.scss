@@ -8,61 +8,13 @@
   &__header {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: flex-end;
   }
 
   &__saves {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-
-    &__table {
-      border-collapse: collapse;
-      table-layout: fixed;
-      background: var(--white);
-      box-shadow: var(--dialog-shadow);
-
-      &__col {
-        &--name {
-          width: 250px;
-        }
-      }
-
-      thead th {
-        text-align: left;
-        font-weight: 600;
-        padding: 6px 8px;
-        border-bottom: 1px solid var(--gray-base);
-        color: var(--gray-darker);
-        background-color: var(--gray-base);
-        box-sizing: border-box;
-      }
-
-      tbody td {
-        padding: 6px 8px;
-        border-bottom: 1px solid var(--gray-base);
-        vertical-align: middle;
-        box-sizing: border-box;
-      }
-
-      &__rows {
-        &__item {
-          &--name {
-            width: 250px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          &--actions {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-            gap: 8px;
-            height: 47.5px;
-          }
-        }
-      }
-    }
+    gap: 40px;
   }
 }

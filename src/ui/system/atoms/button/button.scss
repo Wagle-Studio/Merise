@@ -32,6 +32,7 @@
   }
 
   &--disabled {
+    background-color: var(--gray-base);
     cursor: not-allowed;
   }
 

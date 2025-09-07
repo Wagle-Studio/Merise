@@ -8,12 +8,29 @@ export enum FlowItemType {
   EDGE = "EDGE",
 }
 
-// Mirror of the Core item types used in Flow
-export enum FlowErrorType {
+// List of all available Flow error types
+export enum ErrorType {
   INFO = "INFO",
   WARNING = "WARNING",
   ERROR = "ERROR",
 }
+
+// Represents a successful Flow operation
+export type FlowResultSuccess<T> = {
+  success: true;
+  data: T;
+};
+
+// Represents a failed Flow operation
+export type FlowResultFail<E> = {
+  success: false;
+  message: string;
+  severity: ErrorType;
+  error?: E;
+};
+
+// Union type representing the result of a Flow operation
+export type FlowResult<T, E> = FlowResultSuccess<T> | FlowResultFail<E>;
 
 // Mirror of the Merise library item types used in Flow
 export enum FlowMeriseItemType {
@@ -32,22 +49,6 @@ export interface FlowMeriseItemInterface {
   getName: () => string;
 }
 
-// Represents a successful Flow operation
-export type FlowResultSuccess<T> = {
-  success: true;
-  data: T;
-};
-
-// Represents a failed Flow operation
-export type FlowResultFail = {
-  success: false;
-  message: string;
-  severity: FlowErrorType;
-};
-
-// Union type representing the result of a Flow operation
-export type FlowResult<T> = FlowResultSuccess<T> | FlowResultFail;
-
 // Flow operations contract provided by the provider factory
 export interface FlowOperations {
   onEdgeCreate: (connection: Connection) => void;
@@ -56,7 +57,7 @@ export interface FlowOperations {
 
 // Flow dependencies contract provided by the provider factory
 export interface FlowDependencies {
-  findMeriseEntityByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface | null>;
-  findMeriseAssociationByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface | null>;
-  findMeriseRelationByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface | null>;
+  findMeriseEntityByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface, null>;
+  findMeriseAssociationByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface, null>;
+  findMeriseRelationByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface, null>;
 }

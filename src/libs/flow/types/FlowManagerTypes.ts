@@ -9,10 +9,10 @@ export type FlowDTODispatcher = React.Dispatch<React.SetStateAction<FlowDTOInter
 export interface FlowManagerInterface {
   handleMove: (change: NodeChange<TypedNode>) => void;
   triggerReRender: () => void;
-  addEdge: (params: Connection, itemType: FlowMeriseItemType) => FlowResult<TypedEdge>;
-  addNode: (itemType: FlowMeriseItemType) => FlowResult<TypedNode>;
-  removeEdgeByEdgeId: (edgeId: string) => FlowResult<TypedEdge | null>;
-  removeNodeByNodeId: (nodeId: string) => FlowResult<TypedNode | null>;
-  findEdgeByEdgeId: (edgeId: string) => FlowResult<TypedEdge | null>;
-  findNodeByNodeId: (nodeId: string) => FlowResult<TypedNode | null>;
+  addEdge: (params: Connection, itemType: FlowMeriseItemType) => FlowResult<TypedEdge, null>;
+  addNode: (itemType: FlowMeriseItemType) => FlowResult<TypedNode, null>;
+  removeEdgeByEdgeId: (edgeId: string) => FlowResult<TypedEdge, null>;
+  removeNodeByNodeId: (nodeId: string) => FlowResult<TypedNode, null>;
+  findEdgeByEdgeId: (edgeId: string) => FlowResult<TypedEdge, null>;
+  findNodeByNodeId: (nodeId: string) => FlowResult<TypedNode, null>;
 }
