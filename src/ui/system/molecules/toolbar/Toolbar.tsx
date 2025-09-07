@@ -31,7 +31,7 @@ export const Toolbar = () => {
         </div>
         <div className="toolbar__center">
           <p className="toolbar__center__diagram_name" onClick={handleOpenSettings}>
-            {save.name}
+            {save.getName()}
           </p>
         </div>
         <div className="toolbar__right">

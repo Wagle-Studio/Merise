@@ -1,7 +1,7 @@
 import type React from "react";
 import type { SettingsFormType } from "./SettingsFormSchema";
 
-// Interface defining settings type
+// Interface defining settings object
 export interface Settings {
   theme: SettingsThemeType;
   background: SettingsBackgroundType;
@@ -21,12 +21,20 @@ export enum SettingsBackgroundType {
   DOTT = "Points",
 }
 
-// Interface defining the Settings DTO structure
+// Contract for the Settings DTO implementation
 export interface SettingsDTOInterface {
   hydrate: (formData: SettingsFormType) => void;
   getSettings: () => Settings;
   cloneWithUpdatedSettings: (settings: Settings) => SettingsDTOInterface;
   renderFormComponent: () => React.ReactElement;
+}
+
+// Interface for a Settings DTO object
+export interface SettingsDTOObject {
+  settings: {
+    theme: SettingsThemeType;
+    background: SettingsBackgroundType;
+  };
 }
 
 // Dispatcher type for updating the settings state

@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import CoreManager from "@/core/CoreManager";
 import { type Dialog, DialogManager } from "@/core/libs/dialog";
 import { ErrorManager } from "@/core/libs/error";
-import { SaverManager } from "@/core/libs/saver";
-import { SettingsDTO, type SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
+import { SaverDTO, type SaverDTOInterface, SaverManager } from "@/core/libs/saver";
+import { type SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import { type Toast, ToastManager } from "@/core/libs/toast";
 import { type FlowDTOInterface, FlowManager } from "@/libs/flow";
 import { type MeriseDTOInterface, MeriseManager } from "@/libs/merise";
@@ -12,20 +12,26 @@ import { useKernelSeedBuilder } from "./useKernelSeedBuilder";
 
 // Initializes and provides all Kernel-related state and managers
 export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializationResult => {
-  const save = useKernelSeedBuilder(seed);
+  const storedItem = useKernelSeedBuilder(seed);
 
-  const [settings, setSettings] = useState<SettingsDTOInterface>(new SettingsDTO());
+  const [save] = useState<SaverDTOInterface>(new SaverDTO(storedItem));
+  const [settings, setSettings] = useState<SettingsDTOInterface>(save.getSettings());
   const [dialogs, setDialogs] = useState<Dialog[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
-  const [flowDTO, setFlowDTO] = useState<FlowDTOInterface>(save.data.flow);
-  const [meriseDTO, setMeriseDTO] = useState<MeriseDTOInterface>(save.data.merise);
+  const [flowDTO, setFlowDTO] = useState<FlowDTOInterface>(save.getFlow());
+  const [meriseDTO, setMeriseDTO] = useState<MeriseDTOInterface>(save.getMerise());
 
+  const saveRef = useRef(save);
   const settingsRef = useRef(settings);
   const dialogsRef = useRef(dialogs);
   const toastsRef = useRef(toasts);
   const toastsTimersRef = useRef<Record<string, NodeJS.Timeout>>({});
   const flowDTORef = useRef(flowDTO);
   const meriseDTORef = useRef(meriseDTO);
+
+  useEffect(() => {
+    saveRef.current = save;
+  }, [save]);
 
   useEffect(() => {
     settingsRef.current = settings;
@@ -47,6 +53,7 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
     meriseDTORef.current = meriseDTO;
   }, [meriseDTO]);
 
+  const getSave = () => saveRef.current;
   const getSettings = () => settingsRef.current;
   const getDialogs = () => dialogsRef.current;
   const getToats = () => toastsRef.current;
@@ -58,7 +65,7 @@ export const useKernelInitialization = (seed: KernelSeed): UseKernelInitializati
     const dialog = new DialogManager(getDialogs, setDialogs);
     const toast = new ToastManager(getToats, setToasts, toastsTimersRef);
     const error = new ErrorManager(toast);
-    const saver = new SaverManager(save, getFlowDTO, getMeriseDTO);
+    const saver = new SaverManager(getSave, getSettings, getFlowDTO, getMeriseDTO);
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
     const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
     const core = new CoreManager(flow, merise, toast, dialog, error, saver, settings);

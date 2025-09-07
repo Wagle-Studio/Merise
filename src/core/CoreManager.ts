@@ -3,13 +3,13 @@ import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
 import type { SaverManagerInterface } from "@/core/libs/saver";
+import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
 import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
 import { Field, FieldTypeNumberOptionEnum, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
-import type { Settings, SettingsManagerInterface } from "./libs/settings";
 
 export default class CoreManager implements CoreManagerInterface {
   constructor(
@@ -280,7 +280,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleOnSave = (): void => {
-    this.saverManager.onSave();
+    this.saverManager.save();
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
@@ -300,10 +300,14 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  // TODO : handle error
   handleSettingsUpdate = (settings: Settings): void => {
     this.settingsManager.updateSettings(settings);
-    // "Paramètres mis à jour", "Échec de la mise à jour des paramètres"
+    this.saverManager.save();
+
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Paramètres sauvegardé",
+    });
   };
 
   private handleItemUpdate<TInput, TOutput>(item: TInput, updateFn: (item: TInput) => MeriseResult<TOutput>, successMessage: string, errorMessage: string): void {

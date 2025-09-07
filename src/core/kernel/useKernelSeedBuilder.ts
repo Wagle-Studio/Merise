@@ -3,6 +3,7 @@ import type { SaverStoreItem } from "@/core/libs/saver";
 import type { SaverStoreItemRaw } from "@/core/libs/saver/SaverTypes";
 import { FlowDTO, type FlowDTOObject } from "@/libs/flow";
 import { MeriseDTO, type MeriseDTOObject } from "@/libs/merise";
+import { SettingsDTO, type SettingsDTOObject } from "../libs/settings";
 
 // Builds save store item from a seed to provide the Kernel initialization
 export const useKernelSeedBuilder = (seed: KernelSeed): SaverStoreItem => {
@@ -18,18 +19,22 @@ export const useKernelSeedBuilder = (seed: KernelSeed): SaverStoreItem => {
 
   if (!stored) throw new Error("Impossible de consulter la sauvegarde");
 
-  const flowDTOraw = safeParse<FlowDTOObject>(stored.data.flow);
-  const meriseDTOraw = safeParse<MeriseDTOObject>(stored.data.merise);
+  const settingsDTOraw = safeParse<SettingsDTOObject>(stored.settings);
+  const flowDTOraw = safeParse<FlowDTOObject>(stored.flow);
+  const meriseDTOraw = safeParse<MeriseDTOObject>(stored.merise);
 
-  if (!flowDTOraw || !meriseDTOraw) throw new Error("Impossible d'exploiter la sauvegarde");
+  if (!settingsDTOraw || !flowDTOraw || !meriseDTOraw) throw new Error("Impossible d'exploiter la sauvegarde");
 
+  const settingsDTO = SettingsDTO.fromRaw(settingsDTOraw);
   const flowDTO = FlowDTO.fromRaw(flowDTOraw);
   const meriseDTO = MeriseDTO.fromRaw(meriseDTOraw);
 
   return {
     id: seed.id,
     name: seed.name,
-    data: { flow: flowDTO, merise: meriseDTO },
+    settings: settingsDTO,
+    flow: flowDTO,
+    merise: meriseDTO,
     created: seed.created,
     updated: seed.updated,
   };
@@ -38,7 +43,9 @@ export const useKernelSeedBuilder = (seed: KernelSeed): SaverStoreItem => {
 const DEFAULT_SAVE = (seed: KernelSeed): SaverStoreItem => ({
   id: seed.id,
   name: seed.name,
-  data: { flow: new FlowDTO(), merise: new MeriseDTO() },
+  settings: new SettingsDTO(),
+  flow: new FlowDTO(),
+  merise: new MeriseDTO(),
   created: seed.created,
   updated: seed.updated,
 });

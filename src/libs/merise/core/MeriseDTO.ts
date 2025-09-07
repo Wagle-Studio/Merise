@@ -12,7 +12,7 @@ export default class MeriseDTO implements MeriseDTOInterface {
     this.relations = relations;
   }
 
-  static fromRaw = (raw: MeriseDTOObject): MeriseDTOInterface => {
+  static fromRaw = (raw: MeriseDTOObject): MeriseDTO => {
     const entities = raw.entities.map((entity) => {
       return Entity.fromRaw(entity);
     });
