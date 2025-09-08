@@ -1,15 +1,16 @@
 import { format } from "date-fns";
 import { type SaveRawDTOObject } from "@/core/libs/save";
-import { Button, TrashIcon } from "../../atoms";
+import { Button, EditIcon, TrashIcon } from "../../atoms";
 import "./localSaveTable.scss";
 
 interface LocalSaveTableProps {
   saves: SaveRawDTOObject[];
   handleSaveOpen: (save: SaveRawDTOObject) => void;
+  handleSaveSelect: (save: SaveRawDTOObject) => void;
   handleSaveRemove: (save: SaveRawDTOObject) => void;
 }
 
-export const LocalSaveTable = ({ saves, handleSaveOpen, handleSaveRemove }: LocalSaveTableProps) => {
+export const LocalSaveTable = ({ saves, handleSaveOpen, handleSaveSelect, handleSaveRemove }: LocalSaveTableProps) => {
   return (
     <div className="local_saves">
       <h2>Sauvegardes locales</h2>
@@ -34,6 +35,9 @@ export const LocalSaveTable = ({ saves, handleSaveOpen, handleSaveRemove }: Loca
                 <td className="local_saves__table__rows__item--updated">{format(save.updated, "dd/MM/yyyy k:w")}</td>
                 <td className="local_saves__table__rows__item--actions">
                   <div className="local_saves__table__rows__item__actions">
+                    <Button onClick={() => handleSaveSelect(save)} disabled={save.id === "save_demo"}>
+                      <EditIcon />
+                    </Button>
                     <Button onClick={() => handleSaveRemove(save)} disabled={save.id === "save_demo"}>
                       <TrashIcon />
                     </Button>

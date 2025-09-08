@@ -15,7 +15,7 @@ export const Toolbar = () => {
   }, []);
 
   const handleOpenSelect = useCallback(() => {
-    operations.onSaveSelect();
+    operations.onSaveSelectCurrent();
   }, []);
 
   const handleClose = useCallback(() => {

@@ -27,8 +27,12 @@ export const Welcome = () => {
     operations.onSaveOpen(save.id);
   };
 
+  const handleSaveSelect = (save: SaveRawDTOObject) => {
+    operations.onSaveSelect(save.id);
+  };
+
   const handleSaveRemove = (save: SaveRawDTOObject) => {
-    operations.onSaveRemove(save.id);
+    operations.onSaveRemove(save);
   };
 
   return (
@@ -40,7 +44,7 @@ export const Welcome = () => {
         </div>
       </div>
       <div className="welcome__saves">
-        <LocalSaveTable saves={localSaves} handleSaveOpen={handleSaveOpen} handleSaveRemove={handleSaveRemove} />
+        <LocalSaveTable saves={localSaves} handleSaveOpen={handleSaveOpen} handleSaveSelect={handleSaveSelect} handleSaveRemove={handleSaveRemove} />
       </div>
     </div>
   );

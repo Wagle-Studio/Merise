@@ -6,9 +6,10 @@ import { Button, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui
 
 interface SaveFormComponentProps {
   save: SaveDTOInterface;
+  isCurrentSave: boolean;
 }
 
-export const SaveFormComponent = ({ save }: SaveFormComponentProps) => {
+export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormComponentProps) => {
   const { operations } = useKernelContext();
 
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
@@ -31,7 +32,9 @@ export const SaveFormComponent = ({ save }: SaveFormComponentProps) => {
     }
 
     save.hydrate(validationResult.data);
-    operations.onSaveUpdate(save.getSave());
+
+    if (isCurrentSave) operations.onSaveUpdateCurrent(save.getSave());
+    if (!isCurrentSave) operations.onSaveUpdate(save.getSave());
   };
 
   const formActions = (

@@ -63,12 +63,18 @@ export default class SaveManager implements SaveManagerInterface {
     return saveId;
   };
 
-  openSaveById = (saveId: string): CoreResult<Save, null> => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("save", saveId);
-    window.history.pushState({}, "", url.toString());
+  openSave = (saveId: string, navigate: boolean = true): CoreResult<Save, null> => {
+    if (navigate) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("save", saveId);
+      window.history.pushState({}, "", url.toString());
+    }
 
     return SaveManager.buildSaveFromSaveId(saveId);
+  };
+
+  updateSave = (save: Save): void => {
+    localStorage.setItem(save.id, JSON.stringify(save));
   };
 
   removeSave = (saveId: string): void => {

@@ -66,7 +66,7 @@ export default class SaveDTO implements SaveDTOInterface {
     return this.save.updated;
   };
 
-  renderFormComponent = (): React.ReactElement => {
-    return createElement(SaveFormComponent, { save: this });
+  renderFormComponent = (isCurrentSave: boolean = true): React.ReactElement => {
+    return createElement(SaveFormComponent, { save: this, isCurrentSave });
   };
 }

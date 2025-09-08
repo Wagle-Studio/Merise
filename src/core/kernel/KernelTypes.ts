@@ -56,9 +56,11 @@ export interface KernelOperations {
   onSaveCreate: () => void;
   onSave: () => void;
   onSaveOpen: (saveId: string) => void;
-  onSaveSelect: () => void;
+  onSaveSelect: (saveId: string) => void;
+  onSaveSelectCurrent: () => void;
   onSaveUpdate: (save: Save) => void;
-  onSaveRemove: (saveId: string) => void;
+  onSaveUpdateCurrent: (save: Save) => void;
+  onSaveRemove: (save: SaveRawDTOObject) => void;
   onSettingsOpen: () => void;
   onSettingsUpdate: (settings: Settings) => void;
 }

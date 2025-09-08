@@ -2,7 +2,7 @@ import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
-import type { Save, SaveManagerInterface } from "@/core/libs/save";
+import { type Save, SaveDTO, type SaveManagerInterface, type SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
@@ -281,7 +281,7 @@ export default class CoreManager implements CoreManagerInterface {
 
   handleSaveCreate = (): void => {
     const newSaveId = this.saveManager.createSave();
-    const openSaveResult = this.saveManager.openSaveById(newSaveId);
+    const openSaveResult = this.saveManager.openSave(newSaveId);
 
     if (!openSaveResult.success) {
       this.toastManager.addToast({
@@ -299,7 +299,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleSaveOpen = (saveId: string): void => {
-    const openSaveResult = this.saveManager.openSaveById(saveId);
+    const openSaveResult = this.saveManager.openSave(saveId);
 
     if (!openSaveResult.success) {
       this.toastManager.addToast({
@@ -321,7 +321,31 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveSelect = (): void => {
+  handleSaveSelect = (saveId: string): void => {
+    const openSaveResult = this.saveManager.openSave(saveId, false);
+
+    if (!openSaveResult.success) {
+      this.toastManager.addToast({
+        type: ToastTypeEnum.ERROR,
+        message: "Erreur lors de la manipulation du diagramme",
+      });
+      return;
+    }
+
+    const saveDTO = new SaveDTO(openSaveResult.data);
+
+    const dialogId = this.dialogManager.addSaveDialog({
+      title: saveDTO.getName(),
+      component: () => saveDTO.renderFormComponent(false),
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+      },
+    });
+  };
+
+  handleSaveSelectCurrent = (): void => {
     const dialogId = this.dialogManager.addSaveDialog({
       title: "Sauvegarde",
       component: () => this.saveManager.getCurrentSave()?.renderFormComponent(),
@@ -334,6 +358,15 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleSaveUpdate = (save: Save): void => {
+    this.saveManager.updateSave(save);
+
+    this.toastManager.addToast({
+      type: ToastTypeEnum.SAVE,
+      message: "Diagramme sauvegardé",
+    });
+  };
+
+  handleSaveUpdateCurrent = (save: Save): void => {
     this.saveManager.updateCurrentSave(save);
 
     this.toastManager.addToast({
@@ -342,16 +375,16 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveRemove = (saveId: string): void => {
+  handleSaveRemove = (save: SaveRawDTOObject): void => {
     const dialogId = this.dialogManager.addConfirmDialog({
-      title: "Sauvegarde",
+      title: save.name,
       message: "Êtes-vous sûr de vouloir supprimer ce diagramme ?",
       callbacks: {
         closeDialog: () => {
           this.dialogManager.removeDialogById(dialogId);
         },
         onConfirm: () => {
-          this.saveManager.removeSave(saveId);
+          this.saveManager.removeSave(save.id);
         },
       },
     });
