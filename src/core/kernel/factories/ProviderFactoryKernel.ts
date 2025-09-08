@@ -1,7 +1,7 @@
 import type { CoreResult, KernelDependencies, KernelManagers } from "@/core";
 import type { Save, SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings } from "@/core/libs/settings";
-import type { KernelOperations } from "../../KernelTypes";
+import type { KernelOperations } from "../KernelTypes";
 
 // Factory responsible for creating Kernel operations and dependencies mappings from Kernel managers
 export default class ProviderFactoryKernel {

@@ -3,7 +3,7 @@ import { useKernelContext } from "@/core";
 import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
 import { FlowContextProvider } from "@/libs/flow";
 import { FallbackLoading } from "@/ui/libs/error";
-import { ProviderFactoryFlow } from "./factories";
+import { ProviderFactoryFlow } from "../factories";
 
 // Provider for the Flow module, providing Flow context and dependencies within an error boundary
 export const ProviderFlow = ({ children }: { children: ReactNode }) => {

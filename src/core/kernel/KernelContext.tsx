@@ -4,7 +4,7 @@ import { useDTOValidation } from "@/core/libs/debug";
 import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
 import { DialogContainer, ToastContainer, Welcome } from "@/ui";
 import type { KernelContext, KernelContextProps } from "./KernelTypes";
-import { ProviderFactoryKernel } from "./providers/factories";
+import { ProviderFactoryKernel } from "./factories";
 import { useKernelInitialization } from "./useKernelInitialization";
 
 const KernelContext = createContext<KernelContext | null>(null);
