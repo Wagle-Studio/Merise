@@ -57,8 +57,9 @@ export type SaveDispatcher = React.Dispatch<React.SetStateAction<SaveDTOInterfac
 // Contract for the save manager implementation
 export interface SaveManagerInterface {
   saveDemoInit: () => void;
+  clearSave: () => void;
   createSave: () => string;
-  openSave: (saveId: string, navigate?: boolean) => CoreResult<Save, null>;
+  openSave: (saveId: string) => CoreResult<Save, null>;
   updateSave: (save: Save) => void;
   removeSave: (saveId: string) => void;
   saveCurrent: () => void;

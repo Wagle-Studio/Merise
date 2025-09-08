@@ -7,6 +7,9 @@ import type { KernelOperations } from "../../KernelTypes";
 export default class ProviderFactoryKernel {
   static createOperations(managers: KernelManagers): KernelOperations {
     return {
+      navigateToHome: (): void => {
+        managers.core.handleNavigateToHome();
+      },
       onEntityCreate: (): void => {
         managers.core.handleCreateFlowNodeAndMeriseEntity();
       },

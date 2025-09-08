@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import CoreManager from "@/core/CoreManager";
 import { type Dialog, DialogManager } from "@/core/libs/dialog";
 import { ErrorManager } from "@/core/libs/error";
+import { NavigatorManager } from "@/core/libs/navigator";
 import { type SaveDTOInterface, SaveManager } from "@/core/libs/save";
 import { SettingsDTO, type SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import { type Toast, ToastManager } from "@/core/libs/toast";
@@ -66,16 +67,17 @@ export const useKernelInitialization = (): UseKernelInitializationResult => {
   const getMeriseDTO = () => meriseDTORef.current;
 
   const managers = useMemo<KernelManagers>(() => {
-    const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO);
     const settings = new SettingsManager(getSettingsDTO, setSettingsDTO);
     const dialog = new DialogManager(getDialogs, setDialogs);
     const toast = new ToastManager(getToats, setToasts, toastsTimersRef);
     const error = new ErrorManager(toast);
+    const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO);
+    const navigator = new NavigatorManager();
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
     const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
-    const core = new CoreManager(flow, merise, toast, dialog, error, save, settings);
+    const core = new CoreManager(flow, merise, toast, dialog, error, save, settings, navigator);
 
-    return { settings, dialog, toast, error, save, flow, merise, core };
+    return { settings, dialog, toast, error, save, navigator, flow, merise, core };
   }, []);
 
   return {

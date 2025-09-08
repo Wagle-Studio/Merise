@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { CoreManagerInterface, CoreResult } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
+import type { NavigatorManagerInterface } from "@/core/libs/navigator";
 import type { Save, SaveDTOInterface, SaveManagerInterface, SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
@@ -15,6 +16,7 @@ export interface KernelManagers {
   toast: ToastManagerInterface;
   error: ErrorManagerInterface;
   save: SaveManagerInterface;
+  navigator: NavigatorManagerInterface;
   flow: FlowManagerInterface;
   merise: MeriseManagerInterface;
   core: CoreManagerInterface;
@@ -51,8 +53,9 @@ export interface KernelContext {
 
 // Kernel operations contract provided by the provider factory
 export interface KernelOperations {
-  onEntityCreate: () => void;
-  onAssociationCreate: () => void;
+  onEntityCreate: () => void; // TODO : move into Merise operations ?
+  onAssociationCreate: () => void; // TODO : move into Merise operations ?
+  navigateToHome: () => void;
   onSaveCreate: () => void;
   onSave: () => void;
   onSaveOpen: (saveId: string) => void;

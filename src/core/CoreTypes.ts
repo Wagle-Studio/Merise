@@ -29,6 +29,7 @@ export type CoreResult<T, E> = CoreResultSuccess<T> | CoreResultFail<E>;
 
 // Contract for the core manager implementation
 export interface CoreManagerInterface {
+  handleNavigateToHome: () => void;
   handleCreateFlowEdgeAndMeriseRelation: (connection: Connection) => void;
   handleCreateFlowNodeAndMeriseEntity: () => void;
   handleCreateFlowNodeAndMeriseAssociation: () => void;

@@ -19,10 +19,7 @@ export const Toolbar = () => {
   }, []);
 
   const handleClose = useCallback(() => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete("save");
-    window.history.pushState({}, "", url.toString());
-    window.location.reload();
+    operations.navigateToHome();
   }, []);
 
   const handleSave = useCallback(() => {

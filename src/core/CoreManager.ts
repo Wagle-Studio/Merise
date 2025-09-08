@@ -2,6 +2,7 @@ import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
+import type { NavigatorManagerInterface } from "@/core/libs/navigator";
 import { type Save, SaveDTO, type SaveManagerInterface, type SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
@@ -19,8 +20,15 @@ export default class CoreManager implements CoreManagerInterface {
     private dialogManager: DialogManagerInterface,
     private errorManager: ErrorManagerInterface,
     private saveManager: SaveManagerInterface,
-    private settingsManager: SettingsManagerInterface
+    private settingsManager: SettingsManagerInterface,
+    private navigatorManager: NavigatorManagerInterface
   ) {}
+
+  handleNavigateToHome = (): void => {
+    // TODO : confirm dialog if diagram isn't save
+    this.navigatorManager.clearSaveUrlParams();
+    this.saveManager.clearSave();
+  };
 
   handleCreateFlowEdgeAndMeriseRelation = (connection: Connection): void => {
     const edgeCreateResult = this.flowManager.addEdge(connection, FlowMeriseItemTypeEnum.RELATION);
@@ -292,6 +300,8 @@ export default class CoreManager implements CoreManagerInterface {
     }
 
     this.saveManager.updateCurrentSave(openSaveResult.data);
+    this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
+
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
       message: "Diagramme créé",
@@ -310,6 +320,7 @@ export default class CoreManager implements CoreManagerInterface {
     }
 
     this.saveManager.updateCurrentSave(openSaveResult.data);
+    this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
   };
 
   handlSave = (): void => {
@@ -322,7 +333,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleSaveSelect = (saveId: string): void => {
-    const openSaveResult = this.saveManager.openSave(saveId, false);
+    const openSaveResult = this.saveManager.openSave(saveId);
 
     if (!openSaveResult.success) {
       this.toastManager.addToast({
@@ -385,6 +396,11 @@ export default class CoreManager implements CoreManagerInterface {
         },
         onConfirm: () => {
           this.saveManager.removeSave(save.id);
+          this.dialogManager.removeDialogById(dialogId);
+          this.toastManager.addToast({
+            type: ToastTypeEnum.SUCCESS,
+            message: "Diagramme supprimé",
+          });
         },
       },
     });

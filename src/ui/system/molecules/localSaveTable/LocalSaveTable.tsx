@@ -32,7 +32,7 @@ export const LocalSaveTable = ({ saves, handleSaveOpen, handleSaveSelect, handle
             saves.map((save) => (
               <tr key={`local_saves__table__rows-${save.id}`} className="local_saves__table__rows__item">
                 <td className="local_saves__table__rows__item--name">{save.name}</td>
-                <td className="local_saves__table__rows__item--updated">{format(save.updated, "dd/MM/yyyy k:w")}</td>
+                <td className="local_saves__table__rows__item--updated">{format(save.updated, "dd/MM/yyyy KK:w")}</td>
                 <td className="local_saves__table__rows__item--actions">
                   <div className="local_saves__table__rows__item__actions">
                     <Button onClick={() => handleSaveSelect(save)} disabled={save.id === "save_demo"}>

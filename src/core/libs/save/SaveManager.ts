@@ -29,6 +29,10 @@ export default class SaveManager implements SaveManagerInterface {
     return new SaveDTO(buildSaveResult.data);
   };
 
+  clearSave = (): void => {
+    this.setSave(null);
+  };
+
   saveDemoInit = (): void => {
     if (!localStorage.getItem("save_demo")) {
       const save: Save = {
@@ -63,13 +67,7 @@ export default class SaveManager implements SaveManagerInterface {
     return saveId;
   };
 
-  openSave = (saveId: string, navigate: boolean = true): CoreResult<Save, null> => {
-    if (navigate) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("save", saveId);
-      window.history.pushState({}, "", url.toString());
-    }
-
+  openSave = (saveId: string): CoreResult<Save, null> => {
     return SaveManager.buildSaveFromSaveId(saveId);
   };
 
@@ -79,7 +77,6 @@ export default class SaveManager implements SaveManagerInterface {
 
   removeSave = (saveId: string): void => {
     localStorage.removeItem(saveId);
-    window.location.reload();
   };
 
   saveCurrent = (): void => {

@@ -51,11 +51,11 @@ export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormCompon
       <Fieldset>
         <p>
           <span className="field-text__label">Création : </span>
-          {format(save.getCreated(), "dd/MM/yyyy k:mm")}
+          {format(save.getCreated(), "dd/MM/yyyy KK:w")}
         </p>
         <p>
           <span className="field-text__label">Modification : </span>
-          {format(save.getUpdated(), "dd/MM/yyyy k:mm")}
+          {format(save.getUpdated(), "dd/MM/yyyy KK:w")}
         </p>
       </Fieldset>
     </Form>
