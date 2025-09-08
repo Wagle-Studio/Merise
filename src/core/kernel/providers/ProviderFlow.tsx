@@ -14,11 +14,11 @@ export const ProviderFlow = ({ children }: { children: ReactNode }) => {
   }
 
   useLayoutEffect(() => {
-    const cur = managers.settings.getCurrentSettings().getSettings();
+    const cur = settingsDTO.getSettings();
     managers.settings.applyTheme(cur.theme);
     const off = managers.settings.bindSystemListener(cur.theme);
     return () => off();
-  }, [managers]);
+  }, [settingsDTO, managers]);
 
   const contextValue = useMemo(
     () => ({

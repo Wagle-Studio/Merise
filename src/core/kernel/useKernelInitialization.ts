@@ -11,7 +11,9 @@ import type { KernelManagers, UseKernelInitializationResult } from "./KernelType
 
 // Initializes and provides all Kernel-related state and managers
 export const useKernelInitialization = (): UseKernelInitializationResult => {
-  const [save, setSave] = useState<SaveDTOInterface | undefined>();
+  const bootSave = SaveManager.initSaveFromUrlParams();
+
+  const [save, setSave] = useState<SaveDTOInterface | null>(bootSave);
   const [settingsDTO, setSettingsDTO] = useState<SettingsDTOInterface>(new SettingsDTO());
   const [dialogs, setDialogs] = useState<Dialog[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);

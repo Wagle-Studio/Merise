@@ -9,12 +9,25 @@ import type { Save, SaveDTOInterface, SaveDTOObject, SaveDispatcher, SaveManager
 
 export default class SaveManager implements SaveManagerInterface {
   constructor(
-    private getSave: () => SaveDTOInterface | undefined,
+    private getSave: () => SaveDTOInterface | null,
     private setSave: SaveDispatcher,
     private getSettings: () => SettingsDTOInterface,
     private getFlow: () => FlowDTOInterface,
     private getMerise: () => MeriseDTOInterface
   ) {}
+
+  static initSaveFromUrlParams = (): SaveDTOInterface | null => {
+    const params = new URLSearchParams(window.location.search);
+    const saveId = params.get("save");
+
+    if (!saveId) return null;
+
+    const buildSaveResult = SaveManager.buildSaveFromSaveId(saveId);
+
+    if (!buildSaveResult.success) return null;
+
+    return new SaveDTO(buildSaveResult.data);
+  };
 
   saveDemoInit = (): void => {
     if (!localStorage.getItem("save_demo")) {
@@ -50,7 +63,7 @@ export default class SaveManager implements SaveManagerInterface {
     return saveId;
   };
 
-  openSave = (saveId: string): CoreResult<Save, null> => {
+  openSaveById = (saveId: string): CoreResult<Save, null> => {
     const url = new URL(window.location.href);
     url.searchParams.set("save", saveId);
     window.history.pushState({}, "", url.toString());
@@ -81,7 +94,7 @@ export default class SaveManager implements SaveManagerInterface {
     }
   };
 
-  getCurrentSave = (): SaveDTOInterface | undefined => {
+  getCurrentSave = (): SaveDTOInterface | null => {
     return this.getSave();
   };
 

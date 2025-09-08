@@ -281,7 +281,7 @@ export default class CoreManager implements CoreManagerInterface {
 
   handleSaveCreate = (): void => {
     const newSaveId = this.saveManager.createSave();
-    const openSaveResult = this.saveManager.openSave(newSaveId);
+    const openSaveResult = this.saveManager.openSaveById(newSaveId);
 
     if (!openSaveResult.success) {
       this.toastManager.addToast({
@@ -299,7 +299,7 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleSaveOpen = (saveId: string): void => {
-    const openSaveResult = this.saveManager.openSave(saveId);
+    const openSaveResult = this.saveManager.openSaveById(saveId);
 
     if (!openSaveResult.success) {
       this.toastManager.addToast({

@@ -7,39 +7,31 @@ import { useKernelInitialization } from "./useKernelInitialization";
 
 const KernelContext = createContext<KernelContext | null>(null);
 
-// Provides the Kernel context to the application
 export const KernelContextProvider = ({ children }: KernelContextProps) => {
-  const kernel = useKernelInitialization();
+  const { save, settingsDTO, dialogs, toasts, flowDTO, meriseDTO, managers } = useKernelInitialization();
 
-  useDTOValidation(kernel.flowDTO, kernel.meriseDTO, process.env.NODE_ENV === "development");
-
-  useEffect(() => {
-    kernel.managers.save.saveDemoInit();
-  }, []);
+  useDTOValidation(flowDTO, meriseDTO, process.env.NODE_ENV === "development");
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const saveId = params.get("save");
-
-    if (saveId) {
-      const openSaveResult = kernel.managers.save.openSave(saveId);
-
-      if (!openSaveResult.success) return;
-
-      kernel.managers.save.updateCurrentSave(openSaveResult.data);
-    }
-  }, [kernel.managers.save]);
+    managers.save.saveDemoInit();
+  }, [managers]);
 
   const contextValue = useMemo<KernelContext>(
     () => ({
-      ...kernel,
-      operations: ProviderFactoryKernel.createOperations(kernel.managers),
-      dependencies: ProviderFactoryKernel.createDependencies(kernel.managers),
+      save,
+      settingsDTO,
+      dialogs,
+      toasts,
+      flowDTO,
+      meriseDTO,
+      managers,
+      operations: ProviderFactoryKernel.createOperations(managers),
+      dependencies: ProviderFactoryKernel.createDependencies(managers),
     }),
-    [kernel, kernel.managers.save]
+    [save, settingsDTO, dialogs, toasts, flowDTO, meriseDTO, managers]
   );
 
-  return <KernelContext.Provider value={contextValue}>{kernel.save ? children : <Welcome />}</KernelContext.Provider>;
+  return <KernelContext.Provider value={contextValue}>{save ? children : <Welcome />}</KernelContext.Provider>;
 };
 
 export const useKernelContext = (): KernelContext => {

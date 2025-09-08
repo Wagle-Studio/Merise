@@ -27,7 +27,7 @@ export interface KernelContextProps {
 
 // Result returned by the Kernel initialization hook
 export interface UseKernelInitializationResult {
-  save: SaveDTOInterface | undefined;
+  save: SaveDTOInterface | null;
   settingsDTO: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
@@ -38,7 +38,7 @@ export interface UseKernelInitializationResult {
 
 // Values exposed by the Kernel context
 export interface KernelContext {
-  save: SaveDTOInterface | undefined;
+  save: SaveDTOInterface | null;
   settingsDTO: SettingsDTOInterface;
   dialogs: Dialog[];
   toasts: Toast[];
