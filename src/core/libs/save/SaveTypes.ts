@@ -52,16 +52,16 @@ export interface SaveDTOObject {
 }
 
 // Dispatcher type for updating the save state
-export type SaveDispatcher = React.Dispatch<React.SetStateAction<SaveDTOInterface | undefined>>;
+export type SaveDispatcher = React.Dispatch<React.SetStateAction<SaveDTOInterface | null>>;
 
 // Contract for the save manager implementation
 export interface SaveManagerInterface {
   saveDemoInit: () => void;
   createSave: () => string;
-  openSave: (saveId: string) => CoreResult<Save, null>;
+  openSaveById: (saveId: string) => CoreResult<Save, null>;
   removeSave: (saveId: string) => void;
   saveCurrent: () => void;
-  getCurrentSave: () => SaveDTOInterface | undefined;
+  getCurrentSave: () => SaveDTOInterface | null;
   updateCurrentSave: (save: Save) => void;
   findLocalSaves: () => CoreResult<SaveRawDTOObject[], null>;
 }
