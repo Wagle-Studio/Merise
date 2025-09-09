@@ -1,8 +1,7 @@
-import type { FormEvent } from "react";
 import { format } from "date-fns";
 import { useKernelContext } from "@/core";
 import { type SaveDTOInterface, SaveFormTypeSchema } from "@/core/libs/save";
-import { Button, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
+import { Button, FieldText, Fieldset, Form, SaveIcon, TrashIcon, useFormErrors } from "@/ui/system";
 
 interface SaveFormComponentProps {
   save: SaveDTOInterface;
@@ -14,11 +13,15 @@ export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormCompon
 
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     clearErrors();
 
-    const formData = new FormData(e.currentTarget);
+    const form = document.getElementById("save-form");
+
+    // TODO : handle error
+    if (!form) return;
+
+    const formData = new FormData(form as HTMLFormElement);
 
     const formValues = {
       name: formData.get("save-name"),
@@ -37,14 +40,23 @@ export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormCompon
     if (!isCurrentSave) operations.onSaveUpdate(save.getSave());
   };
 
+  const handleDelete = () => {
+    operations.onSaveRemoveCurrent();
+  };
+
   const formActions = (
-    <Button type="submit" width="full">
-      <SaveIcon /> Sauvegarder
-    </Button>
+    <>
+      <Button onClick={handleSubmit} width="full">
+        <SaveIcon /> Sauvegarder
+      </Button>
+      <Button onClick={handleDelete} width="full">
+        <TrashIcon /> Supprimer
+      </Button>
+    </>
   );
 
   return (
-    <Form className="save-form" onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
+    <Form id="save-form" className="save-form" onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset>
         <FieldText label="Nom du diagramme" htmlFor="save-name" defaultValue={save.getName()} error={fieldErrors.name} />
       </Fieldset>

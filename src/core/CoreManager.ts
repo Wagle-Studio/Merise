@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorSeverityTypeEnum } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
-import { type Save, SaveDTO, type SaveManagerInterface, type SaveRawDTOObject } from "@/core/libs/save";
+import { type Save, SaveDTO, type SaveManagerInterface } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { SettingsDefault } from "@/core/libs/settings/";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
@@ -411,21 +411,47 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveRemove = (save: SaveRawDTOObject): void => {
+  handleSaveRemove = (saveId: string, saveName: string): void => {
     const dialogId = this.dialogManager.addConfirmDialog({
-      title: save.name,
+      title: saveName,
       message: "Êtes-vous sûr de vouloir supprimer ce diagramme ?",
       callbacks: {
         closeDialog: () => {
           this.dialogManager.removeDialogById(dialogId);
         },
         onConfirm: () => {
-          this.saveManager.removeSave(save.id);
+          this.saveManager.removeSave(saveId);
           this.dialogManager.removeDialogById(dialogId);
           this.toastManager.addToast({
             type: ToastTypeEnum.SUCCESS,
             message: "Diagramme supprimé",
           });
+        },
+      },
+    });
+  };
+
+  handleSaveRemoveCurrent = (): void => {
+    const currentSave = this.saveManager.getCurrentSave();
+
+    // TODO : handle error
+    if (!currentSave) return;
+
+    const dialogId = this.dialogManager.addConfirmDialog({
+      title: "Suppression",
+      message: "Êtes-vous sûr de vouloir supprimer ce diagramme ?",
+      callbacks: {
+        closeDialog: () => {
+          this.dialogManager.removeDialogById(dialogId);
+        },
+        onConfirm: () => {
+          this.dialogManager.removeDialogById(dialogId);
+          this.saveManager.removeSave(currentSave.getId());
+          this.toastManager.addToast({
+            type: ToastTypeEnum.SUCCESS,
+            message: "Diagramme supprimé",
+          });
+          this.handleNavigateToHome();
         },
       },
     });

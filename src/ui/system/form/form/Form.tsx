@@ -4,15 +4,16 @@ import "./form.scss";
 
 interface FormProps {
   children: ReactNode;
+  id?: string;
   className?: string;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   actions?: ReactNode;
   error: boolean;
 }
 
-export const Form = ({ children, className, onSubmit, actions, error }: FormProps) => {
+export const Form = ({ children, id, className, onSubmit, actions, error }: FormProps) => {
   return (
-    <form onSubmit={onSubmit} className={clsx("form", { "form--error": error }, className)}>
+    <form id={id} onSubmit={onSubmit} className={clsx("form", { "form--error": error }, className)}>
       {children}
       {actions && <div className="form__actions">{actions}</div>}
     </form>

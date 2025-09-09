@@ -24,7 +24,7 @@ export const Welcome = ({ localSavesResult }: WelcomeProps) => {
   };
 
   const handleSaveRemove = (save: SaveRawDTOObject) => {
-    operations.onSaveRemove(save);
+    operations.onSaveRemove(save.id, save.name);
   };
 
   return (

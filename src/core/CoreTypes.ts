@@ -1,5 +1,5 @@
 import type { Connection } from "@xyflow/react";
-import type { Save, SaveRawDTOObject } from "@/core/libs/save";
+import type { Save } from "@/core/libs/save";
 import type { Settings } from "@/core/libs/settings";
 import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseRelationInterface } from "@/libs/merise";
 
@@ -48,7 +48,8 @@ export interface CoreManagerInterface {
   handleSaveSelectCurrent: () => void;
   handleSaveUpdate: (save: Save) => void;
   handleSaveUpdateCurrent: (save: Save) => void;
-  handleSaveRemove: (save: SaveRawDTOObject) => void;
+  handleSaveRemove: (saveId: string, saveName: string) => void;
+  handleSaveRemoveCurrent: () => void;
   handleSettingsOpen: () => void;
   handleSettingsUpdate: (settings: Settings) => void;
   handleMeriseEntityUpdate: (entity: MeriseAssociationInterface) => void;

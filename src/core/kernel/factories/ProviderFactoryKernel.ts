@@ -1,5 +1,5 @@
 import type { KernelManagers } from "@/core";
-import type { Save, SaveRawDTOObject } from "@/core/libs/save";
+import type { Save } from "@/core/libs/save";
 import type { Settings } from "@/core/libs/settings";
 import type { KernelOperations } from "../KernelTypes";
 
@@ -37,8 +37,11 @@ export default class ProviderFactoryKernel {
       onSaveUpdateCurrent: (save: Save): void => {
         managers.core.handleSaveUpdateCurrent(save);
       },
-      onSaveRemove: (save: SaveRawDTOObject): void => {
-        managers.core.handleSaveRemove(save);
+      onSaveRemove: (saveId: string, saveName: string): void => {
+        managers.core.handleSaveRemove(saveId, saveName);
+      },
+      onSaveRemoveCurrent: (): void => {
+        managers.core.handleSaveRemoveCurrent();
       },
       onSettingsOpen: (): void => {
         managers.core.handleSettingsOpen();

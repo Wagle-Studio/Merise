@@ -4,7 +4,7 @@ import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
 import type { NormalizeManagerInterface } from "@/core/libs/normalize";
-import type { Save, SaveDTOInterface, SaveManagerInterface, SaveRawDTOObject } from "@/core/libs/save";
+import type { Save, SaveDTOInterface, SaveManagerInterface } from "@/core/libs/save";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowDTOInterface, FlowManagerInterface } from "@/libs/flow";
@@ -64,7 +64,8 @@ export interface KernelOperations {
   onSaveSelectCurrent: () => void;
   onSaveUpdate: (save: Save) => void;
   onSaveUpdateCurrent: (save: Save) => void;
-  onSaveRemove: (save: SaveRawDTOObject) => void;
+  onSaveRemove: (saveId: string, saveName: string) => void;
+  onSaveRemoveCurrent: () => void;
   onSettingsOpen: () => void;
   onSettingsUpdate: (settings: Settings) => void;
 }
