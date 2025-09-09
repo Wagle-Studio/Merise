@@ -15,7 +15,7 @@ export const DialogRelation = ({ dialog }: DialogRelationProps) => {
       <div className="dialog-relation">
         <div className="dialog-relation__card">
           {dialog.title.length > 0 && (
-            <div className="dialog-field__card-header">
+            <div className="dialog-relation__card-header">
               <h3>{dialog.title}</h3>
             </div>
           )}

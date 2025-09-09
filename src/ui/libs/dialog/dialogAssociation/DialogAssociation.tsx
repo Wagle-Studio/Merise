@@ -24,16 +24,16 @@ export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
           {dialog.component()}
         </div>
         <div className="dialog-association__actions">
-          <Button className="dialog-entity__actions-item" onClick={handleCloseDialog}>
+          <Button className="dialog-association__actions-item" onClick={handleCloseDialog}>
             <CloseIcon /> Fermer
           </Button>
-          <Button className="dialog-entity__actions-item" onClick={handleAddField}>
+          <Button className="dialog-association__actions-item" onClick={handleAddField}>
             <AddIcon /> Un champ
           </Button>
-          <Button className="dialog-entity__actions-item" onClick={handleAddFieldPrimaryKey}>
+          <Button className="dialog-association__actions-item" onClick={handleAddFieldPrimaryKey}>
             <KeyIcon /> Clé primaire
           </Button>
-          <Button className="dialog-entity__actions-item" onClick={handleDeleteAssociation}>
+          <Button className="dialog-association__actions-item" onClick={handleDeleteAssociation}>
             <TrashIcon /> Supprimer
           </Button>
         </div>

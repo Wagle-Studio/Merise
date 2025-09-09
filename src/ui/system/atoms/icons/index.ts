@@ -3,6 +3,7 @@ export { CheckedIcon } from "./CheckedIcon";
 export { CheckIcon } from "./CheckIcon";
 export { CloseIcon } from "./CloseIcon";
 export { EditIcon } from "./EditIcon";
+export { EnterIcon } from "./EnterIcon";
 export { HomeIcon } from "./HomeIcon";
 export { KeyIcon } from "./KeyIcon";
 export { SaveIcon } from "./SaveIcon";

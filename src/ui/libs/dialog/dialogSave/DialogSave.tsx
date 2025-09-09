@@ -20,7 +20,7 @@ export const DialogSave = ({ dialog }: DialogSaveProps) => {
           )}
           {dialog.component()}
         </div>
-        <div className="dialog-save">
+        <div className="dialog-save__actions">
           <Button className="dialog-save__actions-item" onClick={handleCancel}>
             <CloseIcon /> Fermer
           </Button>

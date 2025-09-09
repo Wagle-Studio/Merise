@@ -20,7 +20,7 @@ export const DialogSettings = ({ dialog }: DialogSettingsProps) => {
           )}
           {dialog.component()}
         </div>
-        <div className="dialog-settings">
+        <div className="dialog-settings__actions">
           <Button className="dialog-settings__actions-item" onClick={handleCancel}>
             <CloseIcon /> Fermer
           </Button>

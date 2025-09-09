@@ -14,6 +14,16 @@
       &--name {
         width: 250px;
       }
+
+      &--updated {
+        display: none;
+      }
+    }
+
+    &__head {
+      &--updated {
+        display: none;
+      }
     }
 
     thead th {
@@ -41,11 +51,43 @@
           white-space: nowrap;
         }
 
+        &--updated {
+          display: none;
+        }
+
         &__actions {
           display: flex;
           flex-direction: row;
           justify-content: flex-end;
           gap: 8px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .local_saves {
+    &__table {
+      &__col {
+        &--updated {
+          display: table-cell;
+        }
+      }
+
+      &__head {
+        &--updated {
+          display: table-cell;
+        }
+      }
+      &__rows {
+        &__item {
+          &--updated {
+            display: table-cell;
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--gray-base);
+            vertical-align: middle;
+          }
         }
       }
     }

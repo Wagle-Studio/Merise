@@ -5,7 +5,7 @@
   &__wrapper {
     z-index: 10000;
     position: fixed;
-    top: 24px;
+    bottom: 24px;
     left: 50%;
     transform: translate(-50%, 0);
     display: flex;
@@ -22,7 +22,6 @@
       0 10px 20px rgba(0, 0, 0, 0.1),
       10px 0px 20px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    position: relative;
   }
 
   &__left,
@@ -33,17 +32,23 @@
   }
 
   &__center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
+    display: none;
+  }
+}
 
-    &__diagram_name {
-      &:hover {
-        background-color: var(--gray-light);
-        border: 1px solid var(--gray-dark);
-      }
+@media screen and (min-width: 768px) {
+  .toolbar {
+    &__wrapper {
+      top: 24px;
+      left: 50%;
+    }
+
+    &__center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
     }
   }
 }

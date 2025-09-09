@@ -43,9 +43,7 @@ export const Toolbar = () => {
             </Button>
           </div>
           <div className="toolbar__center">
-            <Button variant="ghost" className="toolbar__center__diagram_name" onClick={handleOpenSelect} disabled={save.getId() == "save_demo"}>
-              {save.getName()} <EditIcon />
-            </Button>
+            <p>{save.getName()}</p>
           </div>
           <div className="toolbar__right">
             <Button onClick={handleClose}>
@@ -53,6 +51,9 @@ export const Toolbar = () => {
             </Button>
             <Button onClick={handleSave} disabled={save.getId() == "save_demo"}>
               <SaveIcon />
+            </Button>
+            <Button onClick={handleOpenSelect} disabled={save.getId() == "save_demo"}>
+              <EditIcon />
             </Button>
             <Button onClick={handleOpenSettings}>
               <SettingsIcon />

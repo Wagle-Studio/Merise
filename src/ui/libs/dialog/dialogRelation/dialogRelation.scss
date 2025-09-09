@@ -1,14 +1,17 @@
 .dialog-relation {
   display: flex;
-  flex-direction: row;
+  flex-direction: column; /* mobile d'abord */
   gap: 16px;
+  padding: 24px;
+  box-sizing: border-box;
 
   &__card {
     display: flex;
     flex-direction: column;
     gap: 24px;
     padding: 24px;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     background: var(--white);
     border-radius: 8px;
     box-shadow: var(--dialog-shadow);
@@ -28,8 +31,20 @@
     gap: 8px;
 
     &-item {
-      max-width: max-content;
-      max-height: max-content;
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .dialog-relation {
+    flex-direction: row;
+
+    &__actions {
+      &-item {
+        max-width: max-content;
+        max-height: max-content;
+      }
     }
   }
 }

@@ -1,14 +1,17 @@
 .dialog-entity {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 16px;
+  padding: 24px;
+  box-sizing: border-box;
 
   &__card {
     display: flex;
     flex-direction: column;
     gap: 24px;
     padding: 24px;
-    width: 700px;
+    width: 100%;
+    max-width: 700px;
     background: var(--white);
     border-radius: 8px;
     box-shadow: var(--dialog-shadow);
@@ -28,8 +31,24 @@
     gap: 8px;
 
     &-item {
-      max-width: max-content;
-      max-height: max-content;
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .dialog-entity {
+    flex-direction: row;
+
+    &__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      &-item {
+        max-width: max-content;
+        max-height: max-content;
+      }
     }
   }
 }

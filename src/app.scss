@@ -61,5 +61,20 @@ body {
   width: 100vw;
   height: 100vh;
   grid-template-columns: 1fr;
-  grid-template-rows: max-content 1fr;
+  grid-template-rows: 1fr max-content;
+
+  .toolbar {
+    grid-row: 2/3;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: max-content 1fr;
+
+    .toolbar {
+      grid-row: 1/2;
+    }
+  }
 }

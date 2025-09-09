@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { type SaveRawDTOObject } from "@/core/libs/save";
-import { Button, EditIcon, TrashIcon } from "../../atoms";
+import { Button, EditIcon, EnterIcon, TrashIcon } from "../../atoms";
 import "./localSaveTable.scss";
 
 interface LocalSaveTableProps {
@@ -23,7 +23,7 @@ export const LocalSaveTable = ({ saves, handleSaveOpen, handleSaveSelect, handle
         <thead>
           <tr>
             <th>Nom</th>
-            <th>Modification</th>
+            <th className="local_saves__table__head--updated">Modification</th>
             <th></th>
           </tr>
         </thead>
@@ -41,7 +41,9 @@ export const LocalSaveTable = ({ saves, handleSaveOpen, handleSaveSelect, handle
                     <Button onClick={() => handleSaveRemove(save)} disabled={save.id === "save_demo"}>
                       <TrashIcon />
                     </Button>
-                    <Button onClick={() => handleSaveOpen(save)}>Ouvrir</Button>
+                    <Button onClick={() => handleSaveOpen(save)}>
+                      <EnterIcon />
+                    </Button>
                   </div>
                 </td>
               </tr>
