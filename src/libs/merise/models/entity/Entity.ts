@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { EntityComponent, EntityFormComponent } from "@/ui";
-import { type MeriseEntity, type MeriseEntityInterface, type MeriseFieldInterface, MeriseItemTypeEnum } from "../../types";
+import { type MeriseEntity, type MeriseEntityInterface, type MeriseFieldInterface, MeriseItemTypeEnum, type MeriseResult, MeriseSeverityTypeEnum } from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
 import Field from "../field/Field";
 import { type EntityFormType } from "./EntityFormSchema";
@@ -50,16 +50,27 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     this.fields = [...this.fields, field];
   };
 
-  updateField = (field: MeriseFieldInterface): void => {
-    const index = this.fields.findIndex((f) => f.getId() === field.getId());
-    const updatedFieds = this.fields;
-    updatedFieds[index] = field;
-    this.fields = [...updatedFieds];
+  updateFields = (field: MeriseFieldInterface): void => {
+    this.fields = [...this.fields].map((f) => (f.getId() === field.getId() ? field : f));
   };
 
-  deleteField = (field: MeriseFieldInterface): void => {
+  deleteField = (field: MeriseFieldInterface): MeriseResult<null, null> => {
     const index = this.fields.findIndex((f) => f.getId() === field.getId());
+
+    if (index === -1) {
+      return {
+        success: false,
+        message: `Champ introuvable`,
+        severity: MeriseSeverityTypeEnum.ERROR,
+      };
+    }
+
     this.fields = [...this.fields.filter((_, i) => i !== index)];
+
+    return {
+      success: true,
+      data: null,
+    };
   };
 
   renderComponent = (): React.ReactElement => {
@@ -68,6 +79,17 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
 
   renderFormComponent = (): React.ReactElement => {
     return createElement(EntityFormComponent, { entity: this });
+  };
+
+  normalize = (): MeriseEntity => {
+    return {
+      id: this.getId(),
+      type: this.getType(),
+      flowId: this.getFlowId(),
+      name: this.getName(),
+      emoji: this.getEmoji(),
+      fields: this.getFields().map((field) => field.normalize()),
+    };
   };
 
   private setName = (name: string): void => {

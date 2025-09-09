@@ -43,7 +43,7 @@ export interface CoreManagerInterface {
   handleMeriseFieldDelete: (field: MeriseFieldInterface) => void;
   handleSaveCreate: () => void;
   handleSaveOpen: (saveId: string) => void;
-  handlSave: () => void;
+  handleSave: () => void;
   handleSaveSelect: (saveId: string) => void;
   handleSaveSelectCurrent: () => void;
   handleSaveUpdate: (save: Save) => void;
@@ -51,7 +51,7 @@ export interface CoreManagerInterface {
   handleSaveRemove: (save: SaveRawDTOObject) => void;
   handleSettingsOpen: () => void;
   handleSettingsUpdate: (settings: Settings) => void;
-  handleMeriseEntityUpdate: (association: MeriseEntityInterface) => void;
-  handleMeriseAssociationUpdate: (entity: MeriseAssociationInterface) => void;
+  handleMeriseEntityUpdate: (entity: MeriseAssociationInterface) => void;
+  handleMeriseAssociationUpdate: (association: MeriseEntityInterface) => void;
   handleMeriseRelationUpdate: (relation: MeriseRelationInterface) => void;
 }

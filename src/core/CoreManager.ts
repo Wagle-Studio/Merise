@@ -27,7 +27,29 @@ export default class CoreManager implements CoreManagerInterface {
   ) {}
 
   handleNavigateToHome = (): void => {
-    // TODO : confirm dialog if diagram isn't save
+    const isSaveDemo = this.saveManager.getCurrentSave()?.getId() === "save_demo";
+    const hasUnsavedChanges = this.saveManager.hasUnsavedChanges();
+
+    if (!isSaveDemo && hasUnsavedChanges) {
+      const dialogId = this.dialogManager.addConfirmDialog({
+        title: "Modifications non sauvegardées",
+        message: "Êtes-vous sûr de vouloir quitter sans sauvegarder les modifications en cours ?",
+        callbacks: {
+          closeDialog: () => {
+            this.dialogManager.removeDialogById(dialogId);
+          },
+          onConfirm: () => {
+            this.navigatorManager.clearSaveUrlParams();
+            this.settingsManager.updateSettings(SettingsDefault);
+            this.saveManager.clearSave();
+            this.dialogManager.removeDialogById(dialogId);
+          },
+        },
+      });
+
+      return;
+    }
+
     this.navigatorManager.clearSaveUrlParams();
     this.settingsManager.updateSettings(SettingsDefault);
     this.saveManager.clearSave();
@@ -242,7 +264,7 @@ export default class CoreManager implements CoreManagerInterface {
           return;
         }
 
-        entityFindResult.data?.updateField(field);
+        entityFindResult.data?.updateFields(field);
         this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ mis à jour", "Échec de la mise à jour du champ");
 
         break;
@@ -254,7 +276,7 @@ export default class CoreManager implements CoreManagerInterface {
           return;
         }
 
-        associationFindResult.data?.updateField(field);
+        associationFindResult.data?.updateFields(field);
         this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ mis à jour", "Échec de la mise à jour du champ");
 
         break;
@@ -272,7 +294,7 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         entityFindResult.data?.deleteField(field);
-        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ supprimé", "Échec de la suppresion du champ");
+        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ supprimé", "Échec de la suppression du champ");
 
         break;
       case MeriseItemTypeEnum.ASSOCIATION:
@@ -284,7 +306,7 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         associationFindResult.data?.deleteField(field);
-        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ supprimé", "Échec de la suppresion du champ");
+        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ supprimé", "Échec de la suppression du champ");
 
         break;
     }
@@ -326,7 +348,7 @@ export default class CoreManager implements CoreManagerInterface {
     this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
   };
 
-  handlSave = (): void => {
+  handleSave = (): void => {
     this.saveManager.saveCurrent();
 
     this.toastManager.addToast({
@@ -427,7 +449,7 @@ export default class CoreManager implements CoreManagerInterface {
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
-      message: "Paramètres sauvegardé",
+      message: "Paramètres sauvegardés",
     });
   };
 

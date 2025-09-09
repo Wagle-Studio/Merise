@@ -1,5 +1,4 @@
 import type { Connection, NodeChange } from "@xyflow/react";
-import type { MeriseItemType } from "@/libs/merise";
 import type { TypedNode } from "./FlowDTOTypes";
 
 // List of all available flow item types
@@ -39,14 +38,36 @@ export enum FlowMeriseItemType {
   RELATION = "Relation",
 }
 
-// Mirror of the Merise library item interface exposed to Flow
-export interface FlowMeriseItemInterface {
+// Mirror of the Merise library entity interface exposed to Flow
+export interface FlowMeriseEntityInterface {
   renderComponent: () => React.ReactElement;
   renderFormComponent: () => React.ReactElement;
   getId: () => string;
   getFlowId: () => string;
-  getType: () => MeriseItemType;
+  getType: () => any;
   getName: () => string;
+}
+
+// Mirror of the Merise library association interface exposed to Flow
+export interface FlowMeriseAssociationInterface {
+  renderComponent: () => React.ReactElement;
+  renderFormComponent: () => React.ReactElement;
+  getId: () => string;
+  getFlowId: () => string;
+  getType: () => any;
+  getName: () => string;
+}
+
+// Mirror of the Merise library relation interface exposed to Flow
+export interface FlowMeriseRelationInterface {
+  renderComponent: () => React.ReactElement;
+  renderFormComponent: () => React.ReactElement;
+  hydrate: (formData: any) => void;
+  getFlowId: () => string;
+  getSource: () => string;
+  getTarget: () => string;
+  getCardinality: () => any;
+  normalize: () => any;
 }
 
 // Flow operations contract provided by the provider factory
@@ -57,7 +78,7 @@ export interface FlowOperations {
 
 // Flow dependencies contract provided by the provider factory
 export interface FlowDependencies {
-  findMeriseEntityByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface, null>;
-  findMeriseAssociationByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface, null>;
-  findMeriseRelationByFlowId: (flowId: string) => FlowResult<FlowMeriseItemInterface, null>;
+  findMeriseEntityByFlowId: (flowId: string) => FlowResult<FlowMeriseEntityInterface, null>;
+  findMeriseAssociationByFlowId: (flowId: string) => FlowResult<FlowMeriseAssociationInterface, null>;
+  findMeriseRelationByFlowId: (flowId: string) => FlowResult<FlowMeriseRelationInterface, null>;
 }

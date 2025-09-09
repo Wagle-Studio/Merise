@@ -52,6 +52,17 @@ export default class Relation extends AbstractMeriseItem implements MeriseRelati
     });
   };
 
+  normalize = (): MeriseRelation => {
+    return {
+      id: this.getId(),
+      type: this.getType(),
+      flowId: this.getFlowId(),
+      source: this.getSource(),
+      target: this.getTarget(),
+      cardinality: this.getCardinality(),
+    };
+  };
+
   private setCardinality = (cardinality: MeriseRelationCardinalityType): void => {
     this.cardinality = cardinality;
   };

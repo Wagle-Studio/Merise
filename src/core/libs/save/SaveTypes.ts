@@ -65,5 +65,6 @@ export interface SaveManagerInterface {
   saveCurrent: () => void;
   getCurrentSave: () => SaveDTOInterface | null;
   updateCurrentSave: (save: Save) => void;
+  hasUnsavedChanges: () => boolean | null;
   findLocalSaves: () => CoreResult<SaveRawDTOObject[], null>;
 }

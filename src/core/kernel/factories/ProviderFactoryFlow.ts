@@ -1,6 +1,6 @@
 import type { Connection, NodeChange } from "@xyflow/react";
 import type { KernelManagers } from "@/core";
-import type { FlowDependencies, FlowMeriseItemInterface, FlowOperations, FlowResult, TypedNode } from "@/libs/flow";
+import type { FlowDependencies, FlowMeriseAssociationInterface, FlowMeriseEntityInterface, FlowMeriseRelationInterface, FlowOperations, FlowResult, TypedNode } from "@/libs/flow";
 
 // Factory responsible for creating Flow operations and dependency mappings from Kernel managers
 export default class ProviderFactoryFlow {
@@ -17,14 +17,14 @@ export default class ProviderFactoryFlow {
 
   static createDependencies(managers: KernelManagers): FlowDependencies {
     return {
-      findMeriseEntityByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface, null> => {
+      findMeriseEntityByFlowId: (flowId: string): FlowResult<FlowMeriseEntityInterface, null> => {
         return managers.merise.findEntityByFlowId(flowId);
       },
-      findMeriseAssociationByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface, null> => {
+      findMeriseAssociationByFlowId: (flowId: string): FlowResult<FlowMeriseAssociationInterface, null> => {
         return managers.merise.findAssociationByFlowId(flowId);
       },
-      findMeriseRelationByFlowId: (flowId: string): FlowResult<FlowMeriseItemInterface, null> => {
-        return managers.merise.findRelationByFlowId(flowId) as FlowResult<FlowMeriseItemInterface, null>;
+      findMeriseRelationByFlowId: (flowId: string): FlowResult<FlowMeriseRelationInterface, null> => {
+        return managers.merise.findRelationByFlowId(flowId);
       },
     };
   }

@@ -85,6 +85,21 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
     return createElement(FieldFormComponent, { field: this, formType: formType });
   };
 
+  normalize = (): MeriseField => {
+    return {
+      id: this.getId(),
+      type: this.getType(),
+      meriseItemId: this.getMeriseItemId(),
+      meriseItemType: this.getMeriseItemType(),
+      name: this.getName(),
+      typeField: this.getTypeField(),
+      typeFieldOption: this.getTypeFieldOption(),
+      primaryKey: this.isPrimary(),
+      nullable: this.isNullable(),
+      unique: this.isUnique(),
+    };
+  };
+
   private setName = (name: string): void => {
     this.name = name;
   };

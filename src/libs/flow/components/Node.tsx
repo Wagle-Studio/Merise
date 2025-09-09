@@ -2,7 +2,7 @@ import { memo } from "react";
 import { Handle, type NodeProps, Position } from "@xyflow/react";
 import { FlowNode } from "@/ui";
 import { useFlowContext } from "../core";
-import type { FlowMeriseItemInterface, FlowResult, TypedNode } from "../types";
+import type { FlowMeriseAssociationInterface, FlowMeriseEntityInterface, FlowMeriseRelationInterface, FlowResult, TypedNode } from "../types";
 import { FlowMeriseItemTypeEnum } from "../types";
 
 // Custom Node component rendering the corresponding Merise item UI and connection handles
@@ -10,7 +10,7 @@ export default memo(
   function Node(props: NodeProps<TypedNode>): React.ReactElement | null {
     const { dependencies } = useFlowContext();
 
-    let meriseItemFindResult: FlowResult<FlowMeriseItemInterface, null>;
+    let meriseItemFindResult: FlowResult<FlowMeriseAssociationInterface | FlowMeriseEntityInterface | FlowMeriseRelationInterface, null>;
 
     switch (props.data.type) {
       case FlowMeriseItemTypeEnum.ENTITY:

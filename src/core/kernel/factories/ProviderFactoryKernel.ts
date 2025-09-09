@@ -20,7 +20,7 @@ export default class ProviderFactoryKernel {
         managers.core.handleSaveCreate();
       },
       onSave: (): void => {
-        managers.core.handlSave();
+        managers.core.handleSave();
       },
       onSaveOpen: (saveId: string): void => {
         managers.core.handleSaveOpen(saveId);

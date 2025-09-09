@@ -112,8 +112,9 @@ export interface MeriseEntityInterface extends MeriseItemInterface {
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
-  updateField: (field: MeriseFieldInterface) => void;
-  deleteField: (field: MeriseFieldInterface) => void;
+  updateFields: (field: MeriseFieldInterface) => void;
+  deleteField: (field: MeriseFieldInterface) => MeriseResult<null, null>;
+  normalize: () => MeriseEntity;
 }
 
 // Interface for a Merise entity object
@@ -134,8 +135,9 @@ export interface MeriseAssociationInterface extends MeriseItemInterface {
   getEmoji: () => string;
   getFields: () => MeriseFieldInterface[];
   addField: (field: MeriseFieldInterface) => void;
-  updateField: (field: MeriseFieldInterface) => void;
-  deleteField: (field: MeriseFieldInterface) => void;
+  updateFields: (field: MeriseFieldInterface) => void;
+  deleteField: (field: MeriseFieldInterface) => MeriseResult<null, null>;
+  normalize: () => MeriseAssociation;
 }
 
 // Interface for a Merise association object
@@ -155,6 +157,7 @@ export interface MeriseRelationInterface extends MeriseItemInterface {
   getSource: () => string;
   getTarget: () => string;
   getCardinality: () => MeriseRelationCardinalityType;
+  normalize: () => MeriseRelation;
 }
 
 // Interface for a Merise relation object
@@ -177,6 +180,7 @@ export interface MeriseFieldInterface extends MeriseItemInterface {
   isPrimary: () => boolean;
   isNullable: () => boolean;
   isUnique: () => boolean;
+  normalize: () => MeriseField;
 }
 
 // Interface for a Merise field object
