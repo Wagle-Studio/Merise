@@ -105,11 +105,7 @@ export default class SaveManager implements SaveManagerInterface {
   };
 
   updateCurrentSave = (saveDTO: SaveDTOInterface): void => {
-    saveDTO.setSettingsDTO(this.getSettings());
-    saveDTO.setFlowDTO(this.getFlow());
-    saveDTO.setMeriseDTO(this.getMerise());
-
-    this.setSave(SaveDTO.cloneWithUpdatedSave(saveDTO.getSave()));
+    this.setSave(saveDTO);
     localStorage.setItem(saveDTO.getId(), JSON.stringify(saveDTO.getSave()));
   };
 
@@ -183,6 +179,8 @@ export default class SaveManager implements SaveManagerInterface {
   };
 
   private static buildSaveFromSaveId = (saveId: string): CoreResult<Save, null> => {
+    console.log("[4] save manager - build save from id : ", saveId);
+
     const raw = localStorage.getItem(saveId);
 
     if (!raw) {
@@ -202,6 +200,8 @@ export default class SaveManager implements SaveManagerInterface {
         severity: CoreSeverityTypeEnum.ERROR,
       };
     }
+
+    console.log("[5] save manager - parsed local save : ", parsed);
 
     const rawSave: Save = {
       id: parsed.id,

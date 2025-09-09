@@ -41,13 +41,9 @@
     flex-direction: row;
 
     &__actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
       &-item {
+        width: max-content;
         max-width: max-content;
-        max-height: max-content;
       }
     }
   }
