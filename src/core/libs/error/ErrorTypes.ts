@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type ErrorDTO from "./ErrorDTO";
 
 // List of all available error types
-export enum ErrorType {
+export enum SeverityType {
   INFO = "INFO",
   WARNING = "WARNING",
   ERROR = "ERROR",

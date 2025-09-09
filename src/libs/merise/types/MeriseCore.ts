@@ -4,7 +4,7 @@ import type { FieldFormType } from "../models/field/FieldFormSchema";
 import type { RelationFormType } from "../models/relation/RelationFormSchema";
 
 // List of all available Merise error types
-export enum ErrorType {
+export enum SeverityType {
   INFO = "INFO",
   WARNING = "WARNING",
   ERROR = "ERROR",
@@ -20,7 +20,7 @@ export type MeriseResultSuccess<T> = {
 export type MeriseResultFail<E> = {
   success: false;
   message: string;
-  severity: ErrorType;
+  severity: SeverityType;
   error?: E;
 };
 

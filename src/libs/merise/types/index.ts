@@ -4,14 +4,13 @@ export {
   FieldTypeNumberOption as FieldTypeNumberOptionEnum,
   FieldTypeOtherOption as FieldTypeOtherOptionEnum,
   FieldTypeTextOption as FieldTypeTextOptionsEnum,
-  ErrorType as MeriseErrorTypeEnum,
   MeriseFieldTypeType as MeriseFieldTypeTypeEnum,
   MeriseFormType as MeriseFormTypeEnum,
   MeriseItemType as MeriseItemTypeEnum,
   MeriseRelationCardinalityType as MeriseRelationCardinalityTypeEnum,
+  SeverityType as MeriseSeverityTypeEnum,
 } from "./MeriseCore";
 export type {
-  ErrorType,
   FieldTypeDateOption,
   FieldTypeNumberOption,
   FieldTypeOtherOption,
@@ -35,6 +34,7 @@ export type {
   MeriseResult,
   MeriseResultFail,
   MeriseResultSuccess,
+  SeverityType,
 } from "./MeriseCore";
 export type { MeriseDTOInterface, MeriseDTOObject } from "./MeriseDTOTypes";
 export type { MeriseDTODispatcher, MeriseManagerInterface } from "./MeriseManagerTypes";

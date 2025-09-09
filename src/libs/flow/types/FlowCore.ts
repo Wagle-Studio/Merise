@@ -9,7 +9,7 @@ export enum FlowItemType {
 }
 
 // List of all available Flow error types
-export enum ErrorType {
+export enum SeverityType {
   INFO = "INFO",
   WARNING = "WARNING",
   ERROR = "ERROR",
@@ -25,7 +25,7 @@ export type FlowResultSuccess<T> = {
 export type FlowResultFail<E> = {
   success: false;
   message: string;
-  severity: ErrorType;
+  severity: SeverityType;
   error?: E;
 };
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { CoreManagerInterface, CoreResult } from "@/core/CoreTypes";
+import type { CoreManagerInterface } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
@@ -48,7 +48,6 @@ export interface KernelContext {
   meriseDTO: MeriseDTOInterface;
   managers: KernelManagers;
   operations: KernelOperations;
-  dependencies: KernelDependencies;
 }
 
 // Kernel operations contract provided by the provider factory
@@ -66,9 +65,4 @@ export interface KernelOperations {
   onSaveRemove: (save: SaveRawDTOObject) => void;
   onSettingsOpen: () => void;
   onSettingsUpdate: (settings: Settings) => void;
-}
-
-// Kernel dependencies contract provided by the provider factory
-export interface KernelDependencies {
-  findLocalSaves: () => CoreResult<SaveRawDTOObject[], null>;
 }

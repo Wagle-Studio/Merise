@@ -1,4 +1,4 @@
-import type { CoreResult, KernelDependencies, KernelManagers } from "@/core";
+import type { KernelManagers } from "@/core";
 import type { Save, SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings } from "@/core/libs/settings";
 import type { KernelOperations } from "../KernelTypes";
@@ -45,14 +45,6 @@ export default class ProviderFactoryKernel {
       },
       onSettingsUpdate: (settings: Settings): void => {
         managers.core.handleSettingsUpdate(settings as Settings);
-      },
-    };
-  }
-
-  static createDependencies(managers: KernelManagers): KernelDependencies {
-    return {
-      findLocalSaves: (): CoreResult<SaveRawDTOObject[], null> => {
-        return managers.save.findLocalSaves();
       },
     };
   }

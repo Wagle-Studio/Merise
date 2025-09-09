@@ -1,5 +1,5 @@
 import { ProviderFlow, ProviderMerise } from "..";
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { type ReactElement, createContext, useContext, useEffect, useMemo } from "react";
 import { useDTOValidation } from "@/core/libs/debug";
 import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
 import { DialogContainer, ToastContainer, Welcome } from "@/ui";
@@ -28,10 +28,20 @@ export const KernelContextProvider = ({ children }: KernelContextProps) => {
       meriseDTO,
       managers,
       operations: ProviderFactoryKernel.createOperations(managers),
-      dependencies: ProviderFactoryKernel.createDependencies(managers),
     }),
     [save, settingsDTO, dialogs, toasts, flowDTO, meriseDTO, managers]
   );
+
+  const displayHome = (): ReactElement => {
+    const findLocalSavesResult = managers.save.findLocalSaves();
+
+    // TODO : handle error
+    if (!findLocalSavesResult.success) {
+      return <div>ERROR</div>;
+    }
+
+    return <Welcome localSavesResult={findLocalSavesResult.data} />;
+  };
 
   return (
     <KernelContext.Provider value={contextValue}>
@@ -39,7 +49,7 @@ export const KernelContextProvider = ({ children }: KernelContextProps) => {
         <ProviderFlow>
           <ErrorBoundary fallback={FallBackPresetTypeEnum.ORCHESTRATOR_MERISE}>
             <ProviderMerise>
-              {save ? children : <Welcome />}
+              {save ? children : displayHome()}
               <ToastContainer />
               <DialogContainer />
             </ProviderMerise>

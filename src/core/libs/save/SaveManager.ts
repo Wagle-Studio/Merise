@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { CoreErrorTypeEnum, type CoreResult } from "@/core";
+import { type CoreResult, CoreSeverityTypeEnum } from "@/core";
 import { SettingsDTO, type SettingsDTOInterface } from "@/core/libs/settings";
 import { FlowDTO, type FlowDTOInterface } from "@/libs/flow";
 import { MeriseDTO, type MeriseDTOInterface } from "@/libs/merise";
@@ -117,7 +117,7 @@ export default class SaveManager implements SaveManagerInterface {
         return {
           success: false,
           message: "Impossible d'accéder aux sauvegardes locales",
-          severity: CoreErrorTypeEnum.ERROR,
+          severity: CoreSeverityTypeEnum.ERROR,
         };
       }
 
@@ -127,7 +127,7 @@ export default class SaveManager implements SaveManagerInterface {
         return {
           success: false,
           message: "Impossible d'accéder aux sauvegardes locales",
-          severity: CoreErrorTypeEnum.ERROR,
+          severity: CoreSeverityTypeEnum.ERROR,
         };
       }
 
@@ -147,7 +147,7 @@ export default class SaveManager implements SaveManagerInterface {
       return {
         success: false,
         message: "La sauvegarde n'existe pas",
-        severity: CoreErrorTypeEnum.ERROR,
+        severity: CoreSeverityTypeEnum.ERROR,
       };
     }
 
@@ -157,7 +157,7 @@ export default class SaveManager implements SaveManagerInterface {
       return {
         success: false,
         message: "Impossible de consulter la sauvegarde",
-        severity: CoreErrorTypeEnum.ERROR,
+        severity: CoreSeverityTypeEnum.ERROR,
       };
     }
 

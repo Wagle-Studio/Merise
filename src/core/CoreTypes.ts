@@ -4,7 +4,7 @@ import type { Settings } from "@/core/libs/settings";
 import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseRelationInterface } from "@/libs/merise";
 
 // List of all available Core error types
-export enum ErrorType {
+export enum SeverityType {
   INFO = "INFO",
   WARNING = "WARNING",
   ERROR = "ERROR",
@@ -20,7 +20,7 @@ export type CoreResultSuccess<T> = {
 export type CoreResultFail<E> = {
   success: false;
   message: string;
-  severity: ErrorType;
+  severity: SeverityType;
   error?: E;
 };
 

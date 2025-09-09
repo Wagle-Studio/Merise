@@ -1,7 +1,7 @@
 import { type Connection, type NodeChange, applyNodeChanges } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { FlowDTODispatcher, FlowDTOInterface, FlowManagerInterface, FlowMeriseItemType, FlowResult, TypedEdge, TypedNode } from "../types";
-import { FlowErrorTypeEnum, FlowItemTypeEnum, FlowMeriseItemTypeEnum } from "../types";
+import { FlowItemTypeEnum, FlowMeriseItemTypeEnum, FlowSeverityTypeEnum } from "../types";
 
 const POSITIONING = {
   DEFAULT_X: 100,
@@ -84,7 +84,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier la relation à supprimer",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -95,7 +95,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier la relation à supprimer",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -115,7 +115,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier l'élément à supprimer",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -126,7 +126,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier l'élément à supprimer",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -147,7 +147,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier la relation recherchée",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -159,7 +159,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier la relation recherchée",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -174,7 +174,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier l'entité recherchée",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -186,7 +186,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible d'identifier l'entité recherchée",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -201,7 +201,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Source et target sont requis pour créer une relation",
-        severity: FlowErrorTypeEnum.ERROR,
+        severity: FlowSeverityTypeEnum.ERROR,
       };
     }
 
@@ -209,7 +209,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Impossible de créer une relation vers soi-même",
-        severity: FlowErrorTypeEnum.INFO,
+        severity: FlowSeverityTypeEnum.INFO,
       };
     }
 
@@ -223,7 +223,7 @@ export default class FlowManager implements FlowManagerInterface {
       return {
         success: false,
         message: "Une relation existe déjà entre ces éléments",
-        severity: FlowErrorTypeEnum.WARNING,
+        severity: FlowSeverityTypeEnum.WARNING,
       };
     }
 
@@ -243,7 +243,7 @@ export default class FlowManager implements FlowManagerInterface {
         return {
           success: false,
           message: "Impossible de créer une relation directe entre deux entités. Utilisez une association.",
-          severity: FlowErrorTypeEnum.WARNING,
+          severity: FlowSeverityTypeEnum.WARNING,
         };
       }
 
@@ -254,7 +254,7 @@ export default class FlowManager implements FlowManagerInterface {
         return {
           success: false,
           message: "Impossible de créer une relation directe entre deux associations.",
-          severity: FlowErrorTypeEnum.WARNING,
+          severity: FlowSeverityTypeEnum.WARNING,
         };
       }
     }

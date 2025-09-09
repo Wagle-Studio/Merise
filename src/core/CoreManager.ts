@@ -1,17 +1,19 @@
 import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
-import { CoreError, type ErrorManagerInterface, ErrorTypeEnum } from "@/core/libs/error";
+import { CoreError, type ErrorManagerInterface, ErrorSeverityTypeEnum } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
 import { type Save, SaveDTO, type SaveManagerInterface, type SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
+import { SettingsDefault } from "@/core/libs/settings/";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
-import { FlowErrorTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
+import { FlowMeriseItemTypeEnum, FlowSeverityTypeEnum } from "@/libs/flow";
 import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
-import { Field, FieldTypeNumberOptionEnum, MeriseErrorTypeEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum } from "@/libs/merise";
+import { Field, FieldTypeNumberOptionEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum, MeriseSeverityTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
 
+// TODO : invesitage if `handleError` is well used and if it's need to be everywhere
 export default class CoreManager implements CoreManagerInterface {
   constructor(
     private flowManager: FlowManagerInterface,
@@ -27,6 +29,7 @@ export default class CoreManager implements CoreManagerInterface {
   handleNavigateToHome = (): void => {
     // TODO : confirm dialog if diagram isn't save
     this.navigatorManager.clearSaveUrlParams();
+    this.settingsManager.updateSettings(SettingsDefault);
     this.saveManager.clearSave();
   };
 
@@ -573,17 +576,17 @@ export default class CoreManager implements CoreManagerInterface {
 
   private mapResultError = (flowResultFail: FlowResultFail<unknown> | MeriseResultFail<any>): CoreError => {
     switch (flowResultFail.severity) {
-      case FlowErrorTypeEnum.INFO:
-      case MeriseErrorTypeEnum.INFO:
-        return new CoreError(ErrorTypeEnum.INFO, flowResultFail.message);
-      case FlowErrorTypeEnum.WARNING:
-      case MeriseErrorTypeEnum.WARNING:
-        return new CoreError(ErrorTypeEnum.WARNING, flowResultFail.message);
-      case FlowErrorTypeEnum.ERROR:
-      case MeriseErrorTypeEnum.ERROR:
-        return new CoreError(ErrorTypeEnum.ERROR, flowResultFail.message);
+      case FlowSeverityTypeEnum.INFO:
+      case MeriseSeverityTypeEnum.INFO:
+        return new CoreError(ErrorSeverityTypeEnum.INFO, flowResultFail.message);
+      case FlowSeverityTypeEnum.WARNING:
+      case MeriseSeverityTypeEnum.WARNING:
+        return new CoreError(ErrorSeverityTypeEnum.WARNING, flowResultFail.message);
+      case FlowSeverityTypeEnum.ERROR:
+      case MeriseSeverityTypeEnum.ERROR:
+        return new CoreError(ErrorSeverityTypeEnum.ERROR, flowResultFail.message);
       default:
-        return new CoreError(ErrorTypeEnum.ERROR, "Anomalie dans le système d'erreur");
+        return new CoreError(ErrorSeverityTypeEnum.ERROR, "Anomalie dans le système d'erreur");
     }
   };
 

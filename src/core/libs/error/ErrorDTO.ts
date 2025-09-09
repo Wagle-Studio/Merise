@@ -1,9 +1,9 @@
-import type { ErrorType } from "./ErrorTypes";
+import type { SeverityType } from "./ErrorTypes";
 
 export default class ErrorDTO extends Error {
-  readonly type: ErrorType;
+  readonly type: SeverityType;
 
-  constructor(type: ErrorType, message: string) {
+  constructor(type: SeverityType, message: string) {
     super(message);
     this.type = type;
   }

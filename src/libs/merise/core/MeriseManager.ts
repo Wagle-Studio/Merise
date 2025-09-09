@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Association, Entity, Relation } from "../models";
 import type { MeriseAssociationInterface, MeriseDTODispatcher, MeriseDTOInterface, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult } from "../types";
-import { MeriseErrorTypeEnum, MeriseRelationCardinalityTypeEnum } from "../types";
+import { MeriseRelationCardinalityTypeEnum, MeriseSeverityTypeEnum } from "../types";
 
 export default class MeriseManager implements MeriseManagerInterface {
   constructor(
@@ -14,7 +14,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Création de l’entité impossible",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -26,7 +26,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Une entité avec cette référence existe déjà",
-        severity: MeriseErrorTypeEnum.WARNING,
+        severity: MeriseSeverityTypeEnum.WARNING,
       };
     }
 
@@ -44,7 +44,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Création de l’association impossible",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -56,7 +56,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Une association avec cette référence existe déjà",
-        severity: MeriseErrorTypeEnum.WARNING,
+        severity: MeriseSeverityTypeEnum.WARNING,
       };
     }
 
@@ -74,7 +74,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Création de la relation impossible",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -99,7 +99,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Mise à jour de l’entité impossible",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -110,7 +110,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Entité introuvable",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
     const updatedEntities = [...merise.getEntities()];
@@ -129,7 +129,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Mise à jour de l’association impossible",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -140,7 +140,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Association introuvable",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
     const updatedAssociations = [...merise.getAssociations()];
@@ -159,7 +159,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Mise à jour de la relation impossible",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -170,7 +170,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Relation introuvable",
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
     const updatedRelations = [...merise.getRelations()];
@@ -305,7 +305,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "La source et la cible ne peuvent pas être identiques",
-        severity: MeriseErrorTypeEnum.INFO,
+        severity: MeriseSeverityTypeEnum.INFO,
       };
     }
 
@@ -317,7 +317,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: "Une relation entre ces éléments existe déjà",
-        severity: MeriseErrorTypeEnum.WARNING,
+        severity: MeriseSeverityTypeEnum.WARNING,
       };
     }
 
@@ -329,7 +329,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: `Suppression de ${itemType} impossible`,
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -339,7 +339,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: `${itemType} introuvable`,
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -362,7 +362,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: `Id requis pour la recherche`,
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -371,7 +371,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: `${itemType} introuvable`,
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -383,7 +383,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: `FlowId requis pour la recherche`,
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 
@@ -392,7 +392,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       return {
         success: false,
         message: `${itemType} introuvable`,
-        severity: MeriseErrorTypeEnum.ERROR,
+        severity: MeriseSeverityTypeEnum.ERROR,
       };
     }
 

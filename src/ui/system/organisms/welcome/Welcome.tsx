@@ -1,23 +1,15 @@
-import { useEffect, useState } from "react";
 import { useKernelContext } from "@/core";
 import { type SaveRawDTOObject } from "@/core/libs/save";
 import { LocalSaveTable } from "@/ui";
 import { Button } from "../../atoms";
 import "./welcome.scss";
 
-export const Welcome = () => {
-  const [localSaves, setLocalSaves] = useState<SaveRawDTOObject[]>([]);
+interface WelcomeProps {
+  localSavesResult: SaveRawDTOObject[];
+}
 
-  const { operations, dependencies } = useKernelContext();
-
-  useEffect(() => {
-    const findLocalSavesResult = dependencies.findLocalSaves();
-
-    // TODO : handle error
-    if (!findLocalSavesResult.success) return;
-
-    setLocalSaves(findLocalSavesResult.data);
-  }, []);
+export const Welcome = ({ localSavesResult }: WelcomeProps) => {
+  const { operations } = useKernelContext();
 
   const handleSelectNewSave = () => {
     operations.onSaveCreate();
@@ -44,7 +36,7 @@ export const Welcome = () => {
         </div>
       </div>
       <div className="welcome__saves">
-        <LocalSaveTable saves={localSaves} handleSaveOpen={handleSaveOpen} handleSaveSelect={handleSaveSelect} handleSaveRemove={handleSaveRemove} />
+        <LocalSaveTable saves={localSavesResult} handleSaveOpen={handleSaveOpen} handleSaveSelect={handleSaveSelect} handleSaveRemove={handleSaveRemove} />
       </div>
     </div>
   );
