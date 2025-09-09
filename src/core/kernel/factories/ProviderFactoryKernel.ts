@@ -1,5 +1,5 @@
 import type { KernelManagers } from "@/core";
-import type { Save } from "@/core/libs/save";
+import type { SaveDTOInterface } from "@/core/libs/save";
 import type { Settings } from "@/core/libs/settings";
 import type { KernelOperations } from "../KernelTypes";
 
@@ -31,11 +31,11 @@ export default class ProviderFactoryKernel {
       onSaveSelectCurrent: (): void => {
         managers.core.handleSaveSelectCurrent();
       },
-      onSaveUpdate: (save: Save): void => {
-        managers.core.handleSaveUpdate(save);
+      onSaveUpdate: (saveDTO: SaveDTOInterface): void => {
+        managers.core.handleSaveUpdate(saveDTO);
       },
-      onSaveUpdateCurrent: (save: Save): void => {
-        managers.core.handleSaveUpdateCurrent(save);
+      onSaveUpdateCurrent: (saveDTO: SaveDTOInterface): void => {
+        managers.core.handleSaveUpdateCurrent(saveDTO);
       },
       onSaveRemove: (saveId: string, saveName: string): void => {
         managers.core.handleSaveRemove(saveId, saveName);

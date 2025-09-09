@@ -158,5 +158,8 @@ export interface DialogManagerInterface {
   addFieldDialog: (props: AddFieldDialogProps) => string;
   addSaveDialog: (props: AddSaveDialogProps) => string;
   addSettingsDialog: (props: AddSettingsDialogProps) => string;
+  clearDialogs: () => void;
   removeDialogById: (id: string) => void;
+  hasSaveDialogOpened: () => boolean;
+  hasSettingsDialogOpened: () => boolean;
 }

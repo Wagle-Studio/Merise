@@ -73,8 +73,8 @@ export default class SaveManager implements SaveManagerInterface {
     return SaveManager.buildSaveFromSaveId(saveId);
   };
 
-  updateSave = (save: Save): void => {
-    localStorage.setItem(save.id, JSON.stringify(save));
+  updateSave = (saveDTO: SaveDTOInterface): void => {
+    localStorage.setItem(saveDTO.getId(), JSON.stringify(saveDTO.getSave()));
   };
 
   removeSave = (saveId: string): void => {
@@ -104,10 +104,13 @@ export default class SaveManager implements SaveManagerInterface {
     return this.getSave();
   };
 
-  updateCurrentSave = (save: Save): void => {
-    this.setSave(SaveDTO.cloneWithUpdatedSave(save));
+  updateCurrentSave = (saveDTO: SaveDTOInterface): void => {
+    saveDTO.setSettingsDTO(this.getSettings());
+    saveDTO.setFlowDTO(this.getFlow());
+    saveDTO.setMeriseDTO(this.getMerise());
 
-    localStorage.setItem(save.id, JSON.stringify(save));
+    this.setSave(SaveDTO.cloneWithUpdatedSave(saveDTO.getSave()));
+    localStorage.setItem(saveDTO.getId(), JSON.stringify(saveDTO.getSave()));
   };
 
   hasUnsavedChanges = (): boolean | null => {

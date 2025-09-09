@@ -24,6 +24,9 @@ export interface SaveDTOInterface {
   getSettingsDTO: () => SettingsDTOInterface;
   getFlowDTO: () => FlowDTOInterface;
   getMeriseDTO: () => MeriseDTOInterface;
+  setSettingsDTO: (settings: SettingsDTOInterface) => void;
+  setFlowDTO: (flow: FlowDTOInterface) => void;
+  setMeriseDTO: (merise: MeriseDTOInterface) => void;
   getCreated: () => Date;
   getUpdated: () => Date;
   renderFormComponent: () => React.ReactElement;
@@ -60,11 +63,11 @@ export interface SaveManagerInterface {
   clearSave: () => void;
   createSave: () => string;
   openSave: (saveId: string) => CoreResult<Save, null>;
-  updateSave: (save: Save) => void;
+  updateSave: (saveDTO: SaveDTOInterface) => void;
   removeSave: (saveId: string) => void;
   saveCurrent: () => void;
   getCurrentSave: () => SaveDTOInterface | null;
-  updateCurrentSave: (save: Save) => void;
+  updateCurrentSave: (saveDTO: SaveDTOInterface) => void;
   hasUnsavedChanges: () => boolean | null;
   findLocalSaves: () => CoreResult<SaveRawDTOObject[], null>;
 }

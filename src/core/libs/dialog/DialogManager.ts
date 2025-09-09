@@ -110,7 +110,19 @@ export default class DialogManager implements DialogManagerInterface {
     return dialog.id;
   };
 
+  clearDialogs = (): void => {
+    this.setDialogs([]);
+  };
+
   removeDialogById = (id: string): void => {
     this.setDialogs((prev) => prev.filter((dialog) => dialog.id !== id));
+  };
+
+  hasSaveDialogOpened = (): boolean => {
+    return this.getDialogs().some((dialog) => dialog.type === DialogTypeEnum.SAVE);
+  };
+
+  hasSettingsDialogOpened = (): boolean => {
+    return this.getDialogs().some((dialog) => dialog.type === DialogTypeEnum.SETTINGS);
   };
 }

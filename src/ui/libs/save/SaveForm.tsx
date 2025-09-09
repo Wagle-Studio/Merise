@@ -36,12 +36,13 @@ export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormCompon
 
     save.hydrate(validationResult.data);
 
-    if (isCurrentSave) operations.onSaveUpdateCurrent(save.getSave());
-    if (!isCurrentSave) operations.onSaveUpdate(save.getSave());
+    if (isCurrentSave) operations.onSaveUpdateCurrent(save);
+    if (!isCurrentSave) operations.onSaveUpdate(save);
   };
 
   const handleDelete = () => {
-    operations.onSaveRemoveCurrent();
+    if (isCurrentSave) operations.onSaveRemoveCurrent();
+    if (!isCurrentSave) operations.onSaveRemove(save.getId(), save.getName());
   };
 
   const formActions = (

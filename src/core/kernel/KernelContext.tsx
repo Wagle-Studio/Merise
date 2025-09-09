@@ -1,5 +1,5 @@
 import { ProviderFlow, ProviderMerise } from "..";
-import { type ReactElement, createContext, useContext, useEffect, useMemo } from "react";
+import { type ReactElement, createContext, useContext, useMemo } from "react";
 import { useDTOValidation } from "@/core/libs/debug";
 import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
 import { DialogContainer, ToastContainer, Welcome } from "@/ui";
@@ -14,9 +14,7 @@ export const KernelContextProvider = ({ children }: KernelContextProps) => {
 
   useDTOValidation(flowDTO, meriseDTO, process.env.NODE_ENV === "development");
 
-  useEffect(() => {
-    managers.save.saveDemoInit();
-  }, [managers]);
+  managers.save.saveDemoInit();
 
   const contextValue = useMemo<KernelContext>(
     () => ({

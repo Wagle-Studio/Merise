@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
 import { CoreError, type ErrorManagerInterface, ErrorSeverityTypeEnum } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
-import { type Save, SaveDTO, type SaveManagerInterface } from "@/core/libs/save";
+import { SaveDTO, type SaveDTOInterface, type SaveManagerInterface } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { SettingsDefault } from "@/core/libs/settings/";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
@@ -39,10 +39,10 @@ export default class CoreManager implements CoreManagerInterface {
             this.dialogManager.removeDialogById(dialogId);
           },
           onConfirm: () => {
+            this.dialogManager.clearDialogs();
             this.navigatorManager.clearSaveUrlParams();
             this.settingsManager.updateSettings(SettingsDefault);
             this.saveManager.clearSave();
-            this.dialogManager.removeDialogById(dialogId);
           },
         },
       });
@@ -50,6 +50,7 @@ export default class CoreManager implements CoreManagerInterface {
       return;
     }
 
+    this.dialogManager.clearDialogs();
     this.navigatorManager.clearSaveUrlParams();
     this.settingsManager.updateSettings(SettingsDefault);
     this.saveManager.clearSave();
@@ -324,7 +325,9 @@ export default class CoreManager implements CoreManagerInterface {
       return;
     }
 
-    this.saveManager.updateCurrentSave(openSaveResult.data);
+    const save = new SaveDTO(openSaveResult.data);
+
+    this.saveManager.updateCurrentSave(save);
     this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
 
     this.toastManager.addToast({
@@ -344,7 +347,9 @@ export default class CoreManager implements CoreManagerInterface {
       return;
     }
 
-    this.saveManager.updateCurrentSave(openSaveResult.data);
+    const save = new SaveDTO(openSaveResult.data);
+
+    this.saveManager.updateCurrentSave(save);
     this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
   };
 
@@ -382,6 +387,10 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleSaveSelectCurrent = (): void => {
+    const saveDialogAlreadOpen = this.dialogManager.hasSaveDialogOpened();
+
+    if (saveDialogAlreadOpen) return;
+
     const dialogId = this.dialogManager.addSaveDialog({
       title: "Sauvegarde",
       component: () => this.saveManager.getCurrentSave()?.renderFormComponent(),
@@ -393,8 +402,8 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveUpdate = (save: Save): void => {
-    this.saveManager.updateSave(save);
+  handleSaveUpdate = (saveDTO: SaveDTOInterface): void => {
+    this.saveManager.updateSave(saveDTO);
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
@@ -402,8 +411,8 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  handleSaveUpdateCurrent = (save: Save): void => {
-    this.saveManager.updateCurrentSave(save);
+  handleSaveUpdateCurrent = (saveDTO: SaveDTOInterface): void => {
+    this.saveManager.updateCurrentSave(saveDTO);
 
     this.toastManager.addToast({
       type: ToastTypeEnum.SAVE,
@@ -421,7 +430,7 @@ export default class CoreManager implements CoreManagerInterface {
         },
         onConfirm: () => {
           this.saveManager.removeSave(saveId);
-          this.dialogManager.removeDialogById(dialogId);
+          this.dialogManager.clearDialogs();
           this.toastManager.addToast({
             type: ToastTypeEnum.SUCCESS,
             message: "Diagramme supprimé",
@@ -445,7 +454,7 @@ export default class CoreManager implements CoreManagerInterface {
           this.dialogManager.removeDialogById(dialogId);
         },
         onConfirm: () => {
-          this.dialogManager.removeDialogById(dialogId);
+          this.dialogManager.clearDialogs();
           this.saveManager.removeSave(currentSave.getId());
           this.toastManager.addToast({
             type: ToastTypeEnum.SUCCESS,
@@ -458,6 +467,10 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleSettingsOpen = (): void => {
+    const settingsDialogAlreadOpen = this.dialogManager.hasSettingsDialogOpened();
+
+    if (settingsDialogAlreadOpen) return;
+
     const dialogId = this.dialogManager.addSettingsDialog({
       title: "Paramètres",
       component: () => this.settingsManager.getCurrentSettings().renderFormComponent(),
