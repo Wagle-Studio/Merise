@@ -1,6 +1,7 @@
 export type { FlowContext, FlowContextProps } from "./FlowContextTypes";
-export { FlowItemType as FlowItemTypeEnum, FlowMeriseItemType as FlowMeriseItemTypeEnum, SeverityType as FlowSeverityTypeEnum } from "./FlowCore";
+export { FlowConnectionType as FlowConnectionTypeEnum, FlowItemType as FlowItemTypeEnum, FlowMeriseItemType as FlowMeriseItemTypeEnum, SeverityType as FlowSeverityTypeEnum } from "./FlowCore";
 export type {
+  FlowConnectionType,
   FlowDependencies,
   FlowItemType,
   FlowMeriseAssociationInterface,
@@ -14,4 +15,4 @@ export type {
   SeverityType,
 } from "./FlowCore";
 export type { FlowDTOInterface, FlowDTOObject, TypedEdge, TypedNode } from "./FlowDTOTypes";
-export type { FlowDTODispatcher, FlowManagerInterface } from "./FlowManagerTypes";
+export type { FlowCreateConnectionResult, FlowDTODispatcher, FlowManagerInterface } from "./FlowManagerTypes";

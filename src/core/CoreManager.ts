@@ -8,7 +8,7 @@ import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { SettingsDefault } from "@/core/libs/settings/";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
-import { FlowMeriseItemTypeEnum, FlowSeverityTypeEnum } from "@/libs/flow";
+import { FlowConnectionTypeEnum, FlowMeriseItemTypeEnum, FlowSeverityTypeEnum } from "@/libs/flow";
 import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail, Relation } from "@/libs/merise";
 import { Field, FieldTypeNumberOptionEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum, MeriseSeverityTypeEnum } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
@@ -57,25 +57,87 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   handleCreateFlowEdgeAndMeriseRelation = (connection: Connection): void => {
-    const edgeCreateResult = this.flowManager.addEdge(connection, FlowMeriseItemTypeEnum.RELATION);
+    const createConnectionResult = this.flowManager.createConnection(connection);
 
-    if (!edgeCreateResult.success) {
-      this.errorManager.handleError(this.mapResultError(edgeCreateResult));
+    if (!createConnectionResult.success) {
+      this.errorManager.handleError(this.mapResultError(createConnectionResult));
       return;
     }
 
-    const relationCreateResult = this.meriseManager.addRelation(edgeCreateResult.data.id, connection.source, connection.target);
+    if (createConnectionResult.data.type === FlowConnectionTypeEnum.ENTITY_ENTITY) {
+      const associationFlowNode = createConnectionResult.data.node;
+      const associationFlowId = associationFlowNode.data.id;
 
-    if (!relationCreateResult.success) {
-      this.errorManager.handleError(this.mapResultError(relationCreateResult));
-      this.flowManager.removeEdgeByEdgeId(edgeCreateResult.data.id);
+      const associationCreateResult = this.meriseManager.addAssociation(associationFlowId);
+
+      if (!associationCreateResult.success) {
+        this.errorManager.handleError(this.mapResultError(associationCreateResult));
+        return;
+      }
+
+      const addNodeResult = this.flowManager.addNode(FlowMeriseItemTypeEnum.ASSOCIATION, associationFlowId);
+
+      if (!addNodeResult.success) {
+        this.meriseManager.removeAssociationByFlowId(associationFlowId);
+        this.errorManager.handleError(this.mapResultError(addNodeResult));
+        return;
+      }
+
+      const createdEdgesIds: string[] = [];
+
+      for (const edge of createConnectionResult.data.edges) {
+        const createSubConnectionResult = this.flowManager.createConnection({
+          source: edge.source,
+          target: edge.target,
+          sourceHandle: edge.sourceHandle ?? null,
+          targetHandle: edge.targetHandle ?? null,
+        });
+
+        if (!createSubConnectionResult.success || createSubConnectionResult.data.type !== FlowConnectionTypeEnum.ENTITY_ASSOCIATION) {
+          for (const id of createdEdgesIds) this.flowManager.removeEdgeByEdgeId(id);
+
+          this.flowManager.removeNodeByNodeId(addNodeResult.data.id);
+          this.meriseManager.removeAssociationByFlowId(associationFlowId);
+
+          if (!createSubConnectionResult.success) this.errorManager.handleError(this.mapResultError(createSubConnectionResult));
+
+          return;
+        }
+
+        const createdEdge = createSubConnectionResult.data.edge;
+        createdEdgesIds.push(createdEdge.data.id);
+
+        const relationResult = this.meriseManager.addRelation(createdEdge.data.id, createdEdge.source, createdEdge.target);
+
+        if (!relationResult.success) {
+          for (const id of createdEdgesIds) this.flowManager.removeEdgeByEdgeId(id);
+
+          this.flowManager.removeNodeByNodeId(associationFlowId);
+          this.meriseManager.removeAssociationByFlowId(associationFlowId);
+          this.errorManager.handleError(this.mapResultError(relationResult));
+
+          return;
+        }
+      }
+
+      this.toastManager.addToast({ type: ToastTypeEnum.SUCCESS, message: "Relation créée" });
+
       return;
     }
 
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SUCCESS,
-      message: "Relation créée",
-    });
+    if (createConnectionResult.data.type === FlowConnectionTypeEnum.ENTITY_ASSOCIATION) {
+      const edge = createConnectionResult.data.edge;
+
+      const relationCreateResult = this.meriseManager.addRelation(edge.data.id, edge.source, edge.target);
+
+      if (!relationCreateResult.success) {
+        this.errorManager.handleError(this.mapResultError(relationCreateResult));
+        this.flowManager.removeEdgeByEdgeId(edge.data.id);
+        return;
+      }
+
+      this.toastManager.addToast({ type: ToastTypeEnum.SUCCESS, message: "Relation créée" });
+    }
   };
 
   handleCreateFlowNodeAndMeriseEntity = (): void => {
@@ -531,7 +593,7 @@ export default class CoreManager implements CoreManagerInterface {
       const relationRemoveResult = this.meriseManager.removeRelationByFlowId(edge.id);
 
       if (!relationRemoveResult.success) {
-        this.flowManager.addEdge({ source: edge.source, target: edge.target, sourceHandle: edge.sourceHandle ?? null, targetHandle: edge.targetHandle ?? null }, edge.data.type);
+        this.flowManager.createConnection({ source: edge.source, target: edge.target, sourceHandle: edge.sourceHandle ?? null, targetHandle: edge.targetHandle ?? null });
         this.errorManager.handleError(this.mapResultError(relationRemoveResult));
         return;
       }

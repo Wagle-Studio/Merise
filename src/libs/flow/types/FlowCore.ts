@@ -1,17 +1,23 @@
 import type { Connection, NodeChange } from "@xyflow/react";
 import type { TypedNode } from "./FlowDTOTypes";
 
+// List of all available Flow error types
+export enum SeverityType {
+  INFO = "INFO",
+  WARNING = "WARNING",
+  ERROR = "ERROR",
+}
+
 // List of all available flow item types
 export enum FlowItemType {
   NODE = "NODE",
   EDGE = "EDGE",
 }
 
-// List of all available Flow error types
-export enum SeverityType {
-  INFO = "INFO",
-  WARNING = "WARNING",
-  ERROR = "ERROR",
+// List of all available flow connection types
+export enum FlowConnectionType {
+  ENTITY_ENTITY = "ENTITY_ENTITY",
+  ENTITY_ASSOCIATION = "ENTITY_ASSOCIATION",
 }
 
 // Represents a successful Flow operation
