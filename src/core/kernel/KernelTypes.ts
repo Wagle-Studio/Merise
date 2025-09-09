@@ -3,6 +3,7 @@ import type { CoreManagerInterface } from "@/core/CoreTypes";
 import type { Dialog, DialogManagerInterface } from "@/core/libs/dialog";
 import type { ErrorManagerInterface } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
+import type { NormalizeManagerInterface } from "@/core/libs/normalize";
 import type { Save, SaveDTOInterface, SaveManagerInterface, SaveRawDTOObject } from "@/core/libs/save";
 import type { Settings, SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import type { Toast, ToastManagerInterface } from "@/core/libs/toast";
@@ -17,6 +18,7 @@ export interface KernelManagers {
   error: ErrorManagerInterface;
   save: SaveManagerInterface;
   navigator: NavigatorManagerInterface;
+  normalize: NormalizeManagerInterface;
   flow: FlowManagerInterface;
   merise: MeriseManagerInterface;
   core: CoreManagerInterface;

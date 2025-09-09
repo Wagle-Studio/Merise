@@ -367,6 +367,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const item = collection.find((item) => item.getId() === id);
+
     if (!item) {
       return {
         success: false,
@@ -388,6 +389,7 @@ export default class MeriseManager implements MeriseManagerInterface {
     }
 
     const item = collection.find((item) => item.getFlowId() === flowId);
+
     if (!item) {
       return {
         success: false,

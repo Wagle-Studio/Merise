@@ -3,6 +3,7 @@ import CoreManager from "@/core/CoreManager";
 import { type Dialog, DialogManager } from "@/core/libs/dialog";
 import { ErrorManager } from "@/core/libs/error";
 import { NavigatorManager } from "@/core/libs/navigator";
+import { NormalizeManager } from "@/core/libs/normalize";
 import { type SaveDTOInterface, SaveManager } from "@/core/libs/save";
 import { SettingsDTO, type SettingsDTOInterface, SettingsManager } from "@/core/libs/settings";
 import { type Toast, ToastManager } from "@/core/libs/toast";
@@ -62,22 +63,23 @@ export const useKernelInitialization = (): UseKernelInitializationResult => {
   const getSave = () => saveRef.current;
   const getSettingsDTO = () => settingsRef.current;
   const getDialogs = () => dialogsRef.current;
-  const getToats = () => toastsRef.current;
+  const getToasts = () => toastsRef.current;
   const getFlowDTO = () => flowDTORef.current;
   const getMeriseDTO = () => meriseDTORef.current;
 
   const managers = useMemo<KernelManagers>(() => {
     const settings = new SettingsManager(getSettingsDTO, setSettingsDTO);
     const dialog = new DialogManager(getDialogs, setDialogs);
-    const toast = new ToastManager(getToats, setToasts, toastsTimersRef);
+    const toast = new ToastManager(getToasts, setToasts, toastsTimersRef);
     const error = new ErrorManager(toast);
-    const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO);
+    const normalize = new NormalizeManager();
+    const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO, normalize);
     const navigator = new NavigatorManager();
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
     const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
     const core = new CoreManager(flow, merise, toast, dialog, error, save, settings, navigator);
 
-    return { settings, dialog, toast, error, save, navigator, flow, merise, core };
+    return { settings, dialog, toast, error, normalize, save, navigator, flow, merise, core };
   }, []);
 
   return {
