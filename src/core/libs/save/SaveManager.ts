@@ -179,8 +179,6 @@ export default class SaveManager implements SaveManagerInterface {
   };
 
   private static buildSaveFromSaveId = (saveId: string): CoreResult<Save, null> => {
-    console.log("[4] save manager - build save from id : ", saveId);
-
     const raw = localStorage.getItem(saveId);
 
     if (!raw) {
@@ -200,8 +198,6 @@ export default class SaveManager implements SaveManagerInterface {
         severity: CoreSeverityTypeEnum.ERROR,
       };
     }
-
-    console.log("[5] save manager - parsed local save : ", parsed);
 
     const rawSave: Save = {
       id: parsed.id,

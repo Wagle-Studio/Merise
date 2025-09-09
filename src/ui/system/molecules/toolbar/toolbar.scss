@@ -4,7 +4,7 @@
 
   &__wrapper {
     z-index: 10000;
-    position: fixed;
+    position: relative;
     bottom: 24px;
     left: 50%;
     transform: translate(-50%, 0);
