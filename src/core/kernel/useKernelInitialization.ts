@@ -72,9 +72,9 @@ export const useKernelInitialization = (): UseKernelInitializationResult => {
     const navigator = NavigatorManager.getInstance(); // REVIEWED
     const normalize = NormalizeManager.getInstance(); // REVIEWED
 
+    const settings = SettingsManager.getInstance(getSettingsDTO, setSettingsDTO); // REVIEWED
     const toast = ToastManager.getInstance(getToasts, setToasts, toastsTimersRef); // REVIEWED
 
-    const settings = new SettingsManager(getSettingsDTO, setSettingsDTO);
     const dialog = new DialogManager(getDialogs, setDialogs);
     const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO, normalize);
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
