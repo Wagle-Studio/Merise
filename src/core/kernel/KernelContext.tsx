@@ -1,7 +1,7 @@
 import { ProviderFlow, ProviderMerise } from "..";
 import { type ReactElement, createContext, useContext, useMemo } from "react";
 import { useDTOValidation } from "@/core/libs/debug";
-import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
+import { ErrorBoundary, ErrorFallBackPresetTypeEnum } from "@/core/libs/error";
 import { DialogContainer, ToastContainer, Welcome } from "@/ui";
 import type { KernelContext, KernelContextProps } from "./KernelTypes";
 import { ProviderFactoryKernel } from "./factories";
@@ -43,9 +43,9 @@ export const KernelContextProvider = ({ children }: KernelContextProps) => {
 
   return (
     <KernelContext.Provider value={contextValue}>
-      <ErrorBoundary fallback={FallBackPresetTypeEnum.ORCHESTRATOR_FLOW}>
+      <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.ORCHESTRATOR_FLOW}>
         <ProviderFlow>
-          <ErrorBoundary fallback={FallBackPresetTypeEnum.ORCHESTRATOR_MERISE}>
+          <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.ORCHESTRATOR_MERISE}>
             <ProviderMerise>
               {save ? children : displayHome()}
               <ToastContainer />
