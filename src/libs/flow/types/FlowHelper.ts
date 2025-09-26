@@ -1,6 +1,6 @@
 import type { FlowConnectionTypeEnum } from ".";
 import type { Connection } from "@xyflow/react";
-import type { TypedEdge, TypedNode } from "./FlowCore";
+import type { FlowResult, TypedEdge, TypedNode } from "./FlowCore";
 
 // Props required to remove a Flow item
 export interface FlowRemoveItemProps<T> {
@@ -51,4 +51,16 @@ export type FlowConnectResult = FlowConnectEntityToEntityResult | FlowConnectEnt
 // Props required to create Flow connection between two entities
 export interface FlowCalculateNewNodePositionProps {
   nodes: TypedNode[];
+}
+
+// Contract for the Flow helper implementation
+export interface FlowHelperInterface {
+  removeItem: <T extends TypedEdge | TypedNode>(props: FlowRemoveItemProps<T>) => FlowResult<T, null>;
+  findItemById: <T extends TypedEdge | TypedNode>(props: FlowFindItemByIdProps<T>) => FlowResult<T, null>;
+  validateConnection: (props: FlowValidateConnectionProps) => FlowResult<FlowConnectionTypeEnum, null>;
+  connectEntityToEntity: (props: FlowConnectEntityToEntityProps) => FlowResult<FlowConnectEntityToEntityResult, null>;
+  connectEntityToAssociation: (
+    props: FlowConnectEntityToAssociationProps
+  ) => FlowResult<FlowConnectEntityToAssociationResult, null>;
+  calculateNewNodePosition: (props: FlowCalculateNewNodePositionProps) => { x: number; y: number };
 }
