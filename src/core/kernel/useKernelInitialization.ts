@@ -69,9 +69,9 @@ export const useKernelInitialization = (): UseKernelInitializationResult => {
 
   const managers = useMemo<KernelManagers>(() => {
     const error = ErrorManager.getInstance(); // REVIEWED
+    const normalize = NormalizeManager.getInstance(); // REVIEWED
     const toast = ToastManager.getInstance(getToasts, setToasts, toastsTimersRef); // REVIEWED
 
-    const normalize = new NormalizeManager();
     const navigator = new NavigatorManager();
     const settings = new SettingsManager(getSettingsDTO, setSettingsDTO);
     const dialog = new DialogManager(getDialogs, setDialogs);

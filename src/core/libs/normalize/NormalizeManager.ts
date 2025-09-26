@@ -1,9 +1,34 @@
 import type { Settings, SettingsDTOInterface } from "@/core/libs/settings";
 import type { FlowDTOInterface } from "@/libs/flow";
-import type { Association, Entity, MeriseAssociation, MeriseDTOInterface, MeriseEntity, MeriseRelation, Relation } from "@/libs/merise";
-import type { NormalizeFlowDTOObject, NormalizeManagerInterface, NormalizeMeriseDTOObject, NormalizeSettingsDTOObject } from "./NormalizeTypes";
+import type {
+  Association,
+  Entity,
+  MeriseAssociation,
+  MeriseDTOInterface,
+  MeriseEntity,
+  MeriseRelation,
+  Relation,
+} from "@/libs/merise";
+import type {
+  NormalizeFlowDTOObject,
+  NormalizeManagerInterface,
+  NormalizeMeriseDTOObject,
+  NormalizeSettingsDTOObject,
+} from "./NormalizeTypes";
 
 export default class NormalizeManager implements NormalizeManagerInterface {
+  private static instance: NormalizeManager;
+
+  private constructor() {}
+
+  static getInstance = () => {
+    if (!this.instance) {
+      this.instance = new NormalizeManager();
+    }
+
+    return this.instance;
+  };
+
   normalizeSettings = (settingsDTO: SettingsDTOInterface): NormalizeSettingsDTOObject => {
     const settings: Settings = settingsDTO.getSettings();
 
@@ -25,7 +50,9 @@ export default class NormalizeManager implements NormalizeManagerInterface {
 
   normalizeMerise = (meriseDTO: MeriseDTOInterface): NormalizeMeriseDTOObject => {
     const entities: MeriseEntity[] = meriseDTO.getEntities().map((entity: Entity) => entity.normalize());
-    const associations: MeriseAssociation[] = meriseDTO.getAssociations().map((association: Association) => association.normalize());
+    const associations: MeriseAssociation[] = meriseDTO
+      .getAssociations()
+      .map((association: Association) => association.normalize());
     const relations: MeriseRelation[] = meriseDTO.getRelations().map((relation: Relation) => relation.normalize());
 
     entities.sort((entityA, entityB) => entityA.id.localeCompare(entityB.id));

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { CoreResultFail } from "@/core/CoreTypes";
+import type { CoreResultFail } from "@/core";
 import type { FlowResultFail } from "@/libs/flow";
 import type { MeriseResultFail } from "@/libs/merise";
 import type ErrorDTO from "./ErrorDTO";
