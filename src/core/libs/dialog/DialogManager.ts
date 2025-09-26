@@ -14,10 +14,20 @@ import type {
 import { DialogType as DialogTypeEnum } from "./DialogTypes";
 
 export default class DialogManager implements DialogManagerInterface {
-  constructor(
+  private static instance: DialogManager;
+
+  private constructor(
     private getDialogs: () => Dialog[],
     private setDialogs: DialogsDispatcher
   ) {}
+
+  static getInstance = (getDialogs: () => Dialog[], setDialogs: DialogsDispatcher) => {
+    if (!this.instance) {
+      this.instance = new DialogManager(getDialogs, setDialogs);
+    }
+
+    return this.instance;
+  };
 
   addConfirmDialog = (props: AddConfirmDialogProps): string => {
     const dialog = {
