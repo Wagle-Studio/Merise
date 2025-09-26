@@ -1,5 +1,14 @@
 import type { KernelManagers } from "@/core";
-import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseOperations, MeriseRelationInterface, Relation } from "@/libs/merise";
+import type {
+  Association,
+  Entity,
+  MeriseAssociationInterface,
+  MeriseEntityInterface,
+  MeriseFieldInterface,
+  MeriseOperations,
+  MeriseRelationInterface,
+  Relation,
+} from "@/libs/merise";
 
 // Factory responsible for creating Merise operations and dependency mappings from Kernel managers
 export default class ProviderFactoryMerise {

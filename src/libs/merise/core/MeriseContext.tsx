@@ -3,7 +3,7 @@ import type { MeriseContext, MeriseContextProps } from "../types";
 
 const MeriseContext = createContext<MeriseContext | null>(null);
 
-// Provides the Merise context to the merise feature
+// Provides the Merise context to the Merise feature
 export const MeriseContextProvider = ({ children, operations }: MeriseContextProps) => {
   const contextValue = useMemo(
     () => ({

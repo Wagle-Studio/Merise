@@ -108,7 +108,7 @@ const updateItem = <T extends Entity | Association | Relation>(
 const removeItem = <T extends Entity | Association | Relation>(
   props: MeriseRemoveItemProps<T>
 ): MeriseResult<T, null> => {
-  const { collection, relations, flowId, itemName, updateFn } = props;
+  const { collection, relations, flowId, itemName, removeFn } = props;
 
   if (!flowId?.trim()) {
     return {
@@ -134,7 +134,7 @@ const removeItem = <T extends Entity | Association | Relation>(
     (relation) => relation.getSource() !== item.getFlowId() && relation.getTarget() !== item.getFlowId()
   );
 
-  updateFn(updatedCollection, updatedRelations);
+  removeFn(updatedCollection, updatedRelations);
 
   return {
     success: true,
