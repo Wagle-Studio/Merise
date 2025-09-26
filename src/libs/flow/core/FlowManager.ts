@@ -11,13 +11,17 @@ import type {
   TypedNode,
 } from "../types";
 import { FlowConnectionTypeEnum, FlowItemTypeEnum, FlowSeverityTypeEnum } from "../types";
-import flowHelper from "./FlowHelper";
+import FlowHelper from "./FlowHelper";
 
 export default class FlowManager implements FlowManagerInterface {
+  private helper: FlowHelper;
+
   constructor(
     private getFlow: () => FlowDTOInterface,
     private setFlow: FlowDTODispatcher
-  ) {}
+  ) {
+    this.helper = FlowHelper.getInstance();
+  }
 
   triggerReRender = (): void => {
     this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.getEdges(), prev.getNodes()));
@@ -30,7 +34,7 @@ export default class FlowManager implements FlowManagerInterface {
   };
 
   createConnection = (params: Connection): FlowResult<FlowConnectResult, null> => {
-    const validationResult = flowHelper.validateConnection({
+    const validationResult = this.helper.validateConnection({
       edges: this.getFlow().getEdges(),
       nodes: this.getFlow().getNodes(),
       connection: params,
@@ -39,30 +43,16 @@ export default class FlowManager implements FlowManagerInterface {
     if (!validationResult.success) return validationResult;
 
     if (validationResult.data === FlowConnectionTypeEnum.ENTITY_ENTITY) {
-      const connectionResult = flowHelper.connectEntityToEntity({
+      return this.helper.connectEntityToEntity({
         connection: params,
         nodes: this.getFlow().getNodes(),
       });
-
-      if (connectionResult.success) {
-        return {
-          success: true,
-          data: connectionResult.data,
-        };
-      }
     }
 
     if (validationResult.data === FlowConnectionTypeEnum.ENTITY_ASSOCIATION) {
-      const connectionResult = flowHelper.connectEntityToAssociation({
+      return this.helper.connectEntityToAssociation({
         connection: params,
       });
-
-      if (connectionResult.success) {
-        return {
-          success: true,
-          data: connectionResult.data,
-        };
-      }
     }
 
     return {
@@ -77,7 +67,7 @@ export default class FlowManager implements FlowManagerInterface {
 
     const node: TypedNode = {
       id: nodeId,
-      position: flowHelper.calculateNewNodePosition({ nodes: this.getFlow().getNodes() }),
+      position: this.helper.calculateNewNodePosition({ nodes: this.getFlow().getNodes() }),
       data: {
         id: nodeId,
         type: itemType,
@@ -116,80 +106,40 @@ export default class FlowManager implements FlowManagerInterface {
   };
 
   removeNode = (id: string): FlowResult<TypedNode, null> => {
-    const removeFn = (updatedNodes: TypedNode[]) => {
-      this.setFlow((prev) => prev.cloneWithUpdatedNodes(updatedNodes));
-    };
-
-    const removeItemResult = flowHelper.removeItem<TypedNode>({
+    return this.helper.removeItem<TypedNode>({
       collection: this.getFlow().getNodes(),
       id: id,
       itemName: "l'élément",
-      removeFn: removeFn,
+      removeFn: (updatedNodes: TypedNode[]) => {
+        this.setFlow((prev) => prev.cloneWithUpdatedNodes(updatedNodes));
+      },
     });
-
-    if (!removeItemResult.success || !removeItemResult.data) {
-      return removeItemResult;
-    }
-
-    return {
-      success: true,
-      data: removeItemResult.data,
-    };
   };
 
   removeEdge = (id: string): FlowResult<TypedEdge, null> => {
-    const removeFn = (updatedEdges: TypedEdge[]) => {
-      this.setFlow((prev) => prev.cloneWithUpdatedEdges(updatedEdges));
-    };
-
-    const removeItemResult = flowHelper.removeItem<TypedEdge>({
+    return this.helper.removeItem<TypedEdge>({
       collection: this.getFlow().getEdges(),
       id: id,
       itemName: "la relation",
-      removeFn: removeFn,
+      removeFn: (updatedEdges: TypedEdge[]) => {
+        this.setFlow((prev) => prev.cloneWithUpdatedEdges(updatedEdges));
+      },
     });
-
-    if (!removeItemResult.success || !removeItemResult.data) {
-      return removeItemResult;
-    }
-
-    return {
-      success: true,
-      data: removeItemResult.data,
-    };
   };
 
   findNodeById = (id: string): FlowResult<TypedNode, null> => {
-    const findItemResult = flowHelper.findItemById<TypedNode>({
+    return this.helper.findItemById<TypedNode>({
       collection: this.getFlow().getNodes(),
       id: id,
       itemName: "l'élément",
     });
-
-    if (!findItemResult.success || !findItemResult.data) {
-      return findItemResult;
-    }
-
-    return {
-      success: true,
-      data: findItemResult.data,
-    };
   };
 
   findEdgeById = (id: string): FlowResult<TypedEdge, null> => {
-    const findItemResult = flowHelper.findItemById<TypedEdge>({
+    return this.helper.findItemById<TypedEdge>({
       collection: this.getFlow().getEdges(),
       id: id,
       itemName: "la relation",
     });
-
-    if (!findItemResult.success || !findItemResult.data) {
-      return findItemResult;
-    }
-
-    return {
-      success: true,
-      data: findItemResult.data,
-    };
   };
 }
