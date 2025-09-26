@@ -1,6 +1,6 @@
 import { type ReactNode, useLayoutEffect, useMemo } from "react";
 import { useKernelContext } from "@/core";
-import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
+import { ErrorBoundary, ErrorFallBackPresetTypeEnum } from "@/core/libs/error";
 import { FlowContextProvider } from "@/libs/flow";
 import { FallbackLoading } from "@/ui/libs/error";
 import { ProviderFactoryFlow } from "../factories";
@@ -31,7 +31,7 @@ export const ProviderFlow = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <ErrorBoundary fallback={FallBackPresetTypeEnum.LIB_FLOW}>
+    <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.LIB_FLOW}>
       <FlowContextProvider {...contextValue}>{children}</FlowContextProvider>
     </ErrorBoundary>
   );

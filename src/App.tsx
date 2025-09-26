@@ -1,5 +1,5 @@
 import { ProviderKernel } from "@/core/kernel";
-import { ErrorBoundary, FallBackPresetTypeEnum } from "@/core/libs/error";
+import { ErrorBoundary, ErrorFallBackPresetTypeEnum } from "@/core/libs/error";
 import { FlowComponent } from "@/libs/flow";
 import { Toolbar } from "@/ui";
 import "./app.scss";
@@ -7,7 +7,7 @@ import "./app.scss";
 function App() {
   return (
     <div className="workspace">
-      <ErrorBoundary fallback={FallBackPresetTypeEnum.CORE}>
+      <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.CORE}>
         <ProviderKernel>
           <Toolbar />
           <FlowComponent />

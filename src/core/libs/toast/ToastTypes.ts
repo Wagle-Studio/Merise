@@ -1,3 +1,5 @@
+import type { CoreError } from "@/core/libs/error";
+
 // List of all available toast types
 export enum ToastType {
   SUCCESS = "SUCCESS",
@@ -26,6 +28,11 @@ export interface AddToastProps {
 
 // Contract for the toast manager implementation
 export interface ToastManagerInterface {
-  addToast: (props: AddToastProps) => void;
+  addToastSuccess: (message: string) => void;
+  addToastInfo: (message: string) => void;
+  addToastWarning: (message: string) => void;
+  addToastError: (message: string) => void;
+  addToastSave: (message: string) => void;
   removeToastById: (id: string) => void;
+  mapToastError: (error: CoreError) => void;
 }

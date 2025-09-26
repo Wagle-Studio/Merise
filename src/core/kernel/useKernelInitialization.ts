@@ -68,13 +68,14 @@ export const useKernelInitialization = (): UseKernelInitializationResult => {
   const getMeriseDTO = () => meriseDTORef.current;
 
   const managers = useMemo<KernelManagers>(() => {
+    const error = ErrorManager.getInstance(); // REVIEWED
+    const toast = ToastManager.getInstance(getToasts, setToasts, toastsTimersRef); // REVIEWED
+
+    const normalize = new NormalizeManager();
+    const navigator = new NavigatorManager();
     const settings = new SettingsManager(getSettingsDTO, setSettingsDTO);
     const dialog = new DialogManager(getDialogs, setDialogs);
-    const toast = new ToastManager(getToasts, setToasts, toastsTimersRef);
-    const error = new ErrorManager(toast);
-    const normalize = new NormalizeManager();
     const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO, normalize);
-    const navigator = new NavigatorManager();
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
     const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
     const core = new CoreManager(flow, merise, toast, dialog, error, save, settings, navigator);

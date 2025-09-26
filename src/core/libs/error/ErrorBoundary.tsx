@@ -1,6 +1,6 @@
 import { Component } from "react";
-import type { ErrorBoundaryProps, ErrorBoundaryState, FallBackPresetType } from "@/core/libs/error";
 import { FallbackError } from "@/ui";
+import type { ErrorBoundaryProps, ErrorBoundaryState, ErrorFallBackPresetType } from "./ErrorTypes";
 
 export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
@@ -12,7 +12,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     return { hasError: true, error };
   }
 
-  private getFallbackPreset = (preset: FallBackPresetType, error: any) => {
+  private getFallbackPreset = (preset: ErrorFallBackPresetType, error: any) => {
     switch (preset) {
       case "CORE":
         return <FallbackError title="Core" message="Une erreur technique est survenue" error={error} />;

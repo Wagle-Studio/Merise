@@ -1,24 +1,35 @@
-import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
-import type ErrorDTO from "./ErrorDTO";
-import type { ErrorManagerInterface } from "./ErrorTypes";
+import { FlowSeverityTypeEnum } from "@/libs/flow";
+import { MeriseSeverityTypeEnum } from "@/libs/merise";
+import ErrorDTO from "./ErrorDTO";
+import type { ErrorFailResultType, ErrorManagerInterface } from "./ErrorTypes";
+import { SeverityType as ErrorSeverityTypeEnum } from "./ErrorTypes";
 
 export default class ErrorManager implements ErrorManagerInterface {
-  constructor(private toastManager: ToastManagerInterface) {}
+  private static instance: ErrorManager;
 
-  handleError = (error: ErrorDTO): void => {
-    switch (error.type) {
-      case "INFO":
-        this.toastManager.addToast({ type: ToastTypeEnum.INFO, message: error.message });
-        break;
-      case "WARNING":
-        this.toastManager.addToast({ type: ToastTypeEnum.WARNING, message: error.message });
-        break;
-      case "ERROR":
-        this.toastManager.addToast({ type: ToastTypeEnum.ERROR, message: error.message });
-        break;
+  private constructor() {}
+
+  static getInstance = () => {
+    if (!this.instance) {
+      this.instance = new ErrorManager();
+    }
+
+    return this.instance;
+  };
+
+  mapResultError = (resultFail: ErrorFailResultType): ErrorDTO => {
+    switch (resultFail.severity) {
+      case FlowSeverityTypeEnum.INFO:
+      case MeriseSeverityTypeEnum.INFO:
+        return new ErrorDTO(ErrorSeverityTypeEnum.INFO, resultFail.message);
+      case FlowSeverityTypeEnum.WARNING:
+      case MeriseSeverityTypeEnum.WARNING:
+        return new ErrorDTO(ErrorSeverityTypeEnum.WARNING, resultFail.message);
+      case FlowSeverityTypeEnum.ERROR:
+      case MeriseSeverityTypeEnum.ERROR:
+        return new ErrorDTO(ErrorSeverityTypeEnum.ERROR, resultFail.message);
       default:
-        this.toastManager.addToast({ type: ToastTypeEnum.INFO, message: "Erreur inattendue" });
-        break;
+        return new ErrorDTO(ErrorSeverityTypeEnum.ERROR, "Anomalie dans le système d'erreur");
     }
   };
 }

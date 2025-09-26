@@ -1,14 +1,14 @@
 import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
-import { CoreError, type ErrorManagerInterface, ErrorSeverityTypeEnum } from "@/core/libs/error";
+import { type ErrorManagerInterface } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
 import { SaveDTO, type SaveDTOInterface, type SaveManagerInterface } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { SettingsDefault } from "@/core/libs/settings/";
-import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
-import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
-import { FlowConnectionTypeEnum, FlowMeriseItemTypeEnum, FlowSeverityTypeEnum } from "@/libs/flow";
+import { type ToastManagerInterface } from "@/core/libs/toast";
+import type { FlowManagerInterface, TypedEdge, TypedNode } from "@/libs/flow";
+import { FlowConnectionTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
 import type {
   Association,
   Entity,
@@ -18,7 +18,6 @@ import type {
   MeriseManagerInterface,
   MeriseRelationInterface,
   MeriseResult,
-  MeriseResultFail,
 } from "@/libs/merise";
 import {
   Field,
@@ -26,12 +25,10 @@ import {
   MeriseFieldTypeTypeEnum,
   MeriseFormTypeEnum,
   MeriseItemTypeEnum,
-  MeriseSeverityTypeEnum,
   Relation,
 } from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
 
-// TODO : invesitage if `handleError` is well used and if it's need to be everywhere
 export default class CoreManager implements CoreManagerInterface {
   constructor(
     private flowManager: FlowManagerInterface,
@@ -78,7 +75,7 @@ export default class CoreManager implements CoreManagerInterface {
     const createConnectionResult = this.flowManager.createConnection(connection);
 
     if (!createConnectionResult.success) {
-      this.errorManager.handleError(this.mapResultError(createConnectionResult));
+      this.toastManager.mapToastError(this.errorManager.mapResultError(createConnectionResult));
       return;
     }
 
@@ -89,7 +86,7 @@ export default class CoreManager implements CoreManagerInterface {
       const associationCreateResult = this.meriseManager.addAssociation(associationFlowId);
 
       if (!associationCreateResult.success) {
-        this.errorManager.handleError(this.mapResultError(associationCreateResult));
+        this.toastManager.mapToastError(this.errorManager.mapResultError(associationCreateResult));
         return;
       }
 
@@ -97,7 +94,7 @@ export default class CoreManager implements CoreManagerInterface {
 
       if (!createNodeResult.success) {
         this.meriseManager.removeAssociation(associationFlowId);
-        this.errorManager.handleError(this.mapResultError(createNodeResult));
+        this.toastManager.mapToastError(this.errorManager.mapResultError(createNodeResult));
         return;
       }
 
@@ -121,7 +118,7 @@ export default class CoreManager implements CoreManagerInterface {
           this.meriseManager.removeAssociation(associationFlowId);
 
           if (!createSubConnectionResult.success)
-            this.errorManager.handleError(this.mapResultError(createSubConnectionResult));
+            this.toastManager.mapToastError(this.errorManager.mapResultError(createSubConnectionResult));
 
           return;
         }
@@ -140,7 +137,7 @@ export default class CoreManager implements CoreManagerInterface {
 
           this.flowManager.removeNode(associationFlowId);
           this.meriseManager.removeAssociation(associationFlowId);
-          this.errorManager.handleError(this.mapResultError(relationResult));
+          this.toastManager.mapToastError(this.errorManager.mapResultError(relationResult));
 
           return;
         }
@@ -148,7 +145,7 @@ export default class CoreManager implements CoreManagerInterface {
         // const edgeResult = this.flowManager.addEdge(edge);
       }
 
-      this.toastManager.addToast({ type: ToastTypeEnum.SUCCESS, message: "Relation créée" });
+      this.toastManager.addToastSuccess("Relation créée");
 
       return;
     }
@@ -160,12 +157,12 @@ export default class CoreManager implements CoreManagerInterface {
       const relationCreateResult = this.meriseManager.addRelation(edge.data.id, edge.source, edge.target);
 
       if (!relationCreateResult.success) {
-        this.errorManager.handleError(this.mapResultError(relationCreateResult));
+        this.toastManager.mapToastError(this.errorManager.mapResultError(relationCreateResult));
         this.flowManager.removeEdge(edge.data.id);
         return;
       }
 
-      this.toastManager.addToast({ type: ToastTypeEnum.SUCCESS, message: "Relation créée" });
+      this.toastManager.addToastSuccess("Relation créée");
     }
   };
 
@@ -173,44 +170,38 @@ export default class CoreManager implements CoreManagerInterface {
     const nodeCreateResult = this.flowManager.createNode(FlowMeriseItemTypeEnum.ENTITY);
 
     if (!nodeCreateResult.success) {
-      this.errorManager.handleError(this.mapResultError(nodeCreateResult));
+      this.toastManager.mapToastError(this.errorManager.mapResultError(nodeCreateResult));
       return;
     }
 
     const entityCreateResult = this.meriseManager.addEntity(nodeCreateResult.data.id);
 
     if (!entityCreateResult.success) {
-      this.errorManager.handleError(this.mapResultError(entityCreateResult));
+      this.toastManager.mapToastError(this.errorManager.mapResultError(entityCreateResult));
       this.flowManager.removeNode(nodeCreateResult.data.id);
       return;
     }
 
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SUCCESS,
-      message: "Entité créée",
-    });
+    this.toastManager.addToastSuccess("Entité créée");
   };
 
   handleCreateFlowNodeAndMeriseAssociation = (): void => {
     const nodeCreateResult = this.flowManager.createNode(FlowMeriseItemTypeEnum.ASSOCIATION);
 
     if (!nodeCreateResult.success) {
-      this.errorManager.handleError(this.mapResultError(nodeCreateResult));
+      this.toastManager.mapToastError(this.errorManager.mapResultError(nodeCreateResult));
       return;
     }
 
     const associationCreateResult = this.meriseManager.addAssociation(nodeCreateResult.data.id);
 
     if (!associationCreateResult.success) {
-      this.errorManager.handleError(this.mapResultError(associationCreateResult));
+      this.toastManager.mapToastError(this.errorManager.mapResultError(associationCreateResult));
       this.flowManager.removeNode(nodeCreateResult.data.id);
       return;
     }
 
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SUCCESS,
-      message: "Association créée",
-    });
+    this.toastManager.addToastSuccess("Association créée");
   };
 
   handleMeriseEntitySelect = (entity: MeriseEntityInterface): void => {
@@ -300,28 +291,22 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
-  // REVIEWED
   handleMeriseEntityUpdate = (entity: Entity): void => {
     const successMessage = "Entité mise à jour";
-    const errorMessage = "Échec de la mise à jour de l’entité";
 
-    this.handleItemUpdate(entity, this.meriseManager.updateEntity, successMessage, errorMessage);
+    this.handleItemUpdate(entity, this.meriseManager.updateEntity, successMessage);
   };
 
-  // REVIEWED
   handleMeriseAssociationUpdate = (association: Association): void => {
     const successMessage = "Association mise à jour";
-    const errorMessage = "Échec de la mise à jour de l’association";
 
-    this.handleItemUpdate(association, this.meriseManager.updateAssociation, successMessage, errorMessage);
+    this.handleItemUpdate(association, this.meriseManager.updateAssociation, successMessage);
   };
 
-  // REVIEWED
   handleMeriseRelationUpdate = (relation: Relation): void => {
     const successMessage = "Relation mise à jour";
-    const errorMessage = "Échec de la mise à jour de la relation";
 
-    this.handleItemUpdate(relation, this.meriseManager.updateRelation, successMessage, errorMessage);
+    this.handleItemUpdate(relation, this.meriseManager.updateRelation, successMessage);
   };
 
   handleMeriseFieldCreate = (field: MeriseFieldInterface): void => {
@@ -330,34 +315,24 @@ export default class CoreManager implements CoreManagerInterface {
         const entityFindResult = this.meriseManager.findEntityById(field.getMeriseItemId());
 
         if (!entityFindResult.success) {
-          this.errorManager.handleError(this.mapResultError(entityFindResult));
+          this.toastManager.mapToastError(this.errorManager.mapResultError(entityFindResult));
           return;
         }
 
         entityFindResult.data?.addField(field);
-        this.handleItemUpdate(
-          entityFindResult.data as Entity,
-          this.meriseManager.updateEntity,
-          "Champ créé",
-          "Échec de la création du champ"
-        );
+        this.handleItemUpdate(entityFindResult.data, this.meriseManager.updateEntity, "Champ créé");
 
         break;
       case MeriseItemTypeEnum.ASSOCIATION:
         const associationFindResult = this.meriseManager.findAssociationById(field.getMeriseItemId());
 
         if (!associationFindResult.success) {
-          this.errorManager.handleError(this.mapResultError(associationFindResult));
+          this.toastManager.mapToastError(this.errorManager.mapResultError(associationFindResult));
           return;
         }
 
         associationFindResult.data?.addField(field);
-        this.handleItemUpdate(
-          associationFindResult.data as Association,
-          this.meriseManager.updateAssociation,
-          "Champ créé",
-          "Échec de la création du champ"
-        );
+        this.handleItemUpdate(associationFindResult.data, this.meriseManager.updateAssociation, "Champ créé");
 
         break;
     }
@@ -384,34 +359,24 @@ export default class CoreManager implements CoreManagerInterface {
         const entityFindResult = this.meriseManager.findEntityById(field.getMeriseItemId());
 
         if (!entityFindResult.success) {
-          this.errorManager.handleError(this.mapResultError(entityFindResult));
+          this.toastManager.mapToastError(this.errorManager.mapResultError(entityFindResult));
           return;
         }
 
         entityFindResult.data?.updateFields(field);
-        this.handleItemUpdate(
-          entityFindResult.data as Entity,
-          this.meriseManager.updateEntity,
-          "Champ mis à jour",
-          "Échec de la mise à jour du champ"
-        );
+        this.handleItemUpdate(entityFindResult.data, this.meriseManager.updateEntity, "Champ mis à jour");
 
         break;
       case MeriseItemTypeEnum.ASSOCIATION:
         const associationFindResult = this.meriseManager.findAssociationById(field.getMeriseItemId());
 
         if (!associationFindResult.success) {
-          this.errorManager.handleError(this.mapResultError(associationFindResult));
+          this.toastManager.mapToastError(this.errorManager.mapResultError(associationFindResult));
           return;
         }
 
         associationFindResult.data?.updateFields(field);
-        this.handleItemUpdate(
-          associationFindResult.data as Association,
-          this.meriseManager.updateAssociation,
-          "Champ mis à jour",
-          "Échec de la mise à jour du champ"
-        );
+        this.handleItemUpdate(associationFindResult.data, this.meriseManager.updateAssociation, "Champ mis à jour");
 
         break;
     }
@@ -423,34 +388,24 @@ export default class CoreManager implements CoreManagerInterface {
         const entityFindResult = this.meriseManager.findEntityById(field.getMeriseItemId());
 
         if (!entityFindResult.success) {
-          this.errorManager.handleError(this.mapResultError(entityFindResult));
+          this.toastManager.mapToastError(this.errorManager.mapResultError(entityFindResult));
           return;
         }
 
         entityFindResult.data?.deleteField(field);
-        this.handleItemUpdate(
-          entityFindResult.data as Entity,
-          this.meriseManager.updateEntity,
-          "Champ supprimé",
-          "Échec de la suppression du champ"
-        );
+        this.handleItemUpdate(entityFindResult.data, this.meriseManager.updateEntity, "Champ supprimé");
 
         break;
       case MeriseItemTypeEnum.ASSOCIATION:
         const associationFindResult = this.meriseManager.findAssociationById(field.getMeriseItemId());
 
         if (!associationFindResult.success) {
-          this.errorManager.handleError(this.mapResultError(associationFindResult));
+          this.toastManager.mapToastError(this.errorManager.mapResultError(associationFindResult));
           return;
         }
 
         associationFindResult.data?.deleteField(field);
-        this.handleItemUpdate(
-          associationFindResult.data as Association,
-          this.meriseManager.updateAssociation,
-          "Champ supprimé",
-          "Échec de la suppression du champ"
-        );
+        this.handleItemUpdate(associationFindResult.data, this.meriseManager.updateAssociation, "Champ supprimé");
 
         break;
     }
@@ -461,10 +416,7 @@ export default class CoreManager implements CoreManagerInterface {
     const openSaveResult = this.saveManager.openSave(newSaveId);
 
     if (!openSaveResult.success) {
-      this.toastManager.addToast({
-        type: ToastTypeEnum.ERROR,
-        message: "Erreur lors de la création du diagramme",
-      });
+      this.toastManager.mapToastError(this.errorManager.mapResultError(openSaveResult));
       return;
     }
 
@@ -473,20 +425,14 @@ export default class CoreManager implements CoreManagerInterface {
     this.saveManager.updateCurrentSave(save);
     this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
 
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SAVE,
-      message: "Diagramme créé",
-    });
+    this.toastManager.addToastSave("Diagramme créé");
   };
 
   handleSaveOpen = (saveId: string): void => {
     const openSaveResult = this.saveManager.openSave(saveId);
 
     if (!openSaveResult.success) {
-      this.toastManager.addToast({
-        type: ToastTypeEnum.ERROR,
-        message: "Erreur lors de l'ouverture du diagramme",
-      });
+      this.toastManager.mapToastError(this.errorManager.mapResultError(openSaveResult));
       return;
     }
 
@@ -498,21 +444,14 @@ export default class CoreManager implements CoreManagerInterface {
 
   handleSave = (): void => {
     this.saveManager.saveCurrent();
-
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SAVE,
-      message: "Diagramme sauvegardé",
-    });
+    this.toastManager.addToastSave("Diagramme sauvegardé");
   };
 
   handleSaveSelect = (saveId: string): void => {
     const openSaveResult = this.saveManager.openSave(saveId);
 
     if (!openSaveResult.success) {
-      this.toastManager.addToast({
-        type: ToastTypeEnum.ERROR,
-        message: "Erreur lors de la manipulation du diagramme",
-      });
+      this.toastManager.mapToastError(this.errorManager.mapResultError(openSaveResult));
       return;
     }
 
@@ -547,20 +486,12 @@ export default class CoreManager implements CoreManagerInterface {
 
   handleSaveUpdate = (saveDTO: SaveDTOInterface): void => {
     this.saveManager.updateSave(saveDTO);
-
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SAVE,
-      message: "Diagramme sauvegardé",
-    });
+    this.toastManager.addToastSave("Diagramme sauvegardé");
   };
 
   handleSaveUpdateCurrent = (saveDTO: SaveDTOInterface): void => {
     this.saveManager.updateCurrentSave(saveDTO);
-
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SAVE,
-      message: "Diagramme sauvegardé",
-    });
+    this.toastManager.addToastSave("Diagramme sauvegardé");
   };
 
   handleSaveRemove = (saveId: string, saveName: string): void => {
@@ -574,10 +505,7 @@ export default class CoreManager implements CoreManagerInterface {
         onConfirm: () => {
           this.saveManager.removeSave(saveId);
           this.dialogManager.clearDialogs();
-          this.toastManager.addToast({
-            type: ToastTypeEnum.SUCCESS,
-            message: "Diagramme supprimé",
-          });
+          this.toastManager.addToastSuccess("Diagramme supprimé");
         },
       },
     });
@@ -599,10 +527,7 @@ export default class CoreManager implements CoreManagerInterface {
         onConfirm: () => {
           this.dialogManager.clearDialogs();
           this.saveManager.removeSave(currentSave.getId());
-          this.toastManager.addToast({
-            type: ToastTypeEnum.SUCCESS,
-            message: "Diagramme supprimé",
-          });
+          this.toastManager.addToastSuccess("Diagramme supprimé");
           this.handleNavigateToHome();
         },
       },
@@ -629,35 +554,24 @@ export default class CoreManager implements CoreManagerInterface {
     this.settingsManager.updateSettings(settings);
     this.saveManager.saveCurrent();
 
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SAVE,
-      message: "Paramètres sauvegardés",
-    });
+    this.toastManager.addToastSave("Diagramme sauvegardés");
   };
 
   // REVIEWED
   private handleItemUpdate<TInput, TOutput>(
     item: TInput,
     updateFn: (item: TInput) => MeriseResult<TOutput, null>,
-    successMessage: string,
-    errorMessage: string
+    successMessage: string
   ): void {
     const updateResult = updateFn(item);
 
     if (!updateResult.success) {
-      this.toastManager.addToast({
-        type: ToastTypeEnum.ERROR,
-        message: errorMessage,
-      });
+      this.toastManager.mapToastError(this.errorManager.mapResultError(updateResult));
       return;
     }
 
     this.flowManager.triggerReRender();
-
-    this.toastManager.addToast({
-      type: ToastTypeEnum.SUCCESS,
-      message: successMessage,
-    });
+    this.toastManager.addToastSuccess(successMessage);
   }
 
   // TODO: handle recover
@@ -665,7 +579,7 @@ export default class CoreManager implements CoreManagerInterface {
     const edgeFindResult = this.flowManager.findEdgeById(edgeId);
 
     if (!edgeFindResult.success) {
-      this.errorManager.handleError(this.mapResultError(edgeFindResult));
+      this.toastManager.mapToastError(this.errorManager.mapResultError(edgeFindResult));
       return;
     }
 
@@ -673,7 +587,7 @@ export default class CoreManager implements CoreManagerInterface {
       const edgeRemoveResult = this.flowManager.removeEdge(edge.id);
 
       if (!edgeRemoveResult.success) {
-        this.errorManager.handleError(this.mapResultError(edgeRemoveResult));
+        this.toastManager.mapToastError(this.errorManager.mapResultError(edgeRemoveResult));
         return;
       }
 
@@ -686,14 +600,11 @@ export default class CoreManager implements CoreManagerInterface {
           sourceHandle: edge.sourceHandle ?? null,
           targetHandle: edge.targetHandle ?? null,
         });
-        this.errorManager.handleError(this.mapResultError(relationRemoveResult));
+        this.toastManager.mapToastError(this.errorManager.mapResultError(relationRemoveResult));
         return;
       }
 
-      this.toastManager.addToast({
-        type: ToastTypeEnum.SUCCESS,
-        message: "Relation supprimée",
-      });
+      this.toastManager.addToastSuccess("Relation supprimée");
     };
 
     if (edgeFindResult.success && edgeFindResult.data) {
@@ -719,7 +630,7 @@ export default class CoreManager implements CoreManagerInterface {
     const nodeFindResult = this.flowManager.findNodeById(nodeId);
 
     if (!nodeFindResult.success) {
-      this.errorManager.handleError(this.mapResultError(nodeFindResult));
+      this.toastManager.mapToastError(this.errorManager.mapResultError(nodeFindResult));
       return;
     }
 
@@ -727,15 +638,7 @@ export default class CoreManager implements CoreManagerInterface {
       const nodeRemoveResult = this.flowManager.removeNode(node.id);
 
       if (!nodeRemoveResult.success) {
-        this.errorManager.handleError(this.mapResultError(nodeRemoveResult));
-        return;
-      }
-
-      if (!nodeRemoveResult.data || !nodeRemoveResult.data.data.type) {
-        this.toastManager.addToast({
-          type: ToastTypeEnum.ERROR,
-          message: "Type d’élément introuvable",
-        });
+        this.toastManager.mapToastError(this.errorManager.mapResultError(nodeRemoveResult));
         return;
       }
 
@@ -745,7 +648,7 @@ export default class CoreManager implements CoreManagerInterface {
 
           if (!entityRemoveResult.success) {
             this.flowManager.createNode(node.data.type);
-            this.errorManager.handleError(this.mapResultError(entityRemoveResult));
+            this.toastManager.mapToastError(this.errorManager.mapResultError(entityRemoveResult));
             return;
           }
 
@@ -755,19 +658,19 @@ export default class CoreManager implements CoreManagerInterface {
 
           if (!associationRemoveResult.success) {
             this.flowManager.createNode(node.data.type);
-            this.errorManager.handleError(this.mapResultError(associationRemoveResult));
+            this.toastManager.mapToastError(this.errorManager.mapResultError(associationRemoveResult));
             return;
           }
 
           break;
         default:
           this.flowManager.createNode(node.data.type);
-          this.toastManager.addToast({ type: ToastTypeEnum.ERROR, message: "Type d’élément non pris en charge" });
+          this.toastManager.addToastError("Type d’élément non pris en charge");
 
           return;
       }
 
-      this.toastManager.addToast({ type: ToastTypeEnum.SUCCESS, message: `${itemTypeName} supprimée avec succès` });
+      this.toastManager.addToastSuccess(`${itemTypeName} supprimée avec succès`);
     };
 
     if (nodeFindResult.success && nodeFindResult.data) {
@@ -786,22 +689,6 @@ export default class CoreManager implements CoreManagerInterface {
           },
         },
       });
-    }
-  };
-
-  private mapResultError = (resultFail: FlowResultFail<unknown> | MeriseResultFail<any>): CoreError => {
-    switch (resultFail.severity) {
-      case FlowSeverityTypeEnum.INFO:
-      case MeriseSeverityTypeEnum.INFO:
-        return new CoreError(ErrorSeverityTypeEnum.INFO, resultFail.message);
-      case FlowSeverityTypeEnum.WARNING:
-      case MeriseSeverityTypeEnum.WARNING:
-        return new CoreError(ErrorSeverityTypeEnum.WARNING, resultFail.message);
-      case FlowSeverityTypeEnum.ERROR:
-      case MeriseSeverityTypeEnum.ERROR:
-        return new CoreError(ErrorSeverityTypeEnum.ERROR, resultFail.message);
-      default:
-        return new CoreError(ErrorSeverityTypeEnum.ERROR, "Anomalie dans le système d'erreur");
     }
   };
 
