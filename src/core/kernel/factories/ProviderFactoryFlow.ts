@@ -1,6 +1,14 @@
 import type { Connection, NodeChange } from "@xyflow/react";
 import type { KernelManagers } from "@/core";
-import type { FlowDependencies, FlowMeriseAssociationInterface, FlowMeriseEntityInterface, FlowMeriseRelationInterface, FlowOperations, FlowResult, TypedNode } from "@/libs/flow";
+import type {
+  FlowDependencies,
+  FlowMeriseAssociationInterface,
+  FlowMeriseEntityInterface,
+  FlowMeriseRelationInterface,
+  FlowOperations,
+  FlowResult,
+  TypedNode,
+} from "@/libs/flow";
 
 // Factory responsible for creating Flow operations and dependency mappings from Kernel managers
 export default class ProviderFactoryFlow {

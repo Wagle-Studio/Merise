@@ -4,7 +4,7 @@ import { useFlowHandlers } from "./useFlowHandlers";
 
 const FlowContext = createContext<FlowContext | null>(null);
 
-// Provides the Flow context to the flow feature
+// Provides the Flow context to the Flow feature
 export const FlowContextProvider = ({ children, flow, operations, dependencies, settings }: FlowContextProps) => {
   const { onNodesChange, onConnect } = useFlowHandlers(operations); // Hooks for React Flow events
 

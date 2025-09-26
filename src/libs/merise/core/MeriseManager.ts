@@ -138,7 +138,7 @@ export default class MeriseManager implements MeriseManagerInterface {
   };
 
   removeEntity = (flowId: string): MeriseResult<Entity, null> => {
-    const meriseUpdateFunction = (updatedEntities: Entity[], updatedRelations: Relation[]) => {
+    const removeFn = (updatedEntities: Entity[], updatedRelations: Relation[]) => {
       this.setMerise((prev) => prev.cloneWithUpdatedEntitiesAndRelations(updatedEntities, updatedRelations));
     };
 
@@ -147,7 +147,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       relations: this.getMerise().getRelations(),
       flowId: flowId,
       itemName: "l'entité",
-      updateFn: meriseUpdateFunction,
+      removeFn: removeFn,
     });
 
     if (!removeItemResult.success || !removeItemResult.data) {
@@ -161,7 +161,7 @@ export default class MeriseManager implements MeriseManagerInterface {
   };
 
   removeAssociation = (flowId: string): MeriseResult<Association, null> => {
-    const meriseUpdateFunction = (updatedAssociations: Association[], updatedRelations: Relation[]) => {
+    const removeFn = (updatedAssociations: Association[], updatedRelations: Relation[]) => {
       this.setMerise((prev) => prev.cloneWithUpdatedAssociationsAndRelations(updatedAssociations, updatedRelations));
     };
 
@@ -170,7 +170,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       relations: this.getMerise().getRelations(),
       flowId: flowId,
       itemName: "l'association",
-      updateFn: meriseUpdateFunction,
+      removeFn: removeFn,
     });
 
     if (!removeItemResult.success || !removeItemResult.data) {
@@ -184,7 +184,7 @@ export default class MeriseManager implements MeriseManagerInterface {
   };
 
   removeRelation = (flowId: string): MeriseResult<Relation, null> => {
-    const meriseUpdateFunction = (updatedRelations: Relation[]) => {
+    const removeFn = (updatedRelations: Relation[]) => {
       this.setMerise((prev) => prev.cloneWithUpdatedRelations(updatedRelations));
     };
 
@@ -193,7 +193,7 @@ export default class MeriseManager implements MeriseManagerInterface {
       relations: this.getMerise().getRelations(),
       flowId: flowId,
       itemName: "la relation",
-      updateFn: meriseUpdateFunction,
+      removeFn: removeFn,
     });
 
     if (!removeItemResult.success || !removeItemResult.data) {

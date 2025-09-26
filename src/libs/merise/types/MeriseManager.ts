@@ -5,7 +5,7 @@ import type { MeriseDTOInterface } from "./MeriseDTO";
 // Dispatcher type for updating the Merise DTO state
 export type MeriseDTODispatcher = React.Dispatch<React.SetStateAction<MeriseDTOInterface>>;
 
-// Contract for the merise manager implementation
+// Contract for the Merise manager implementation
 export interface MeriseManagerInterface {
   addEntity: (flowId: string) => MeriseResult<Entity, null>;
   addAssociation: (flowId: string) => MeriseResult<Association, null>;

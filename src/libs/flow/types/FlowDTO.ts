@@ -1,27 +1,4 @@
-import type { Edge, Node } from "@xyflow/react";
-import type { FlowMeriseItemType } from "./FlowCore";
-
-// Shape of the data stored in a flow edge
-export type EdgeData = {
-  id: string;
-  type: FlowMeriseItemType;
-};
-
-// Shape of the data stored in a flow node
-export type NodeData = {
-  id: string;
-  type: FlowMeriseItemType;
-};
-
-// Typed representation of a flow edge including its data payload
-export type TypedEdge = Edge<EdgeData> & {
-  data: EdgeData;
-};
-
-// Typed representation of a flow node including its data payload
-export type TypedNode = Node<NodeData> & {
-  data: NodeData;
-};
+import type { TypedEdge, TypedNode } from "./FlowCore";
 
 // Contract for the Flow DTO implementation
 export interface FlowDTOInterface {

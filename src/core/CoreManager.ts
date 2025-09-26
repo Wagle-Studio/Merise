@@ -9,8 +9,26 @@ import { SettingsDefault } from "@/core/libs/settings/";
 import { type ToastManagerInterface, ToastTypeEnum } from "@/core/libs/toast";
 import type { FlowManagerInterface, FlowResultFail, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowConnectionTypeEnum, FlowMeriseItemTypeEnum, FlowSeverityTypeEnum } from "@/libs/flow";
-import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult, MeriseResultFail } from "@/libs/merise";
-import { Field, FieldTypeNumberOptionEnum, MeriseFieldTypeTypeEnum, MeriseFormTypeEnum, MeriseItemTypeEnum, MeriseSeverityTypeEnum, Relation } from "@/libs/merise";
+import type {
+  Association,
+  Entity,
+  MeriseAssociationInterface,
+  MeriseEntityInterface,
+  MeriseFieldInterface,
+  MeriseManagerInterface,
+  MeriseRelationInterface,
+  MeriseResult,
+  MeriseResultFail,
+} from "@/libs/merise";
+import {
+  Field,
+  FieldTypeNumberOptionEnum,
+  MeriseFieldTypeTypeEnum,
+  MeriseFormTypeEnum,
+  MeriseItemTypeEnum,
+  MeriseSeverityTypeEnum,
+  Relation,
+} from "@/libs/merise";
 import type { CoreManagerInterface } from "./CoreTypes";
 
 // TODO : invesitage if `handleError` is well used and if it's need to be everywhere
@@ -75,7 +93,7 @@ export default class CoreManager implements CoreManagerInterface {
         return;
       }
 
-      const createNodeResult = this.flowManager.createNode(FlowMeriseItemTypeEnum.ASSOCIATION, associationFlowId);
+      const createNodeResult = this.flowManager.addNode(createConnectionResult.data.node);
 
       if (!createNodeResult.success) {
         this.meriseManager.removeAssociation(associationFlowId);
@@ -93,13 +111,17 @@ export default class CoreManager implements CoreManagerInterface {
           targetHandle: edge.targetHandle ?? null,
         });
 
-        if (!createSubConnectionResult.success || createSubConnectionResult.data.type !== FlowConnectionTypeEnum.ENTITY_ASSOCIATION) {
-          for (const id of createdEdgesIds) this.flowManager.removeEdgeByEdgeId(id);
+        if (
+          !createSubConnectionResult.success ||
+          createSubConnectionResult.data.type !== FlowConnectionTypeEnum.ENTITY_ASSOCIATION
+        ) {
+          for (const id of createdEdgesIds) this.flowManager.removeEdge(id);
 
-          this.flowManager.removeNodeByNodeId(createNodeResult.data.id);
+          this.flowManager.removeNode(createNodeResult.data.id);
           this.meriseManager.removeAssociation(associationFlowId);
 
-          if (!createSubConnectionResult.success) this.errorManager.handleError(this.mapResultError(createSubConnectionResult));
+          if (!createSubConnectionResult.success)
+            this.errorManager.handleError(this.mapResultError(createSubConnectionResult));
 
           return;
         }
@@ -107,17 +129,23 @@ export default class CoreManager implements CoreManagerInterface {
         const createdEdge = createSubConnectionResult.data.edge;
         createdEdgesIds.push(createdEdge.data.id);
 
-        const relationResult = this.meriseManager.addRelation(createdEdge.data.id, createdEdge.source, createdEdge.target);
+        const relationResult = this.meriseManager.addRelation(
+          createdEdge.data.id,
+          createdEdge.source,
+          createdEdge.target
+        );
 
         if (!relationResult.success) {
-          for (const id of createdEdgesIds) this.flowManager.removeEdgeByEdgeId(id);
+          for (const id of createdEdgesIds) this.flowManager.removeEdge(id);
 
-          this.flowManager.removeNodeByNodeId(associationFlowId);
+          this.flowManager.removeNode(associationFlowId);
           this.meriseManager.removeAssociation(associationFlowId);
           this.errorManager.handleError(this.mapResultError(relationResult));
 
           return;
         }
+
+        // const edgeResult = this.flowManager.addEdge(edge);
       }
 
       this.toastManager.addToast({ type: ToastTypeEnum.SUCCESS, message: "Relation créée" });
@@ -128,11 +156,12 @@ export default class CoreManager implements CoreManagerInterface {
     if (createConnectionResult.data.type === FlowConnectionTypeEnum.ENTITY_ASSOCIATION) {
       const edge = createConnectionResult.data.edge;
 
+      // const edgeCreateResult = this.flowManager.createEdge(createConnectionResult.data.edge.)
       const relationCreateResult = this.meriseManager.addRelation(edge.data.id, edge.source, edge.target);
 
       if (!relationCreateResult.success) {
         this.errorManager.handleError(this.mapResultError(relationCreateResult));
-        this.flowManager.removeEdgeByEdgeId(edge.data.id);
+        this.flowManager.removeEdge(edge.data.id);
         return;
       }
 
@@ -152,7 +181,7 @@ export default class CoreManager implements CoreManagerInterface {
 
     if (!entityCreateResult.success) {
       this.errorManager.handleError(this.mapResultError(entityCreateResult));
-      this.flowManager.removeNodeByNodeId(nodeCreateResult.data.id);
+      this.flowManager.removeNode(nodeCreateResult.data.id);
       return;
     }
 
@@ -174,7 +203,7 @@ export default class CoreManager implements CoreManagerInterface {
 
     if (!associationCreateResult.success) {
       this.errorManager.handleError(this.mapResultError(associationCreateResult));
-      this.flowManager.removeNodeByNodeId(nodeCreateResult.data.id);
+      this.flowManager.removeNode(nodeCreateResult.data.id);
       return;
     }
 
@@ -306,7 +335,12 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         entityFindResult.data?.addField(field);
-        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ créé", "Échec de la création du champ");
+        this.handleItemUpdate(
+          entityFindResult.data as Entity,
+          this.meriseManager.updateEntity,
+          "Champ créé",
+          "Échec de la création du champ"
+        );
 
         break;
       case MeriseItemTypeEnum.ASSOCIATION:
@@ -318,14 +352,29 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         associationFindResult.data?.addField(field);
-        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ créé", "Échec de la création du champ");
+        this.handleItemUpdate(
+          associationFindResult.data as Association,
+          this.meriseManager.updateAssociation,
+          "Champ créé",
+          "Échec de la création du champ"
+        );
 
         break;
     }
   };
 
   handleMeriseFieldCreatePrimaryKey = (meriseItem: MeriseEntityInterface | MeriseAssociationInterface): void => {
-    const fieldPrimaryKey = new Field(uuidv4(), meriseItem.getId(), meriseItem.getType(), this.primaryKeyFieldName(meriseItem.getName()), MeriseFieldTypeTypeEnum.NUMBER, FieldTypeNumberOptionEnum.COMPTER, true, false, true);
+    const fieldPrimaryKey = new Field(
+      uuidv4(),
+      meriseItem.getId(),
+      meriseItem.getType(),
+      this.primaryKeyFieldName(meriseItem.getName()),
+      MeriseFieldTypeTypeEnum.NUMBER,
+      FieldTypeNumberOptionEnum.COMPTER,
+      true,
+      false,
+      true
+    );
     this.handleMeriseFieldCreate(fieldPrimaryKey);
   };
 
@@ -340,7 +389,12 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         entityFindResult.data?.updateFields(field);
-        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ mis à jour", "Échec de la mise à jour du champ");
+        this.handleItemUpdate(
+          entityFindResult.data as Entity,
+          this.meriseManager.updateEntity,
+          "Champ mis à jour",
+          "Échec de la mise à jour du champ"
+        );
 
         break;
       case MeriseItemTypeEnum.ASSOCIATION:
@@ -352,7 +406,12 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         associationFindResult.data?.updateFields(field);
-        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ mis à jour", "Échec de la mise à jour du champ");
+        this.handleItemUpdate(
+          associationFindResult.data as Association,
+          this.meriseManager.updateAssociation,
+          "Champ mis à jour",
+          "Échec de la mise à jour du champ"
+        );
 
         break;
     }
@@ -369,7 +428,12 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         entityFindResult.data?.deleteField(field);
-        this.handleItemUpdate(entityFindResult.data as Entity, this.meriseManager.updateEntity, "Champ supprimé", "Échec de la suppression du champ");
+        this.handleItemUpdate(
+          entityFindResult.data as Entity,
+          this.meriseManager.updateEntity,
+          "Champ supprimé",
+          "Échec de la suppression du champ"
+        );
 
         break;
       case MeriseItemTypeEnum.ASSOCIATION:
@@ -381,7 +445,12 @@ export default class CoreManager implements CoreManagerInterface {
         }
 
         associationFindResult.data?.deleteField(field);
-        this.handleItemUpdate(associationFindResult.data as Association, this.meriseManager.updateAssociation, "Champ supprimé", "Échec de la suppression du champ");
+        this.handleItemUpdate(
+          associationFindResult.data as Association,
+          this.meriseManager.updateAssociation,
+          "Champ supprimé",
+          "Échec de la suppression du champ"
+        );
 
         break;
     }
@@ -567,7 +636,12 @@ export default class CoreManager implements CoreManagerInterface {
   };
 
   // REVIEWED
-  private handleItemUpdate<TInput, TOutput>(item: TInput, updateFn: (item: TInput) => MeriseResult<TOutput, null>, successMessage: string, errorMessage: string): void {
+  private handleItemUpdate<TInput, TOutput>(
+    item: TInput,
+    updateFn: (item: TInput) => MeriseResult<TOutput, null>,
+    successMessage: string,
+    errorMessage: string
+  ): void {
     const updateResult = updateFn(item);
 
     if (!updateResult.success) {
@@ -588,7 +662,7 @@ export default class CoreManager implements CoreManagerInterface {
 
   // TODO: handle recover
   private handleFlowEdgeRemove = (edgeId: string, onComplete?: () => void): void => {
-    const edgeFindResult = this.flowManager.findEdgeByEdgeId(edgeId);
+    const edgeFindResult = this.flowManager.findEdgeById(edgeId);
 
     if (!edgeFindResult.success) {
       this.errorManager.handleError(this.mapResultError(edgeFindResult));
@@ -596,7 +670,7 @@ export default class CoreManager implements CoreManagerInterface {
     }
 
     const onConfirm = (edge: TypedEdge) => {
-      const edgeRemoveResult = this.flowManager.removeEdgeByEdgeId(edge.id);
+      const edgeRemoveResult = this.flowManager.removeEdge(edge.id);
 
       if (!edgeRemoveResult.success) {
         this.errorManager.handleError(this.mapResultError(edgeRemoveResult));
@@ -606,7 +680,12 @@ export default class CoreManager implements CoreManagerInterface {
       const relationRemoveResult = this.meriseManager.removeRelation(edge.id);
 
       if (!relationRemoveResult.success) {
-        this.flowManager.createConnection({ source: edge.source, target: edge.target, sourceHandle: edge.sourceHandle ?? null, targetHandle: edge.targetHandle ?? null });
+        this.flowManager.createConnection({
+          source: edge.source,
+          target: edge.target,
+          sourceHandle: edge.sourceHandle ?? null,
+          targetHandle: edge.targetHandle ?? null,
+        });
         this.errorManager.handleError(this.mapResultError(relationRemoveResult));
         return;
       }
@@ -637,7 +716,7 @@ export default class CoreManager implements CoreManagerInterface {
 
   // TODO: handle recover
   private handleFlowNodeRemove = (nodeId: string, onComplete?: () => void): void => {
-    const nodeFindResult = this.flowManager.findNodeByNodeId(nodeId);
+    const nodeFindResult = this.flowManager.findNodeById(nodeId);
 
     if (!nodeFindResult.success) {
       this.errorManager.handleError(this.mapResultError(nodeFindResult));
@@ -645,7 +724,7 @@ export default class CoreManager implements CoreManagerInterface {
     }
 
     const onConfirm = (node: TypedNode, itemTypeName: string) => {
-      const nodeRemoveResult = this.flowManager.removeNodeByNodeId(node.id);
+      const nodeRemoveResult = this.flowManager.removeNode(node.id);
 
       if (!nodeRemoveResult.success) {
         this.errorManager.handleError(this.mapResultError(nodeRemoveResult));
@@ -710,17 +789,17 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
-  private mapResultError = (flowResultFail: FlowResultFail<unknown> | MeriseResultFail<any>): CoreError => {
-    switch (flowResultFail.severity) {
+  private mapResultError = (resultFail: FlowResultFail<unknown> | MeriseResultFail<any>): CoreError => {
+    switch (resultFail.severity) {
       case FlowSeverityTypeEnum.INFO:
       case MeriseSeverityTypeEnum.INFO:
-        return new CoreError(ErrorSeverityTypeEnum.INFO, flowResultFail.message);
+        return new CoreError(ErrorSeverityTypeEnum.INFO, resultFail.message);
       case FlowSeverityTypeEnum.WARNING:
       case MeriseSeverityTypeEnum.WARNING:
-        return new CoreError(ErrorSeverityTypeEnum.WARNING, flowResultFail.message);
+        return new CoreError(ErrorSeverityTypeEnum.WARNING, resultFail.message);
       case FlowSeverityTypeEnum.ERROR:
       case MeriseSeverityTypeEnum.ERROR:
-        return new CoreError(ErrorSeverityTypeEnum.ERROR, flowResultFail.message);
+        return new CoreError(ErrorSeverityTypeEnum.ERROR, resultFail.message);
       default:
         return new CoreError(ErrorSeverityTypeEnum.ERROR, "Anomalie dans le système d'erreur");
     }
