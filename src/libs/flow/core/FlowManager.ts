@@ -26,14 +26,14 @@ export default class FlowManager implements FlowManagerInterface {
     private setFlow: FlowDTODispatcher
   ) {}
 
+  triggerReRender = (): void => {
+    this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.getEdges(), prev.getNodes()));
+  };
+
   handleMove = (change: NodeChange<TypedNode>): void => {
     this.setFlow((prev) => {
       return prev.cloneWithUpdatedNodes(applyNodeChanges<TypedNode>([change], prev.getNodes()));
     });
-  };
-
-  triggerReRender = (): void => {
-    this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.getEdges(), prev.getNodes()));
   };
 
   createConnection = (params: Connection): FlowResult<FlowCreateConnectionResult, null> => {
@@ -111,7 +111,7 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  addNode = (itemType: FlowMeriseItemType, id?: string): FlowResult<TypedNode, null> => {
+  createNode = (itemType: FlowMeriseItemType, id?: string): FlowResult<TypedNode, null> => {
     const nodeId = uuidv4();
 
     const node: TypedNode = {

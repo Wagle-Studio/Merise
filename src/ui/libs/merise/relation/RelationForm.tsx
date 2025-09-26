@@ -1,9 +1,9 @@
 import type { FormEvent } from "react";
-import { MeriseRelationCardinalityTypeEnum, type MeriseRelationInterface, RelationFormTypeSchema, useMeriseContext } from "@/libs/merise";
+import { MeriseRelationCardinalityTypeEnum, Relation, RelationFormTypeSchema, useMeriseContext } from "@/libs/merise";
 import { Button, FieldSelect, Form, SaveIcon, useFormErrors } from "@/ui/system";
 
 interface RelationFormComponentProps {
-  relation: MeriseRelationInterface;
+  relation: Relation;
 }
 
 export const RelationFormComponent = ({ relation }: RelationFormComponentProps) => {

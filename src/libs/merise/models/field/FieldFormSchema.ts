@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { FieldTypeDateOptionEnum, FieldTypeNumberOptionEnum, FieldTypeOtherOptionEnum, FieldTypeTextOptionsEnum, MeriseFieldTypeTypeEnum } from "@/libs/merise";
+import {
+  FieldTypeDateOptionEnum,
+  FieldTypeNumberOptionEnum,
+  FieldTypeOtherOptionEnum,
+  FieldTypeTextOption,
+  MeriseFieldTypeTypeEnum,
+} from "@/libs/merise";
 
 // Base fiel form schema
 const BaseFieldsShape = {
@@ -12,13 +18,16 @@ const BaseFieldsShape = {
 // Options schema for field type text
 const TextOptionSchema = z
   .object({
-    variant: z.enum(FieldTypeTextOptionsEnum),
+    variant: z.enum(FieldTypeTextOption),
     maxLength: z.number().int().positive().max(65535).optional(),
   })
-  .refine((val) => !(val.variant === FieldTypeTextOptionsEnum.LONG && typeof val.maxLength !== "undefined"), { message: "Pas de longueur maximum pour un champ texte volumineux", path: ["maxLength"] })
+  .refine((val) => !(val.variant === FieldTypeTextOption.LONG && typeof val.maxLength !== "undefined"), {
+    message: "Pas de longueur maximum pour un champ texte volumineux",
+    path: ["maxLength"],
+  })
   .refine(
     (val) => {
-      const needs = val.variant === FieldTypeTextOptionsEnum.VARIABLE || val.variant === FieldTypeTextOptionsEnum.FIXED;
+      const needs = val.variant === FieldTypeTextOption.VARIABLE || val.variant === FieldTypeTextOption.FIXED;
       return !needs || typeof val.maxLength === "number";
     },
     { message: "Une longueur maximale est requise", path: ["maxLength"] }
@@ -57,6 +66,11 @@ const OtherVariant = z
   .extend(BaseFieldsShape);
 
 // Discrimination union for field type form
-export const FieldFormTypeSchema = z.discriminatedUnion("type", [TextVariant, NumberVariant, DateVariant, OtherVariant]);
+export const FieldFormTypeSchema = z.discriminatedUnion("type", [
+  TextVariant,
+  NumberVariant,
+  DateVariant,
+  OtherVariant,
+]);
 
 export type FieldFormType = z.infer<typeof FieldFormTypeSchema>;

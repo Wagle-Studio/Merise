@@ -10,10 +10,10 @@ export type FlowCreateConnectionResult = { type: FlowConnectionTypeEnum.ENTITY_A
 
 // Contract for the flow manager implementation
 export interface FlowManagerInterface {
-  handleMove: (change: NodeChange<TypedNode>) => void;
   triggerReRender: () => void;
+  handleMove: (change: NodeChange<TypedNode>) => void;
   createConnection: (params: Connection) => FlowResult<FlowCreateConnectionResult, null>;
-  addNode: (itemType: FlowMeriseItemType, id?: string) => FlowResult<TypedNode, null>;
+  createNode: (itemType: FlowMeriseItemType, id?: string) => FlowResult<TypedNode, null>;
   removeEdgeByEdgeId: (edgeId: string) => FlowResult<TypedEdge, null>;
   removeNodeByNodeId: (nodeId: string) => FlowResult<TypedNode, null>;
   findEdgeByEdgeId: (edgeId: string) => FlowResult<TypedEdge, null>;

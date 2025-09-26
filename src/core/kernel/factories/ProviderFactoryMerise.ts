@@ -1,5 +1,5 @@
 import type { KernelManagers } from "@/core";
-import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseOperations, MeriseRelationInterface } from "@/libs/merise";
+import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseOperations, MeriseRelationInterface, Relation } from "@/libs/merise";
 
 // Factory responsible for creating Merise operations and dependency mappings from Kernel managers
 export default class ProviderFactoryMerise {
@@ -17,13 +17,13 @@ export default class ProviderFactoryMerise {
       onFieldSelect: (field: MeriseFieldInterface): void => {
         managers.core.handleMeriseFieldSelect(field);
       },
-      onEntityUpdate: (entity: MeriseEntityInterface): void => {
+      onEntityUpdate: (entity: Entity): void => {
         managers.core.handleMeriseEntityUpdate(entity);
       },
-      onAssociationUpdate: (association: MeriseAssociationInterface): void => {
+      onAssociationUpdate: (association: Association): void => {
         managers.core.handleMeriseAssociationUpdate(association);
       },
-      onRelationUpdate: (relation: MeriseRelationInterface): void => {
+      onRelationUpdate: (relation: Relation): void => {
         managers.core.handleMeriseRelationUpdate(relation);
       },
       onFieldCreate: (field: MeriseFieldInterface): void => {

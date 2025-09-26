@@ -1,9 +1,9 @@
-import type { MeriseRelationInterface } from "@/libs/merise";
+import type { Relation } from "@/libs/merise";
 import { useMeriseContext } from "@/libs/merise";
 import "./relation.scss";
 
 interface RelationComponentProps {
-  relation: MeriseRelationInterface;
+  relation: Relation;
 }
 
 export const RelationComponent = ({ relation }: RelationComponentProps) => {

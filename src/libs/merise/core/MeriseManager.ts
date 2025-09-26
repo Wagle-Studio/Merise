@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from "uuid";
 import { Association, Entity, Relation } from "../models";
-import type { MeriseAssociationInterface, MeriseDTODispatcher, MeriseDTOInterface, MeriseEntityInterface, MeriseManagerInterface, MeriseRelationInterface, MeriseResult } from "../types";
-import { MeriseRelationCardinalityTypeEnum, MeriseSeverityTypeEnum } from "../types";
+import type { MeriseDTODispatcher, MeriseDTOInterface, MeriseManagerInterface, MeriseResult } from "../types";
+import { MeriseItemTypeEnum } from "../types";
+import meriseHelper from "./MeriseHelper";
 
 export default class MeriseManager implements MeriseManagerInterface {
   constructor(
@@ -9,187 +9,146 @@ export default class MeriseManager implements MeriseManagerInterface {
     private setMerise: MeriseDTODispatcher
   ) {}
 
-  addEntity = (flowId: string): MeriseResult<MeriseEntityInterface, null> => {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: "Création de l’entité impossible",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
+  addEntity = (flowId: string): MeriseResult<Entity, null> => {
+    const addItemResult = meriseHelper.addItem<Entity>({
+      collection: this.getMerise().getEntities(),
+      relations: this.getMerise().getRelations(),
+      flowId: flowId,
+      itemType: MeriseItemTypeEnum.ENTITY,
+      itemName: "l'entité",
+      addFn: (item: Entity) => {
+        this.setMerise((prev) => prev.cloneWithAddedEntity(item));
+      },
+    });
+
+    if (!addItemResult.success || !addItemResult.data) {
+      return addItemResult;
     }
-
-    const existingEntity = this.getMerise()
-      .getEntities()
-      .find((entity) => entity.getFlowId() === flowId);
-
-    if (existingEntity) {
-      return {
-        success: false,
-        message: "Une entité avec cette référence existe déjà",
-        severity: MeriseSeverityTypeEnum.WARNING,
-      };
-    }
-
-    const entity = new Entity(uuidv4(), flowId, "Entité");
-    this.setMerise((prev) => prev.cloneWithAddedEntity(entity));
 
     return {
       success: true,
-      data: entity,
+      data: addItemResult.data,
     };
   };
 
-  addAssociation = (flowId: string): MeriseResult<MeriseAssociationInterface, null> => {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: "Création de l’association impossible",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
+  addAssociation = (flowId: string): MeriseResult<Association, null> => {
+    const addItemResult = meriseHelper.addItem<Association>({
+      collection: this.getMerise().getAssociations(),
+      relations: this.getMerise().getRelations(),
+      flowId: flowId,
+      itemType: MeriseItemTypeEnum.ASSOCIATION,
+      itemName: "l'association",
+      addFn: (item: Association) => {
+        this.setMerise((prev) => prev.cloneWithAddedAssociation(item));
+      },
+    });
+
+    if (!addItemResult.success || !addItemResult.data) {
+      return addItemResult;
     }
-
-    const existingAssociation = this.getMerise()
-      .getAssociations()
-      .find((association) => association.getFlowId() === flowId);
-
-    if (existingAssociation) {
-      return {
-        success: false,
-        message: "Une association avec cette référence existe déjà",
-        severity: MeriseSeverityTypeEnum.WARNING,
-      };
-    }
-
-    const association = new Association(uuidv4(), flowId, "Association");
-    this.setMerise((prev) => prev.cloneWithAddedAssociation(association));
 
     return {
       success: true,
-      data: association,
+      data: addItemResult.data,
     };
   };
 
-  addRelation = (flowId: string, source: string, target: string): MeriseResult<MeriseRelationInterface, null> => {
-    if (!flowId?.trim() || !source?.trim() || !target?.trim()) {
-      return {
-        success: false,
-        message: "Création de la relation impossible",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
+  addRelation = (flowId: string, source: string, target: string): MeriseResult<Relation, null> => {
+    const addItemResult = meriseHelper.addItem<Relation>({
+      collection: this.getMerise().getRelations(),
+      relations: this.getMerise().getRelations(),
+      flowId: flowId,
+      itemType: MeriseItemTypeEnum.RELATION,
+      itemName: "la relation",
+      addFn: (item: Relation) => {
+        this.setMerise((prev) => prev.cloneWithAddedRelation(item));
+      },
+      source: source,
+      target: target,
+    });
+
+    if (!addItemResult.success || !addItemResult.data) {
+      return addItemResult;
     }
-
-    const validationResult = this.validateRelationCreation(source, target);
-
-    if (!validationResult.success) {
-      return validationResult;
-    }
-
-    const relation = new Relation(uuidv4(), flowId, source, target, MeriseRelationCardinalityTypeEnum.ZERO_N);
-
-    this.setMerise((prev) => prev.cloneWithAddedRelation(relation));
 
     return {
       success: true,
-      data: relation,
+      data: addItemResult.data,
     };
   };
 
-  updateEntity = (updatedEntity: Entity): MeriseResult<MeriseEntityInterface, null> => {
-    if (!updatedEntity?.getId()?.trim()) {
-      return {
-        success: false,
-        message: "Mise à jour de l’entité impossible",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
+  updateEntity = (entity: Entity): MeriseResult<Entity, null> => {
+    const updateItemResult = meriseHelper.updateItem<Entity>({
+      collection: this.getMerise().getEntities(),
+      updatedItem: entity,
+      itemName: "l'entité",
+      updateFn: (items: Entity[]) => {
+        this.setMerise((prev) => prev.cloneWithUpdatedEntities(items));
+      },
+    });
+
+    if (!updateItemResult.success || !updateItemResult.data) {
+      return updateItemResult;
     }
-
-    const merise = this.getMerise();
-    const index = merise.getEntities().findIndex((entity) => entity.getId() === updatedEntity.getId());
-
-    if (index === -1) {
-      return {
-        success: false,
-        message: "Entité introuvable",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-    const updatedEntities = [...merise.getEntities()];
-    updatedEntities[index] = updatedEntity;
-
-    this.setMerise((prev) => prev.cloneWithUpdatedEntities(updatedEntities));
 
     return {
       success: true,
-      data: updatedEntity,
+      data: updateItemResult.data,
     };
   };
 
-  updateAssociation = (updatedAssociation: Association): MeriseResult<MeriseAssociationInterface, null> => {
-    if (!updatedAssociation?.getId()?.trim()) {
-      return {
-        success: false,
-        message: "Mise à jour de l’association impossible",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
+  updateAssociation = (association: Association): MeriseResult<Association, null> => {
+    const updateItemResult = meriseHelper.updateItem<Association>({
+      collection: this.getMerise().getAssociations(),
+      updatedItem: association,
+      itemName: "l'association",
+      updateFn: (items: Association[]) => {
+        this.setMerise((prev) => prev.cloneWithUpdatedAssociations(items));
+      },
+    });
+
+    if (!updateItemResult.success || !updateItemResult.data) {
+      return updateItemResult;
     }
-
-    const merise = this.getMerise();
-    const index = merise.getAssociations().findIndex((association) => association.getId() === updatedAssociation.getId());
-
-    if (index === -1) {
-      return {
-        success: false,
-        message: "Association introuvable",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-    const updatedAssociations = [...merise.getAssociations()];
-    updatedAssociations[index] = updatedAssociation;
-
-    this.setMerise((prev) => prev.cloneWithUpdatedAssociations(updatedAssociations));
 
     return {
       success: true,
-      data: updatedAssociation,
+      data: updateItemResult.data,
     };
   };
 
-  updateRelation = (updatedRelation: Relation): MeriseResult<MeriseRelationInterface, null> => {
-    if (!updatedRelation?.getId()?.trim()) {
-      return {
-        success: false,
-        message: "Mise à jour de la relation impossible",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
+  updateRelation = (relation: Relation): MeriseResult<Relation, null> => {
+    const updateItemResult = meriseHelper.updateItem<Relation>({
+      collection: this.getMerise().getRelations(),
+      updatedItem: relation,
+      itemName: "la relation",
+      updateFn: (items: Relation[]) => {
+        this.setMerise((prev) => prev.cloneWithUpdatedRelations(items));
+      },
+    });
+
+    if (!updateItemResult.success || !updateItemResult.data) {
+      return updateItemResult;
     }
-
-    const merise = this.getMerise();
-    const index = merise.getRelations().findIndex((relation) => relation.getId() === updatedRelation.getId());
-
-    if (index === -1) {
-      return {
-        success: false,
-        message: "Relation introuvable",
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-    const updatedRelations = [...merise.getRelations()];
-    updatedRelations[index] = updatedRelation;
-
-    this.setMerise((prev) => prev.cloneWithUpdatedRelations(updatedRelations));
 
     return {
       success: true,
-      data: updatedRelation,
+      data: updateItemResult.data,
     };
   };
 
-  removeEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface, null> => {
+  removeEntity = (flowId: string): MeriseResult<Entity, null> => {
     const meriseUpdateFunction = (updatedEntities: Entity[], updatedRelations: Relation[]) => {
       this.setMerise((prev) => prev.cloneWithUpdatedEntitiesAndRelations(updatedEntities, updatedRelations));
     };
 
-    const removeItemResult = this.removeItemByFlowId<Entity>(this.getMerise().getEntities(), flowId, "l'entité", meriseUpdateFunction);
+    const removeItemResult = meriseHelper.removeItem<Entity>({
+      collection: this.getMerise().getEntities(),
+      relations: this.getMerise().getRelations(),
+      flowId: flowId,
+      itemName: "l'entité",
+      updateFn: meriseUpdateFunction,
+    });
 
     if (!removeItemResult.success || !removeItemResult.data) {
       return removeItemResult;
@@ -201,12 +160,18 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  removeAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface, null> => {
+  removeAssociation = (flowId: string): MeriseResult<Association, null> => {
     const meriseUpdateFunction = (updatedAssociations: Association[], updatedRelations: Relation[]) => {
       this.setMerise((prev) => prev.cloneWithUpdatedAssociationsAndRelations(updatedAssociations, updatedRelations));
     };
 
-    const removeItemResult = this.removeItemByFlowId<Association>(this.getMerise().getAssociations(), flowId, "l'association", meriseUpdateFunction);
+    const removeItemResult = meriseHelper.removeItem<Association>({
+      collection: this.getMerise().getAssociations(),
+      relations: this.getMerise().getRelations(),
+      flowId: flowId,
+      itemName: "l'association",
+      updateFn: meriseUpdateFunction,
+    });
 
     if (!removeItemResult.success || !removeItemResult.data) {
       return removeItemResult;
@@ -218,12 +183,18 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  removeRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface, null> => {
+  removeRelation = (flowId: string): MeriseResult<Relation, null> => {
     const meriseUpdateFunction = (updatedRelations: Relation[]) => {
       this.setMerise((prev) => prev.cloneWithUpdatedRelations(updatedRelations));
     };
 
-    const removeItemResult = this.removeItemByFlowId<Relation>(this.getMerise().getRelations(), flowId, "la relation", meriseUpdateFunction);
+    const removeItemResult = meriseHelper.removeItem<Relation>({
+      collection: this.getMerise().getRelations(),
+      relations: this.getMerise().getRelations(),
+      flowId: flowId,
+      itemName: "la relation",
+      updateFn: meriseUpdateFunction,
+    });
 
     if (!removeItemResult.success || !removeItemResult.data) {
       return removeItemResult;
@@ -235,8 +206,12 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  findEntityById = (id: string): MeriseResult<MeriseEntityInterface, null> => {
-    const findResult = this.findItemId(this.getMerise().getEntities(), id, "l'entité");
+  findEntityById = (id: string): MeriseResult<Entity, null> => {
+    const findResult = meriseHelper.findItemById<Entity>({
+      collection: this.getMerise().getEntities(),
+      id: id,
+      itemName: "l'entité",
+    });
 
     if (!findResult.success) {
       return findResult;
@@ -248,8 +223,12 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  findAssociationById = (id: string): MeriseResult<MeriseAssociationInterface, null> => {
-    const findResult = this.findItemId(this.getMerise().getAssociations(), id, "l'association");
+  findAssociationById = (id: string): MeriseResult<Association, null> => {
+    const findResult = meriseHelper.findItemById<Association>({
+      collection: this.getMerise().getAssociations(),
+      id: id,
+      itemName: "l'association",
+    });
 
     if (!findResult.success) {
       return findResult;
@@ -261,8 +240,12 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  findEntityByFlowId = (flowId: string): MeriseResult<MeriseEntityInterface, null> => {
-    const findResult = this.findItemByFlowId(this.getMerise().getEntities(), flowId, "l'entité");
+  findEntityByFlowId = (flowId: string): MeriseResult<Entity, null> => {
+    const findResult = meriseHelper.findItemByFlowId<Entity>({
+      collection: this.getMerise().getEntities(),
+      flowId: flowId,
+      itemName: "l'entité",
+    });
 
     if (!findResult.success) {
       return findResult;
@@ -274,8 +257,12 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  findAssociationByFlowId = (flowId: string): MeriseResult<MeriseAssociationInterface, null> => {
-    const findResult = this.findItemByFlowId(this.getMerise().getAssociations(), flowId, "l'association");
+  findAssociationByFlowId = (flowId: string): MeriseResult<Association, null> => {
+    const findResult = meriseHelper.findItemByFlowId<Association>({
+      collection: this.getMerise().getAssociations(),
+      flowId: flowId,
+      itemName: "l'association",
+    });
 
     if (!findResult.success) {
       return findResult;
@@ -287,8 +274,12 @@ export default class MeriseManager implements MeriseManagerInterface {
     };
   };
 
-  findRelationByFlowId = (flowId: string): MeriseResult<MeriseRelationInterface, null> => {
-    const findResult = this.findItemByFlowId(this.getMerise().getRelations(), flowId, "la relation");
+  findRelationByFlowId = (flowId: string): MeriseResult<Relation, null> => {
+    const findResult = meriseHelper.findItemByFlowId<Relation>({
+      collection: this.getMerise().getRelations(),
+      flowId: flowId,
+      itemName: "la relation",
+    });
 
     if (!findResult.success) {
       return findResult;
@@ -299,105 +290,4 @@ export default class MeriseManager implements MeriseManagerInterface {
       data: findResult.data,
     };
   };
-
-  private validateRelationCreation(source: string, target: string): MeriseResult<null, null> {
-    if (source === target) {
-      return {
-        success: false,
-        message: "La source et la cible ne peuvent pas être identiques",
-        severity: MeriseSeverityTypeEnum.INFO,
-      };
-    }
-
-    const existingRelation = this.getMerise()
-      .getRelations()
-      .find((relation) => (relation.getSource() === source && relation.getTarget() === target) || (relation.getSource() === target && relation.getTarget() === source));
-
-    if (existingRelation) {
-      return {
-        success: false,
-        message: "Une relation entre ces éléments existe déjà",
-        severity: MeriseSeverityTypeEnum.WARNING,
-      };
-    }
-
-    return { success: true, data: null };
-  }
-
-  private removeItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string, updateFn: (items: T[], relations: Relation[]) => void): MeriseResult<T, null> {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: `Suppression de ${itemType} impossible`,
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-
-    const index = collection.findIndex((item) => item.getFlowId() === flowId);
-
-    if (index === -1) {
-      return {
-        success: false,
-        message: `${itemType} introuvable`,
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-
-    const item = collection[index];
-    const updatedItems = collection.filter((_, i) => i !== index);
-    const updatedRelations = this.getMerise()
-      .getRelations()
-      .filter((relation) => relation.getSource() !== item.getFlowId() && relation.getTarget() !== item.getFlowId());
-
-    updateFn(updatedItems, updatedRelations);
-
-    return {
-      success: true,
-      data: item,
-    };
-  }
-
-  private findItemId<T extends { getId(): string }>(collection: T[], id: string, itemType: string): MeriseResult<T, null> {
-    if (!id?.trim()) {
-      return {
-        success: false,
-        message: `Id requis pour la recherche`,
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-
-    const item = collection.find((item) => item.getId() === id);
-
-    if (!item) {
-      return {
-        success: false,
-        message: `${itemType} introuvable`,
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-
-    return { success: true, data: item };
-  }
-
-  private findItemByFlowId<T extends { getFlowId(): string }>(collection: T[], flowId: string, itemType: string): MeriseResult<T, null> {
-    if (!flowId?.trim()) {
-      return {
-        success: false,
-        message: `FlowId requis pour la recherche`,
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-
-    const item = collection.find((item) => item.getFlowId() === flowId);
-
-    if (!item) {
-      return {
-        success: false,
-        message: `${itemType} introuvable`,
-        severity: MeriseSeverityTypeEnum.ERROR,
-      };
-    }
-
-    return { success: true, data: item };
-  }
 }

@@ -68,11 +68,18 @@ export default class MeriseDTO implements MeriseDTOInterface {
     return new MeriseDTO(entities, this.associations, relations);
   };
 
-  cloneWithUpdatedAssociationsAndRelations = (associations: Association[], relations: Relation[]): MeriseDTOInterface => {
+  cloneWithUpdatedAssociationsAndRelations = (
+    associations: Association[],
+    relations: Relation[]
+  ): MeriseDTOInterface => {
     return new MeriseDTO(this.entities, associations, relations);
   };
 
-  cloneWithUpdatedEntitiesAndRelationsAndAssociations = (entities: Entity[], associations: Association[], relations: Relation[]): MeriseDTOInterface => {
+  cloneWithUpdatedEntitiesAndRelationsAndAssociations = (
+    entities: Entity[],
+    associations: Association[],
+    relations: Relation[]
+  ): MeriseDTOInterface => {
     return new MeriseDTO(entities, associations, relations);
   };
 }

@@ -1,12 +1,24 @@
 import type { ReactNode } from "react";
-import type { FieldTypeDateOption, FieldTypeNumberOption, FieldTypeOtherOption, MeriseFieldInterface, MeriseFieldTypeOption } from "@/libs/merise";
-import { FieldTypeDateOptionEnum, FieldTypeNumberOptionEnum, FieldTypeOtherOptionEnum, FieldTypeTextOptionsEnum, MeriseFieldTypeTypeEnum } from "@/libs/merise";
+import type {
+  FieldTypeDateOption,
+  FieldTypeNumberOption,
+  FieldTypeOtherOption,
+  MeriseFieldInterface,
+  MeriseFieldTypeOption,
+} from "@/libs/merise";
+import {
+  FieldTypeDateOptionEnum,
+  FieldTypeNumberOptionEnum,
+  FieldTypeOtherOptionEnum,
+  FieldTypeTextOption,
+  MeriseFieldTypeTypeEnum,
+} from "@/libs/merise";
 import { FieldTypeDateFormComponent } from "./fieldTypes/FieldTypeDateForm";
 import { FieldTypeNumberFormComponent } from "./fieldTypes/FieldTypeNumberForm";
 import { FieldTypeOtherFormComponent } from "./fieldTypes/FieldTypeOtherForm";
 import { FieldTypeTextFormComponent } from "./fieldTypes/FieldTypeTextForm";
 
-export type TextOptionValue = { variant: FieldTypeTextOptionsEnum; maxLength?: number };
+export type TextOptionValue = { variant: FieldTypeTextOption; maxLength?: number };
 export type NumberOptionValue = { variant: FieldTypeNumberOption };
 export type DateOptionValue = { variant: FieldTypeDateOption };
 export type OtherOptionValue = { variant: FieldTypeOtherOption };
@@ -34,23 +46,23 @@ type RegistryEntry<T extends FieldOptionUnion> = {
 export const fieldTypeRegistry: Record<MeriseFieldTypeTypeEnum, RegistryEntry<any>> = {
   [MeriseFieldTypeTypeEnum.TEXT]: {
     label: "Texte",
-    defaultOption: { variant: FieldTypeTextOptionsEnum.VARIABLE, maxLength: 50 },
+    defaultOption: { variant: FieldTypeTextOption.VARIABLE, maxLength: 50 },
     OptionForm: FieldTypeTextFormComponent,
     normalize: (raw: unknown) => {
       if (raw && typeof raw === "object" && "variant" in (raw as any)) {
-        const v = (raw as any).variant as FieldTypeTextOptionsEnum;
+        const v = (raw as any).variant as FieldTypeTextOption;
         const len = (raw as any).maxLength;
         return { variant: v, maxLength: typeof len === "number" ? len : 50 };
       }
       if (typeof raw === "string") {
-        return { variant: raw as FieldTypeTextOptionsEnum, maxLength: 50 };
+        return { variant: raw as FieldTypeTextOption, maxLength: 50 };
       }
-      return { variant: FieldTypeTextOptionsEnum.VARIABLE, maxLength: 50 };
+      return { variant: FieldTypeTextOption.VARIABLE, maxLength: 50 };
     },
     format: (opt) => {
-      if (opt.variant === FieldTypeTextOptionsEnum.LONG) return "TEXT";
+      if (opt.variant === FieldTypeTextOption.LONG) return "TEXT";
       const len = typeof opt.maxLength === "number" ? opt.maxLength : 50;
-      return opt.variant === FieldTypeTextOptionsEnum.FIXED ? `CHAR(${len})` : `VARCHAR(${len})`;
+      return opt.variant === FieldTypeTextOption.FIXED ? `CHAR(${len})` : `VARCHAR(${len})`;
     },
   },
   [MeriseFieldTypeTypeEnum.NUMBER]: {

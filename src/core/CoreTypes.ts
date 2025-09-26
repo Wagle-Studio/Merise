@@ -1,7 +1,7 @@
 import type { Connection } from "@xyflow/react";
 import type { SaveDTOInterface } from "@/core/libs/save";
 import type { Settings } from "@/core/libs/settings";
-import type { MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseRelationInterface } from "@/libs/merise";
+import type { Association, Entity, MeriseAssociationInterface, MeriseEntityInterface, MeriseFieldInterface, MeriseRelationInterface, Relation } from "@/libs/merise";
 
 // List of all available Core error types
 export enum SeverityType {
@@ -52,7 +52,7 @@ export interface CoreManagerInterface {
   handleSaveRemoveCurrent: () => void;
   handleSettingsOpen: () => void;
   handleSettingsUpdate: (settings: Settings) => void;
-  handleMeriseEntityUpdate: (entity: MeriseAssociationInterface) => void;
-  handleMeriseAssociationUpdate: (association: MeriseEntityInterface) => void;
-  handleMeriseRelationUpdate: (relation: MeriseRelationInterface) => void;
+  handleMeriseEntityUpdate: (entity: Entity) => void;
+  handleMeriseAssociationUpdate: (association: Association) => void;
+  handleMeriseRelationUpdate: (relation: Relation) => void;
 }
