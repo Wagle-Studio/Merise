@@ -1,13 +1,28 @@
-import { SettingsThemeTypeEnum } from ".";
-import type { Settings, SettingsDTOInterface, SettingsDispatcher, SettingsManagerInterface, SettingsThemeType } from "./SettingsTypes";
+import type {
+  Settings,
+  SettingsDTOInterface,
+  SettingsDispatcher,
+  SettingsManagerInterface,
+  SettingsThemeType,
+} from "./SettingsTypes";
+import { SettingsThemeType as SettingsThemeTypeEnum } from "./SettingsTypes";
 
 export default class SettingsManager implements SettingsManagerInterface {
+  private static instance: SettingsManager;
   private unbindSystem?: () => void;
 
-  constructor(
+  private constructor(
     private getSettings: () => SettingsDTOInterface,
     private setSettings: SettingsDispatcher
   ) {}
+
+  static getInstance = (getSettings: () => SettingsDTOInterface, setSettings: SettingsDispatcher) => {
+    if (!this.instance) {
+      this.instance = new SettingsManager(getSettings, setSettings);
+    }
+
+    return this.instance;
+  };
 
   getCurrentSettings = (): SettingsDTOInterface => {
     return this.getSettings();
@@ -46,7 +61,9 @@ export default class SettingsManager implements SettingsManagerInterface {
 
   private resolve = (theme: SettingsThemeType): SettingsThemeType => {
     if (theme === SettingsThemeTypeEnum.SYSTEM) {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? SettingsThemeTypeEnum.DARK : SettingsThemeTypeEnum.LIGHT;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? SettingsThemeTypeEnum.DARK
+        : SettingsThemeTypeEnum.LIGHT;
     }
 
     return theme === SettingsThemeTypeEnum.DARK ? SettingsThemeTypeEnum.DARK : SettingsThemeTypeEnum.LIGHT;
