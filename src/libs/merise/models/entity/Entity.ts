@@ -1,6 +1,13 @@
 import { createElement } from "react";
 import { EntityComponent, EntityFormComponent } from "@/ui";
-import { type MeriseEntity, type MeriseEntityInterface, type MeriseFieldInterface, MeriseItemTypeEnum, type MeriseResult, MeriseSeverityTypeEnum } from "../../types";
+import {
+  type MeriseEntity,
+  type MeriseEntityInterface,
+  type MeriseFieldInterface,
+  MeriseItemTypeEnum,
+  type MeriseResult,
+  MeriseSeverityTypeEnum,
+} from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
 import Field from "../field/Field";
 import { type EntityFormType } from "./EntityFormSchema";

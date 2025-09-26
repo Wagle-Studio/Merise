@@ -1,11 +1,26 @@
 import { type ChangeEvent, type FormEvent, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Field, FieldFormTypeSchema, type MeriseFieldInterface, type MeriseFieldTypeOption, MeriseFieldTypeTypeEnum, type MeriseFormType, MeriseFormTypeEnum, useMeriseContext } from "@/libs/merise";
+import {
+  Field,
+  FieldFormTypeSchema,
+  type MeriseFieldTypeOption,
+  MeriseFieldTypeTypeEnum,
+  type MeriseFormType,
+  MeriseFormTypeEnum,
+  useMeriseContext,
+} from "@/libs/merise";
 import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
-import { type FieldConfig, type FieldOptionUnion, type TextOptionValue, buildConfigFromField, buildDefaultConfig, fieldTypeRegistry } from "./FieldTypeRegistry";
+import {
+  type FieldConfig,
+  type FieldOptionUnion,
+  type TextOptionValue,
+  buildConfigFromField,
+  buildDefaultConfig,
+  fieldTypeRegistry,
+} from "./FieldTypeRegistry";
 
 interface FieldFormComponentProps {
-  field: MeriseFieldInterface;
+  field: Field;
   formType: MeriseFormType;
 }
 
@@ -96,17 +111,51 @@ export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps)
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset legend="Identité">
-        <FieldText label="Nom" htmlFor="field-name" defaultValue={field.getName() ?? ""} placeholder={field.getName() ?? "Nom du champ"} error={fieldErrors.name} />
+        <FieldText
+          label="Nom"
+          htmlFor="field-name"
+          defaultValue={field.getName() ?? ""}
+          placeholder={field.getName() ?? "Nom du champ"}
+          error={fieldErrors.name}
+        />
       </Fieldset>
       <Fieldset legend="Champ">
-        <FieldSelect label="Type" key={`field-type-${config.type}`} labelDisplay={false} htmlFor="field-type" defaultValue={config.type} options={typeOptions} error={fieldErrors.type} onChange={handleSelectTypeChanges} />
-        <OptionForm key={`option-form-${config.type}`} value={config.options as any} onChange={(next) => setConfig((prev) => ({ ...prev, options: next }))} />
+        <FieldSelect
+          label="Type"
+          key={`field-type-${config.type}`}
+          labelDisplay={false}
+          htmlFor="field-type"
+          defaultValue={config.type}
+          options={typeOptions}
+          error={fieldErrors.type}
+          onChange={handleSelectTypeChanges}
+        />
+        <OptionForm
+          key={`option-form-${config.type}`}
+          value={config.options as any}
+          onChange={(next) => setConfig((prev) => ({ ...prev, options: next }))}
+        />
         {fieldErrors.option && <span className="field-text__error">{fieldErrors.option}</span>}
       </Fieldset>
       <Fieldset legend="Propriétés" variant="horizontal">
-        <FieldCheckbox label="Clé primaire" htmlFor="field-primary" defaultChecked={field.isPrimary()} error={fieldErrors.primary} />
-        <FieldCheckbox label="Nullable" htmlFor="field-nullable" defaultChecked={field.isNullable()} error={fieldErrors.nullable} />
-        <FieldCheckbox label="Unique" htmlFor="field-unique" defaultChecked={field.isUnique()} error={fieldErrors.unique} />
+        <FieldCheckbox
+          label="Clé primaire"
+          htmlFor="field-primary"
+          defaultChecked={field.isPrimary()}
+          error={fieldErrors.primary}
+        />
+        <FieldCheckbox
+          label="Nullable"
+          htmlFor="field-nullable"
+          defaultChecked={field.isNullable()}
+          error={fieldErrors.nullable}
+        />
+        <FieldCheckbox
+          label="Unique"
+          htmlFor="field-unique"
+          defaultChecked={field.isUnique()}
+          error={fieldErrors.unique}
+        />
       </Fieldset>
     </Form>
   );

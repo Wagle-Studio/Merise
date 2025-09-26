@@ -44,7 +44,9 @@ export const FieldTableComponent = ({ fields, onSelect }: FieldTableComponentPro
           {fields.length > 0 &&
             fields.map((field) => (
               <tr key={`field-table__row-${field.getId()}`} className="field-table__rows__item">
-                <td className={`field-table__rows__item--key--${field.isPrimary() ? "primary" : "foreign"}`}>{field.isPrimary() && <KeyIcon />}</td>
+                <td className={`field-table__rows__item--key--${field.isPrimary() ? "primary" : "foreign"}`}>
+                  {field.isPrimary() && <KeyIcon />}
+                </td>
                 <td className="field-table__rows__item--name">{field.getName()}</td>
                 <td>
                   {(() => {

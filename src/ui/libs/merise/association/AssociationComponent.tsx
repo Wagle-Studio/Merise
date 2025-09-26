@@ -1,11 +1,11 @@
 import clsx from "clsx";
-import type { MeriseAssociationInterface } from "@/libs/merise";
+import type { Association } from "@/libs/merise";
 import { useMeriseContext } from "@/libs/merise";
 import { KeyIcon } from "@/ui/system";
 import "./association.scss";
 
 interface AssociationComponentProps {
-  association: MeriseAssociationInterface;
+  association: Association;
 }
 
 export const AssociationComponent = ({ association }: AssociationComponentProps) => {
@@ -27,9 +27,22 @@ export const AssociationComponent = ({ association }: AssociationComponentProps)
             </colgroup>
             <tbody className="association__body__field-table__rows">
               {association.getFields().map((field) => (
-                <tr key={`association-field-table__row-${field.getId()}`} className="association__body__field-table__rows__item">
-                  <td className={`association__body__field-table__rows__item--key--${field.isPrimary() ? "primary" : "foreign"}`}>{field.isPrimary() && <KeyIcon />}</td>
-                  <td className={clsx("association__body__field-table__rows__item--name", { "association__body__field-table__rows__item--name--unique": field.isUnique() })}>{field.getName()}</td>
+                <tr
+                  key={`association-field-table__row-${field.getId()}`}
+                  className="association__body__field-table__rows__item"
+                >
+                  <td
+                    className={`association__body__field-table__rows__item--key--${field.isPrimary() ? "primary" : "foreign"}`}
+                  >
+                    {field.isPrimary() && <KeyIcon />}
+                  </td>
+                  <td
+                    className={clsx("association__body__field-table__rows__item--name", {
+                      "association__body__field-table__rows__item--name--unique": field.isUnique(),
+                    })}
+                  >
+                    {field.getName()}
+                  </td>
                 </tr>
               ))}
             </tbody>

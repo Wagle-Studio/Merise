@@ -1,5 +1,5 @@
 import type { ChangeEvent } from "react";
-import { FieldTypeTextOptionsEnum } from "@/libs/merise";
+import { FieldTypeTextOption } from "@/libs/merise";
 import { FieldNumber, FieldRadio } from "@/ui/system";
 import type { TextOptionValue } from "./../FieldTypeRegistry";
 
@@ -10,16 +10,16 @@ interface FieldTypeTextFormProps {
 
 export const FieldTypeTextFormComponent = ({ value, onChange }: FieldTypeTextFormProps) => {
   const typeOptions = [
-    { value: FieldTypeTextOptionsEnum.VARIABLE, label: "Variable" },
-    { value: FieldTypeTextOptionsEnum.FIXED, label: "Fixe" },
-    { value: FieldTypeTextOptionsEnum.LONG, label: "Volumineux" },
+    { value: FieldTypeTextOption.VARIABLE, label: "Variable" },
+    { value: FieldTypeTextOption.FIXED, label: "Fixe" },
+    { value: FieldTypeTextOption.LONG, label: "Volumineux" },
   ];
 
   const handleVariant = (e: ChangeEvent<HTMLInputElement>) => {
-    const variant = e.target.value as FieldTypeTextOptionsEnum;
+    const variant = e.target.value as FieldTypeTextOption;
     onChange({
       variant,
-      maxLength: variant === FieldTypeTextOptionsEnum.LONG ? undefined : (value.maxLength ?? 50),
+      maxLength: variant === FieldTypeTextOption.LONG ? undefined : (value.maxLength ?? 50),
     });
   };
 
@@ -31,12 +31,25 @@ export const FieldTypeTextFormComponent = ({ value, onChange }: FieldTypeTextFor
     });
   };
 
-  const needsLength = value.variant === FieldTypeTextOptionsEnum.VARIABLE || value.variant === FieldTypeTextOptionsEnum.FIXED;
+  const needsLength = value.variant === FieldTypeTextOption.VARIABLE || value.variant === FieldTypeTextOption.FIXED;
 
   return (
     <>
-      <FieldRadio key={`text-variant-${value.variant}`} label="Type de champ texte" htmlFor="field-type-text-option" defaultValue={value.variant} options={typeOptions} onChange={handleVariant} />
-      <FieldNumber label="Longueur max" htmlFor="field-type-text-length" defaultValue={(value.maxLength ?? 50).toString()} onChange={handleLength} disabled={!needsLength} />
+      <FieldRadio
+        key={`text-variant-${value.variant}`}
+        label="Type de champ texte"
+        htmlFor="field-type-text-option"
+        defaultValue={value.variant}
+        options={typeOptions}
+        onChange={handleVariant}
+      />
+      <FieldNumber
+        label="Longueur max"
+        htmlFor="field-type-text-length"
+        defaultValue={(value.maxLength ?? 50).toString()}
+        onChange={handleLength}
+        disabled={!needsLength}
+      />
     </>
   );
 };

@@ -1,10 +1,10 @@
 import { type FormEvent } from "react";
-import { AssociationFormTypeSchema, type MeriseAssociationInterface, useMeriseContext } from "@/libs/merise";
+import { Association, AssociationFormTypeSchema, useMeriseContext } from "@/libs/merise";
 import { Button, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 import { FieldTableComponent } from "../field/FieldTable";
 
 interface AssociationFormComponentProps {
-  association: MeriseAssociationInterface;
+  association: Association;
 }
 
 export const AssociationFormComponent = ({ association }: AssociationFormComponentProps) => {
