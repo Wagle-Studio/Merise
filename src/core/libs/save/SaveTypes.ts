@@ -1,4 +1,4 @@
-import type { CoreResult } from "@/core";
+import type { KernelResult } from "@/core/kernel/KernelTypes";
 import type { NormalizeManagerInterface } from "@/core/libs/normalize";
 import type { SettingsDTOInterface, SettingsDTOObject } from "@/core/libs/settings";
 import type { FlowDTOInterface, FlowDTOObject } from "@/libs/flow";
@@ -30,7 +30,7 @@ export interface SaveDTOInterface {
   setMeriseDTO: (merise: MeriseDTOInterface) => void;
   getCreated: () => Date;
   getUpdated: () => Date;
-  renderFormComponent: () => React.ReactElement;
+  renderFormComponent: (isCurrentSave?: boolean) => React.ReactElement;
 }
 
 // Interface for a raw Save DTO object
@@ -62,22 +62,22 @@ export type SaveDispatcher = React.Dispatch<React.SetStateAction<SaveDTOInterfac
 export interface SaveManagerInterface {
   initDemo: () => void;
   clearSave: () => void;
-  createSave: () => CoreResult<string, null>;
-  openSave: (saveId: string) => CoreResult<Save, null>;
+  createSave: () => KernelResult<string, null>;
+  openSave: (saveId: string) => KernelResult<SaveDTOInterface, null>;
   updateSave: (saveDTO: SaveDTOInterface) => void;
   removeSave: (saveId: string) => void;
   saveCurrent: (
     settings: SettingsDTOInterface,
     flow: FlowDTOInterface,
     merise: MeriseDTOInterface
-  ) => CoreResult<null, null>;
-  getCurrentSave: () => CoreResult<SaveDTOInterface, null>;
+  ) => KernelResult<null, null>;
+  getCurrentSave: () => KernelResult<SaveDTOInterface, null>;
   updateCurrentSave: (saveDTO: SaveDTOInterface) => void;
   hasUnsavedChanges: (
     settings: SettingsDTOInterface,
     flow: FlowDTOInterface,
     merise: MeriseDTOInterface,
     normalizer: NormalizeManagerInterface
-  ) => CoreResult<boolean, null>;
-  findLocalSaves: () => CoreResult<SaveRawDTOObject[], null>;
+  ) => KernelResult<boolean, null>;
+  getLocalSaves: () => KernelResult<SaveRawDTOObject[], null>;
 }

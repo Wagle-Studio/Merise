@@ -1,17 +1,17 @@
-import { ProviderKernel } from "@/core/kernel";
+import { KernelContextProvider } from "@/core/kernel";
 import { ErrorBoundary, ErrorFallBackPresetTypeEnum } from "@/core/libs/error";
-import { FlowComponent } from "@/libs/flow";
+import { Flow } from "@/libs/flow";
 import { Toolbar } from "@/ui";
 import "./app.scss";
 
 function App() {
   return (
     <div className="workspace">
-      <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.CORE}>
-        <ProviderKernel>
+      <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.KERNEL}>
+        <KernelContextProvider>
           <Toolbar />
-          <FlowComponent />
-        </ProviderKernel>
+          <Flow />
+        </KernelContextProvider>
       </ErrorBoundary>
     </div>
   );

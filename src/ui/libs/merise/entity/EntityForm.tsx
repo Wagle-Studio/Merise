@@ -1,5 +1,6 @@
 import { type FormEvent } from "react";
-import { Entity, EntityFormTypeSchema, useMeriseContext } from "@/libs/merise";
+import { useDomainContext } from "@/core/domain/DomainContext";
+import { Entity, EntityFormTypeSchema } from "@/libs/merise";
 import { Button, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 import { FieldTableComponent } from "../field/FieldTable";
 
@@ -8,8 +9,7 @@ interface EntityFormComponentProps {
 }
 
 export const EntityFormComponent = ({ entity }: EntityFormComponentProps) => {
-  const { operations } = useMeriseContext();
-
+  const { operations } = useDomainContext();
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -31,7 +31,7 @@ export const EntityFormComponent = ({ entity }: EntityFormComponentProps) => {
     }
 
     entity.hydrate(validationResult.data);
-    operations.onEntityUpdate(entity);
+    operations.handleEntityUpdate(entity);
   };
 
   const emojiOptions = [
@@ -80,7 +80,7 @@ export const EntityFormComponent = ({ entity }: EntityFormComponentProps) => {
         />
       </Fieldset>
       <Fieldset legend="Champs">
-        <FieldTableComponent fields={entity.getFields()} onSelect={operations.onFieldSelect} />
+        <FieldTableComponent fields={entity.getFields()} />
       </Fieldset>
     </Form>
   );

@@ -1,24 +1,24 @@
-import type { DialogField as DialogFieldType } from "@/core/libs/dialog";
+import type { Dialog, DialogField as DialogFieldType } from "@/core/libs/dialog";
 import { Button, CloseIcon } from "@/ui/system";
 import "./dialogField.scss";
 
 interface DialogFieldProps {
-  dialog: DialogFieldType;
+  dialog: Dialog<DialogFieldType>;
 }
 
 export const DialogField = ({ dialog }: DialogFieldProps) => {
-  const handleCloseDialog = () => dialog.callbacks.closeDialog();
+  const handleCloseDialog = () => dialog.closeDialog();
 
   return (
     <div className="dialog-overlay">
       <div className="dialog-field">
         <div className="dialog-field__card">
-          {dialog.title.length > 0 && (
+          {dialog.props.title && dialog.props.title.length > 0 && (
             <div className="dialog-field__card-header">
-              <h3>{dialog.title}</h3>
+              <h3>{dialog.props.title}</h3>
             </div>
           )}
-          {dialog.component()}
+          {dialog.props.component()}
         </div>
         <div className="dialog-field__actions">
           <Button className="dialog-field__actions-item" onClick={handleCloseDialog}>

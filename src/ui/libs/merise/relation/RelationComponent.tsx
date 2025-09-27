@@ -1,5 +1,5 @@
+import { useDomainContext } from "@/core/domain/DomainContext";
 import type { Relation } from "@/libs/merise";
-import { useMeriseContext } from "@/libs/merise";
 import "./relation.scss";
 
 interface RelationComponentProps {
@@ -7,10 +7,10 @@ interface RelationComponentProps {
 }
 
 export const RelationComponent = ({ relation }: RelationComponentProps) => {
-  const { operations } = useMeriseContext();
+  const { operations } = useDomainContext();
 
   return (
-    <div className="relation" onClick={() => operations.onRelationSelect(relation)}>
+    <div className="relation" onClick={() => operations.handleDialogRelationEdit(relation)}>
       <span>{relation.getCardinality()}</span>
     </div>
   );

@@ -1,5 +1,6 @@
 import { format } from "date-fns";
-import { useKernelContext } from "@/core";
+import { useDomainContext } from "@/core/domain/DomainContext";
+import { useKernelContext } from "@/core/kernel/KernelContext";
 import { type SaveDTOInterface, SaveFormTypeSchema } from "@/core/libs/save";
 import { Button, FieldText, Fieldset, Form, SaveIcon, TrashIcon, useFormErrors } from "@/ui/system";
 
@@ -9,7 +10,8 @@ interface SaveFormComponentProps {
 }
 
 export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormComponentProps) => {
-  const { operations } = useKernelContext();
+  const kernelContext = useKernelContext();
+  const domainContext = useDomainContext();
 
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
@@ -36,13 +38,13 @@ export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormCompon
 
     save.hydrate(validationResult.data);
 
-    if (isCurrentSave) operations.onSaveUpdateCurrent(save);
-    if (!isCurrentSave) operations.onSaveUpdate(save);
+    if (isCurrentSave) domainContext.operations.handleSaveCurrent();
+    if (!isCurrentSave) kernelContext.operations.handleSaveUpdate(save);
   };
 
   const handleDelete = () => {
-    if (isCurrentSave) operations.onSaveRemoveCurrent();
-    if (!isCurrentSave) operations.onSaveRemove(save.getId(), save.getName());
+    if (isCurrentSave) kernelContext.operations.handleDialogSaveRemoveCurrent();
+    if (!isCurrentSave) kernelContext.operations.handleDialogSaveRemove(save.getId());
   };
 
   const formActions = (
@@ -59,7 +61,12 @@ export const SaveFormComponent = ({ save, isCurrentSave = true }: SaveFormCompon
   return (
     <Form id="save-form" className="save-form" onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset>
-        <FieldText label="Nom du diagramme" htmlFor="save-name" defaultValue={save.getName()} error={fieldErrors.name} />
+        <FieldText
+          label="Nom du diagramme"
+          htmlFor="save-name"
+          defaultValue={save.getName()}
+          error={fieldErrors.name}
+        />
       </Fieldset>
       <Fieldset>
         <p>

@@ -1,61 +1,48 @@
-import { useCallback } from "react";
-import { useKernelContext } from "@/core";
+import { useDomainContext } from "@/core/domain/DomainContext";
+import { useKernelContext } from "@/core/kernel/KernelContext";
 import { AddIcon, Button, EditIcon, HomeIcon, SaveIcon, SettingsIcon } from "../../atoms";
 import "./toolbar.scss";
 
 export const Toolbar = () => {
-  const { save, operations } = useKernelContext();
+  const kernel = useKernelContext();
+  const domain = useDomainContext();
 
-  const handleCreateEntity = useCallback(() => {
-    operations.onEntityCreate();
-  }, []);
+  const getCurrentSaveResult = kernel.dependencies.getCurrentSave();
+  const isSaveDemo = getCurrentSaveResult.success && getCurrentSaveResult.data.getId() == "save_demo";
 
-  const handleCreateAssociation = useCallback(() => {
-    operations.onAssociationCreate();
-  }, []);
-
-  const handleOpenSelect = useCallback(() => {
-    operations.onSaveSelectCurrent();
-  }, []);
-
-  const handleClose = useCallback(() => {
-    operations.navigateToHome();
-  }, []);
-
-  const handleSave = useCallback(() => {
-    operations.onSave();
-  }, []);
-
-  const handleOpenSettings = useCallback(() => {
-    operations.onSettingsOpen();
-  }, []);
+  const navigateToHome = domain.operations.handleNavigateToHome;
+  const save = domain.operations.handleSaveCurrent;
+  const createEntity = domain.operations.handleEntityCreate;
+  const createAssociation = domain.operations.handleAssociationCreate;
+  const dialogSaveEdit = kernel.operations.handleDialogSaveEditCurrent;
+  const dialogSettingsEdit = kernel.operations.handleDialogSettingsEdit;
 
   return (
     <div className="toolbar">
-      {save && (
+      {getCurrentSaveResult.success && (
         <div className="toolbar__wrapper">
           <div className="toolbar__left">
-            <Button onClick={handleCreateEntity}>
+            <Button onClick={createEntity}>
               <AddIcon /> Entité
             </Button>
-            <Button onClick={handleCreateAssociation}>
+            <Button onClick={createAssociation}>
               <AddIcon /> Association
             </Button>
           </div>
           <div className="toolbar__center">
-            <p>{save.getName()}</p>
+            <p>{getCurrentSaveResult.data.getName()}</p>
           </div>
           <div className="toolbar__right">
-            <Button onClick={handleClose}>
+            <Button onClick={navigateToHome}>
               <HomeIcon />
             </Button>
-            <Button onClick={handleSave} disabled={save.getId() == "save_demo"}>
+            <Button onClick={save} disabled={isSaveDemo}>
               <SaveIcon />
             </Button>
-            <Button onClick={handleOpenSelect} disabled={save.getId() == "save_demo"}>
+            <Button onClick={dialogSaveEdit} disabled={isSaveDemo}>
               <EditIcon />
             </Button>
-            <Button onClick={handleOpenSettings}>
+            <Button onClick={dialogSettingsEdit}>
               <SettingsIcon />
             </Button>
           </div>

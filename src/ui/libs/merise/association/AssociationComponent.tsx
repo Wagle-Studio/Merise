@@ -1,6 +1,6 @@
 import clsx from "clsx";
+import { useDomainContext } from "@/core/domain/DomainContext";
 import type { Association } from "@/libs/merise";
-import { useMeriseContext } from "@/libs/merise";
 import { KeyIcon } from "@/ui/system";
 import "./association.scss";
 
@@ -9,10 +9,10 @@ interface AssociationComponentProps {
 }
 
 export const AssociationComponent = ({ association }: AssociationComponentProps) => {
-  const { operations } = useMeriseContext();
+  const { operations } = useDomainContext();
 
   return (
-    <div className="association" onClick={() => operations.onAssociationSelect(association)}>
+    <div className="association" onClick={() => operations.handleDialogAssociationEdit(association)}>
       <div className="association__header">
         <p className="association__header__title">
           {association.getEmoji()} {association.getName()}

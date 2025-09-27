@@ -1,58 +1,39 @@
-import { ProviderFlow, ProviderMerise } from "..";
-import { type ReactElement, createContext, useContext, useMemo } from "react";
-import { useDTOValidation } from "@/core/libs/debug";
+import { createContext, useContext, useLayoutEffect, useMemo } from "react";
 import { ErrorBoundary, ErrorFallBackPresetTypeEnum } from "@/core/libs/error";
 import { DialogContainer, ToastContainer, Welcome } from "@/ui";
+import { DomainContextProvider } from "../domain";
+import KernelFactory from "./KernelFactory";
 import type { KernelContext, KernelContextProps } from "./KernelTypes";
-import { ProviderFactoryKernel } from "./factories";
-import { useKernelInitialization } from "./useKernelInitialization";
+import { useKernelInit } from "./useKernelInit";
 
 const KernelContext = createContext<KernelContext | null>(null);
 
 export const KernelContextProvider = ({ children }: KernelContextProps) => {
-  const { save, settingsDTO, dialogs, toasts, flowDTO, meriseDTO, managers } = useKernelInitialization();
+  const { kernel } = useKernelInit();
 
-  useDTOValidation(flowDTO, meriseDTO, process.env.NODE_ENV === "development");
+  const settingsManager = kernel.getManager("settings");
+  const currentTheme = settingsManager.getCurrentSettings().getSettings().theme;
 
-  managers.save.initDemo();
+  useLayoutEffect(() => {
+    settingsManager.applyTheme(currentTheme);
+    const off = settingsManager.bindSystemListener(currentTheme);
+    return () => off();
+  }, [kernel, currentTheme]);
 
-  const contextValue = useMemo<KernelContext>(
-    () => ({
-      save,
-      settingsDTO,
-      dialogs,
-      toasts,
-      flowDTO,
-      meriseDTO,
-      managers,
-      operations: ProviderFactoryKernel.createOperations(managers),
-    }),
-    [save, settingsDTO, dialogs, toasts, flowDTO, meriseDTO, managers]
-  );
+  const getCurrentSaveResult = kernel.getManager("save").getCurrentSave();
 
-  const displayHome = (): ReactElement => {
-    const findLocalSavesResult = managers.save.findLocalSaves();
-
-    // TODO : handle error
-    if (!findLocalSavesResult.success) {
-      return <div>ERROR</div>;
-    }
-
-    return <Welcome localSavesResult={findLocalSavesResult.data} />;
-  };
+  const ops = useMemo(() => KernelFactory.createOperations(kernel), [kernel]);
+  const deps = useMemo(() => KernelFactory.createDependencies(kernel), [kernel]);
+  const contextValue = useMemo(() => ({ operations: ops, dependencies: deps }), [ops, deps]);
 
   return (
     <KernelContext.Provider value={contextValue}>
-      <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.ORCHESTRATOR_FLOW}>
-        <ProviderFlow>
-          <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.ORCHESTRATOR_MERISE}>
-            <ProviderMerise>
-              {save ? children : displayHome()}
-              <ToastContainer />
-              <DialogContainer />
-            </ProviderMerise>
-          </ErrorBoundary>
-        </ProviderFlow>
+      <ErrorBoundary fallback={ErrorFallBackPresetTypeEnum.DOMAIN}>
+        <DomainContextProvider>
+          {getCurrentSaveResult.success ? children : <Welcome />}
+          <ToastContainer />
+          <DialogContainer />
+        </DomainContextProvider>
       </ErrorBoundary>
     </KernelContext.Provider>
   );

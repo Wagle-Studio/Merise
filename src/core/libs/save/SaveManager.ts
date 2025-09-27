@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { type CoreResult, CoreSeverityTypeEnum } from "@/core";
 import { SettingsDTO, type SettingsDTOInterface } from "@/core/libs/settings";
 import { FlowDTO, type FlowDTOInterface } from "@/libs/flow";
 import { MeriseDTO, type MeriseDTOInterface } from "@/libs/merise";
 import type { NormalizeManagerInterface } from "../normalize";
+import { type KernelResult, SeverityType as KernelSeverityTypeEnum } from "./../../kernel/KernelTypes";
 import SaveDTO from "./SaveDTO";
 import { SaveDemo } from "./SaveDemo";
 import type {
@@ -64,7 +64,7 @@ export default class SaveManager implements SaveManagerInterface {
     this.setSave(null);
   };
 
-  createSave = (): CoreResult<string, null> => {
+  createSave = (): KernelResult<string, null> => {
     const saveId = uuidv4();
 
     const save: Save = {
@@ -85,8 +85,15 @@ export default class SaveManager implements SaveManagerInterface {
     };
   };
 
-  openSave = (saveId: string): CoreResult<Save, null> => {
-    return SaveManager.buildSaveFromId(saveId);
+  openSave = (saveId: string): KernelResult<SaveDTOInterface, null> => {
+    const buildSaveResult = SaveManager.buildSaveFromId(saveId);
+
+    if (!buildSaveResult.success) return buildSaveResult;
+
+    return {
+      success: true,
+      data: new SaveDTO(buildSaveResult.data),
+    };
   };
 
   updateSave = (saveDTO: SaveDTOInterface): void => {
@@ -101,14 +108,14 @@ export default class SaveManager implements SaveManagerInterface {
     settings: SettingsDTOInterface,
     flow: FlowDTOInterface,
     merise: MeriseDTOInterface
-  ): CoreResult<null, null> => {
+  ): KernelResult<null, null> => {
     const currentSave = this.getSave();
 
     if (!currentSave) {
       return {
         success: false,
         message: "Aucune sauvegarde à mettre à jour",
-        severity: CoreSeverityTypeEnum.ERROR,
+        severity: KernelSeverityTypeEnum.ERROR,
       };
     }
 
@@ -131,14 +138,14 @@ export default class SaveManager implements SaveManagerInterface {
     };
   };
 
-  getCurrentSave = (): CoreResult<SaveDTOInterface, null> => {
+  getCurrentSave = (): KernelResult<SaveDTOInterface, null> => {
     const save = this.getSave();
 
     if (!save) {
       return {
         success: false,
         message: "Sauvegarde introuvable",
-        severity: CoreSeverityTypeEnum.ERROR,
+        severity: KernelSeverityTypeEnum.ERROR,
       };
     }
 
@@ -158,14 +165,14 @@ export default class SaveManager implements SaveManagerInterface {
     flow: FlowDTOInterface,
     merise: MeriseDTOInterface,
     normalizer: NormalizeManagerInterface
-  ): CoreResult<boolean, null> => {
+  ): KernelResult<boolean, null> => {
     const currentSave = this.getSave();
 
     if (!currentSave) {
       return {
         success: false,
         message: "Sauvegarde introuvable",
-        severity: CoreSeverityTypeEnum.ERROR,
+        severity: KernelSeverityTypeEnum.ERROR,
       };
     }
 
@@ -199,7 +206,7 @@ export default class SaveManager implements SaveManagerInterface {
     };
   };
 
-  findLocalSaves = (): CoreResult<SaveRawDTOObject[], null> => {
+  getLocalSaves = (): KernelResult<SaveRawDTOObject[], null> => {
     const saves: SaveRawDTOObject[] = [];
 
     for (let i = 0; i < localStorage.length; i++) {
@@ -209,7 +216,7 @@ export default class SaveManager implements SaveManagerInterface {
         return {
           success: false,
           message: "Impossible d'accéder aux sauvegardes locales",
-          severity: CoreSeverityTypeEnum.ERROR,
+          severity: KernelSeverityTypeEnum.ERROR,
         };
       }
 
@@ -219,7 +226,7 @@ export default class SaveManager implements SaveManagerInterface {
         return {
           success: false,
           message: "Impossible d'accéder aux sauvegardes locales",
-          severity: CoreSeverityTypeEnum.ERROR,
+          severity: KernelSeverityTypeEnum.ERROR,
         };
       }
 
@@ -236,14 +243,14 @@ export default class SaveManager implements SaveManagerInterface {
     };
   };
 
-  private static buildSaveFromId = (saveId: string): CoreResult<Save, null> => {
+  private static buildSaveFromId = (saveId: string): KernelResult<Save, null> => {
     const raw = localStorage.getItem(saveId);
 
     if (!raw) {
       return {
         success: false,
         message: "La sauvegarde n'existe pas",
-        severity: CoreSeverityTypeEnum.ERROR,
+        severity: KernelSeverityTypeEnum.ERROR,
       };
     }
 
@@ -253,7 +260,7 @@ export default class SaveManager implements SaveManagerInterface {
       return {
         success: false,
         message: "Impossible de consulter la sauvegarde",
-        severity: CoreSeverityTypeEnum.ERROR,
+        severity: KernelSeverityTypeEnum.ERROR,
       };
     }
 

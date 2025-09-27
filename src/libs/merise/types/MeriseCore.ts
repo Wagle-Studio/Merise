@@ -38,10 +38,10 @@ export enum MeriseItemType {
 
 // List of all available merise relation cardinality item types
 export enum MeriseRelationCardinalityType {
-  ZERO_ONE = "ZERO_ONE",
-  ONE_ONE = "ONE_ONE",
-  ZERO_N = "ZERO_N",
-  ONE_N = "ONE_N",
+  ZERO_ONE = "0,1",
+  ONE_ONE = "1,1",
+  ZERO_N = "0,N",
+  ONE_N = "1,N",
 }
 
 // List of all available merise field type item types
