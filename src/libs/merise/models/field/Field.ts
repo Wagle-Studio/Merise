@@ -1,6 +1,14 @@
 import { createElement } from "react";
 import { FieldFormComponent } from "@/ui";
-import { type MeriseField, type MeriseFieldInterface, type MeriseFieldTypeOption, type MeriseFieldTypeType, type MeriseFormType, type MeriseItemType, MeriseItemTypeEnum } from "../../types";
+import {
+  type MeriseField,
+  type MeriseFieldInterface,
+  type MeriseFieldTypeOption,
+  type MeriseFieldTypeType,
+  type MeriseFormType,
+  type MeriseItemType,
+  MeriseItemTypeEnum,
+} from "../../types";
 import AbstractMeriseItem from "../AbstractMeriseItem";
 import type { FieldFormType } from "./FieldFormSchema";
 
@@ -37,7 +45,17 @@ export default class Field extends AbstractMeriseItem implements MeriseFieldInte
   }
 
   static fromRaw = (raw: MeriseField): Field => {
-    return new Field(raw.id, raw.meriseItemId, raw.meriseItemType, raw.name, raw.typeField, raw.typeFieldOption, raw.primaryKey, raw.nullable, raw.unique);
+    return new Field(
+      raw.id,
+      raw.meriseItemId,
+      raw.meriseItemType,
+      raw.name,
+      raw.typeField,
+      raw.typeFieldOption,
+      raw.primaryKey,
+      raw.nullable,
+      raw.unique
+    );
   };
 
   hydrate = (formData: FieldFormType): void => {

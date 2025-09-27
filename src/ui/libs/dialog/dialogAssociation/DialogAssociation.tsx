@@ -1,27 +1,27 @@
-import type { DialogAssociation as DialogAssociationType } from "@/core/libs/dialog";
+import type { Dialog, DialogAssociation as DialogAssociationType } from "@/core/libs/dialog";
 import { AddIcon, Button, CloseIcon, KeyIcon, TrashIcon } from "@/ui/system";
 import "./dialogAssociation.scss";
 
 interface DialogAssociationProps {
-  dialog: DialogAssociationType;
+  dialog: Dialog<DialogAssociationType>;
 }
 
 export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
-  const handleCloseDialog = () => dialog.callbacks.closeDialog();
-  const handleDeleteAssociation = () => dialog.callbacks.deleteAssociation();
-  const handleAddField = () => dialog.callbacks.addField();
-  const handleAddFieldPrimaryKey = () => dialog.callbacks.addFieldPrimaryKey();
+  const handleCloseDialog = () => dialog.closeDialog();
+  const handleDeleteAssociation = () => dialog.props.callbacks.deleteAssociation();
+  const handleAddField = () => dialog.props.callbacks.addField();
+  const handleAddFieldPrimaryKey = () => dialog.props.callbacks.addFieldPrimaryKey();
 
   return (
     <div className="dialog-overlay">
       <div className="dialog-association">
         <div className="dialog-association__card">
-          {dialog.title.length > 0 && (
+          {dialog.props.title && dialog.props.title.length > 0 && (
             <div className="dialog-association__card-header">
-              <h3>{dialog.title}</h3>
+              <h3>{dialog.props.title}</h3>
             </div>
           )}
-          {dialog.component()}
+          {dialog.props.component()}
         </div>
         <div className="dialog-association__actions">
           <Button className="dialog-association__actions-item" onClick={handleCloseDialog}>

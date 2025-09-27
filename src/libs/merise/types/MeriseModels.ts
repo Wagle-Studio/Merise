@@ -1,3 +1,4 @@
+import type { Field } from "../models";
 import type { AssociationFormType } from "../models/association/AssociationFormSchema";
 import type { EntityFormType } from "../models/entity/EntityFormSchema";
 import type { FieldFormType } from "../models/field/FieldFormSchema";
@@ -30,10 +31,10 @@ export interface MeriseEntityInterface extends MeriseItemInterface {
   getFlowId: () => string;
   getName: () => string;
   getEmoji: () => string;
-  getFields: () => MeriseFieldInterface[];
-  addField: (field: MeriseFieldInterface) => void;
-  updateFields: (field: MeriseFieldInterface) => void;
-  deleteField: (field: MeriseFieldInterface) => MeriseResult<null, null>;
+  getFields: () => Field[];
+  addField: (field: Field) => void;
+  updateFields: (field: Field) => void;
+  deleteField: (field: Field) => MeriseResult<null, null>;
   normalize: () => MeriseEntity;
 }
 
@@ -53,10 +54,10 @@ export interface MeriseAssociationInterface extends MeriseItemInterface {
   getFlowId: () => string;
   getName: () => string;
   getEmoji: () => string;
-  getFields: () => MeriseFieldInterface[];
-  addField: (field: MeriseFieldInterface) => void;
-  updateFields: (field: MeriseFieldInterface) => void;
-  deleteField: (field: MeriseFieldInterface) => MeriseResult<null, null>;
+  getFields: () => Field[];
+  addField: (field: Field) => void;
+  updateFields: (field: Field) => void;
+  deleteField: (field: Field) => MeriseResult<null, null>;
   normalize: () => MeriseAssociation;
 }
 

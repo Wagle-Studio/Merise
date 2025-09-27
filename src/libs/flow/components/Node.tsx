@@ -1,23 +1,32 @@
 import { memo } from "react";
 import { Handle, type NodeProps, Position } from "@xyflow/react";
+import { useDomainContext } from "@/core/domain/DomainContext";
 import { FlowNode } from "@/ui";
-import { useFlowContext } from "../core";
-import type { FlowMeriseAssociationInterface, FlowMeriseEntityInterface, FlowMeriseRelationInterface, FlowResult, TypedNode } from "../types";
+import type {
+  FlowMeriseAssociationInterface,
+  FlowMeriseEntityInterface,
+  FlowMeriseRelationInterface,
+  FlowResult,
+  TypedNode,
+} from "../types";
 import { FlowMeriseItemTypeEnum } from "../types";
 
 // Custom Node component rendering the corresponding Merise item UI and connection handles
 export default memo(
   function Node(props: NodeProps<TypedNode>): React.ReactElement | null {
-    const { dependencies } = useFlowContext();
+    const { dependencies } = useDomainContext();
 
-    let meriseItemFindResult: FlowResult<FlowMeriseAssociationInterface | FlowMeriseEntityInterface | FlowMeriseRelationInterface, null>;
+    let meriseItemFindResult: FlowResult<
+      FlowMeriseAssociationInterface | FlowMeriseEntityInterface | FlowMeriseRelationInterface,
+      null
+    >;
 
     switch (props.data.type) {
       case FlowMeriseItemTypeEnum.ENTITY:
-        meriseItemFindResult = dependencies.findMeriseEntityByFlowId(props.id);
+        meriseItemFindResult = dependencies.findEntityByFlowId(props.id);
         break;
       case FlowMeriseItemTypeEnum.ASSOCIATION:
-        meriseItemFindResult = dependencies.findMeriseAssociationByFlowId(props.id);
+        meriseItemFindResult = dependencies.findAssociationByFlowId(props.id);
         break;
       default:
         return null;

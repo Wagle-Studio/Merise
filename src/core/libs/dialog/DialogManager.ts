@@ -1,27 +1,30 @@
 import { v4 as uuidv4 } from "uuid";
-import type {
-  AddAssociationDialogProps,
-  AddConfirmDialogProps,
-  AddEntityDialogProps,
-  AddFieldDialogProps,
-  AddRelationDialogProps,
-  AddSaveDialogProps,
-  AddSettingsDialogProps,
-  Dialog,
-  DialogManagerInterface,
-  DialogsDispatcher,
+import {
+  type AnyDialog,
+  type Dialog,
+  type DialogAssociation,
+  type DialogConfirm,
+  type DialogEntity,
+  type DialogField,
+  type DialogManagerInterface,
+  type DialogPropsType,
+  type DialogRelation,
+  type DialogSave,
+  type DialogSettings,
+  DialogType,
+  DialogType as DialogTypeEnum,
+  type DialogsDispatcher,
 } from "./DialogTypes";
-import { DialogType as DialogTypeEnum } from "./DialogTypes";
 
 export default class DialogManager implements DialogManagerInterface {
   private static instance: DialogManager;
 
   private constructor(
-    private getDialogs: () => Dialog[],
+    private getDialogs: () => AnyDialog[],
     private setDialogs: DialogsDispatcher
   ) {}
 
-  static getInstance = (getDialogs: () => Dialog[], setDialogs: DialogsDispatcher): DialogManager => {
+  static getInstance = (getDialogs: () => AnyDialog[], setDialogs: DialogsDispatcher): DialogManager => {
     if (!this.instance) {
       this.instance = new DialogManager(getDialogs, setDialogs);
     }
@@ -29,110 +32,67 @@ export default class DialogManager implements DialogManagerInterface {
     return this.instance;
   };
 
-  addConfirmDialog = (props: AddConfirmDialogProps): string => {
-    const dialog = {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: DialogTypeEnum.CONFIRM,
-      title: props.title,
-      message: props.message,
-      callbacks: props.callbacks,
-    };
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
+  getCurrentDialogs = (): AnyDialog[] => {
+    return this.getDialogs();
   };
 
-  addEntityDialog = (props: AddEntityDialogProps): string => {
-    const dialog = {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: DialogTypeEnum.ENTITY,
-      title: props.title,
-      component: props.component,
-      callbacks: props.callbacks,
-    };
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
+  addDialogConfirm = (props: DialogConfirm): string | null => {
+    return this.addDialog<DialogConfirm>(props, DialogTypeEnum.CONFIRM);
   };
 
-  addAssociationDialog = (props: AddAssociationDialogProps): string => {
-    const dialog = {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: DialogTypeEnum.ASSOCIATION,
-      title: props.title,
-      component: props.component,
-      callbacks: props.callbacks,
-    };
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
+  addDialogEntity = (props: DialogEntity): string | null => {
+    return this.addDialog<DialogEntity>(props, DialogTypeEnum.ENTITY);
   };
 
-  addRelationDialog = (props: AddRelationDialogProps): string => {
-    const dialog = {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: DialogTypeEnum.RELATION,
-      title: props.title,
-      component: props.component,
-      callbacks: props.callbacks,
-    };
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
+  addDialogAssociation = (props: DialogAssociation): string | null => {
+    return this.addDialog<DialogAssociation>(props, DialogTypeEnum.ASSOCIATION);
   };
 
-  addFieldDialog = (props: AddFieldDialogProps): string => {
-    const dialog = {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: DialogTypeEnum.FIELD,
-      title: props.title,
-      component: props.component,
-      callbacks: props.callbacks,
-    };
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
+  addDialogRelation = (props: DialogRelation): string | null => {
+    return this.addDialog<DialogRelation>(props, DialogTypeEnum.RELATION);
   };
 
-  addSaveDialog = (props: AddSaveDialogProps): string => {
-    const dialog = {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: DialogTypeEnum.SAVE,
-      title: props.title,
-      component: props.component,
-      callbacks: props.callbacks,
-    };
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
+  addDialogField = (props: DialogField): string | null => {
+    return this.addDialog<DialogField>(props, DialogTypeEnum.FIELD);
   };
 
-  addSettingsDialog = (props: AddSettingsDialogProps): string => {
-    const dialog = {
-      timestamp: Date.now(),
-      id: uuidv4(),
-      type: DialogTypeEnum.SETTINGS,
-      title: props.title,
-      component: props.component,
-      callbacks: props.callbacks,
-    };
-    this.setDialogs([...this.getDialogs(), dialog]);
-    return dialog.id;
+  addDialogSave = (props: DialogSave): string | null => {
+    return this.addDialog<DialogSave>(props, DialogTypeEnum.SAVE);
+  };
+
+  addDialogSettings = (props: DialogSettings): string | null => {
+    return this.addDialog<DialogSettings>(props, DialogTypeEnum.SETTINGS);
   };
 
   clearDialogs = (): void => {
     this.setDialogs([]);
   };
 
-  removeDialogById = (id: string): void => {
+  removeDialog = (id: string): void => {
     this.setDialogs((prev) => prev.filter((dialog) => dialog.id !== id));
   };
 
-  hasSaveDialogOpened = (): boolean => {
-    return this.getDialogs().some((dialog) => dialog.type === DialogTypeEnum.SAVE);
+  private addDialog = <T extends DialogPropsType>(props: T, type: DialogType): string | null => {
+    const dialogAlreadyOpen = this.hasDialogOpened(type);
+
+    if (dialogAlreadyOpen) return null;
+
+    const id = uuidv4();
+
+    const dialog: Dialog<T> = {
+      type: type,
+      timestamp: Date.now(),
+      id: id,
+      props,
+      closeDialog: () => this.removeDialog(id),
+    };
+
+    this.setDialogs([...this.getDialogs(), dialog as AnyDialog]);
+
+    return id;
   };
 
-  hasSettingsDialogOpened = (): boolean => {
-    return this.getDialogs().some((dialog) => dialog.type === DialogTypeEnum.SETTINGS);
+  private hasDialogOpened = (type: DialogTypeEnum): boolean => {
+    return this.getDialogs().some((dialog) => dialog.type === type);
   };
 }

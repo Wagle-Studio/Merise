@@ -1,5 +1,6 @@
 import { type ChangeEvent, type FormEvent, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useDomainContext } from "@/core/domain/DomainContext";
 import {
   Field,
   FieldFormTypeSchema,
@@ -7,7 +8,6 @@ import {
   MeriseFieldTypeTypeEnum,
   type MeriseFormType,
   MeriseFormTypeEnum,
-  useMeriseContext,
 } from "@/libs/merise";
 import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 import {
@@ -28,7 +28,7 @@ export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps)
   const initial = useMemo(() => buildConfigFromField(field), [field]);
   const [config, setConfig] = useState<FieldConfig>(initial);
 
-  const { operations } = useMeriseContext();
+  const { operations } = useDomainContext();
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -75,13 +75,13 @@ export const FieldFormComponent = ({ field, formType }: FieldFormComponentProps)
     if (formType === MeriseFormTypeEnum.CREATE) {
       const fresh = new Field(uuidv4(), field.getMeriseItemId(), field.getMeriseItemType());
       fresh.hydrate(validationResult.data);
-      operations.onFieldCreate(fresh);
+      operations.handleFieldCreate(fresh);
 
       e.currentTarget.reset();
       setConfig(buildDefaultConfig(MeriseFieldTypeTypeEnum.TEXT));
     } else {
       field.hydrate(validationResult.data);
-      operations.onFieldUpdate(field);
+      operations.handleFieldUpdate(field);
 
       setConfig(buildConfigFromField(field));
     }

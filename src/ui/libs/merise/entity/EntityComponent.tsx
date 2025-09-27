@@ -1,6 +1,6 @@
 import clsx from "clsx";
+import { useDomainContext } from "@/core/domain/DomainContext";
 import type { Entity } from "@/libs/merise";
-import { useMeriseContext } from "@/libs/merise";
 import { KeyIcon } from "@/ui/system";
 import "./entity.scss";
 
@@ -9,10 +9,10 @@ interface EntityComponentProps {
 }
 
 export const EntityComponent = ({ entity }: EntityComponentProps) => {
-  const { operations } = useMeriseContext();
+  const { operations } = useDomainContext();
 
   return (
-    <div className="entity" onClick={() => operations.onEntitySelect(entity)}>
+    <div className="entity" onClick={() => operations.handleDialogEntityEdit(entity)}>
       <div className="entity__header">
         <p className="entity__header__title">
           {entity.getEmoji()} {entity.getName()}

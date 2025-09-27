@@ -37,16 +37,16 @@ export type FlowConnectEntityToEntityResult = {
   node: TypedNode;
 };
 
-// Props required to create Flow connection between an entity and an association
-export interface FlowConnectEntityToAssociationProps {
-  connection: Connection;
-}
-
 // Flow result for connection between an entity and an association
 export type FlowConnectEntityToAssociationResult = { type: FlowConnectionTypeEnum.ENTITY_ASSOCIATION; edge: TypedEdge };
 
 // Union type representing the result of a Flow connection operation
 export type FlowConnectResult = FlowConnectEntityToEntityResult | FlowConnectEntityToAssociationResult;
+
+// Props required to create Flow connection between an entity and an association
+export interface FlowConnectEntityToAssociationProps {
+  connection: Connection;
+}
 
 // Props required to create Flow connection between two entities
 export interface FlowCalculateNewNodePositionProps {

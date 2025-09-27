@@ -1,4 +1,3 @@
-export * from "./MeriseContext";
 export * from "./MeriseCore";
 export {
   MeriseFieldTypeType as MeriseFieldTypeTypeEnum,

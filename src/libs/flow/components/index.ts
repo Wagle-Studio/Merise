@@ -1,1 +1,1 @@
-export { default as FlowComponent } from "./Flow";
+export { default as Flow } from "./Flow";

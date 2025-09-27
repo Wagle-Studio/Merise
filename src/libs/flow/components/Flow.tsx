@@ -1,15 +1,21 @@
 import { type ReactNode, useCallback, useMemo } from "react";
 import { Background, BackgroundVariant, type EdgeProps, type NodeProps, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useDomainContext } from "@/core/domain/DomainContext";
 import { SettingsBackgroundTypeEnum } from "@/core/libs/settings";
-import { useFlowContext } from "../core";
+import { useFlowHandlers } from "../core/useFlowHandlers";
 import type { TypedEdge, TypedNode } from "../types";
 import Edge from "./Edge";
 import Node from "./Node";
 
 // Main Flow component integrating React Flow with custom node and edge types
 export default function Flow() {
-  const { flow, onNodesChange, onConnect, settings } = useFlowContext();
+  const { operations, dependencies } = useDomainContext();
+
+  const { onConnect, onNodesChange } = useFlowHandlers({
+    onConnectFn: operations.handleRelationCreate,
+    onNodesChangeFn: operations.handleNodeMove,
+  });
 
   const createNodeComponent = useCallback((props: NodeProps<TypedNode>) => <Node {...props} />, []);
   const createEdgeComponent = useCallback((props: EdgeProps<TypedEdge>) => <Edge {...props} />, []);
@@ -17,12 +23,16 @@ export default function Flow() {
   const nodeTypes = useMemo(() => ({ NODE: createNodeComponent }), [createNodeComponent]);
   const edgeTypes = useMemo(() => ({ EDGE: createEdgeComponent }), [createEdgeComponent]);
 
+  const flow = dependencies.getCurrentFlow();
+  const nodes = useMemo(() => [...flow.getNodes()], [flow]);
+  const edges = useMemo(() => [...flow.getEdges()], [flow]);
+
   const reactFlowProps = useMemo(
     () => ({
       nodeTypes,
       edgeTypes,
-      nodes: flow.getNodes(),
-      edges: flow.getEdges(),
+      nodes: nodes,
+      edges: edges,
       onNodesChange,
       onConnect,
       fitView: true,
@@ -34,11 +44,11 @@ export default function Flow() {
       nodesConnectable: true,
       panOnDrag: true,
     }),
-    [nodeTypes, edgeTypes, flow.getNodes(), flow.getEdges(), onNodesChange, onConnect, settings]
+    [nodeTypes, edgeTypes, nodes, edges, dependencies, onNodesChange, onConnect]
   );
 
   const getBackgroundVariant = (): ReactNode => {
-    switch (settings.getSettings().background) {
+    switch (dependencies.getCurrentSettings().getSettings().background) {
       case SettingsBackgroundTypeEnum.GRID:
         return <Background variant={BackgroundVariant.Lines} gap={16} size={1} color="var(--gray-base)" />;
       case SettingsBackgroundTypeEnum.DOTT:

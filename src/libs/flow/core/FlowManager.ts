@@ -25,14 +25,33 @@ export default class FlowManager implements FlowManagerInterface {
     return this.getFlow();
   };
 
-  triggerReRender = (): void => {
-    this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.getEdges(), prev.getNodes()));
-  };
-
   handleMove = (change: NodeChange<TypedNode>): void => {
     this.setFlow((prev) => {
       return prev.cloneWithUpdatedNodes(applyNodeChanges<TypedNode>([change], prev.getNodes()));
     });
+  };
+
+  createNode = (itemType: FlowMeriseItemType): FlowResult<TypedNode, null> => {
+    const nodeId = uuidv4();
+
+    const node: TypedNode = {
+      id: nodeId,
+      position: this.helper.calculateNewNodePosition({ nodes: this.getFlow().getNodes() }),
+      data: {
+        id: nodeId,
+        type: itemType,
+      },
+      type: FlowItemTypeEnum.NODE,
+    };
+
+    this.setFlow((prev) => {
+      return prev.cloneWithAddedNode(node);
+    });
+
+    return {
+      success: true,
+      data: node,
+    };
   };
 
   createConnection = (params: Connection): FlowResult<FlowConnectResult, null> => {
@@ -64,47 +83,16 @@ export default class FlowManager implements FlowManagerInterface {
     };
   };
 
-  createNode = (itemType: FlowMeriseItemType): FlowResult<TypedNode, null> => {
-    const nodeId = uuidv4();
-
-    const node: TypedNode = {
-      id: nodeId,
-      position: this.helper.calculateNewNodePosition({ nodes: this.getFlow().getNodes() }),
-      data: {
-        id: nodeId,
-        type: itemType,
-      },
-      type: FlowItemTypeEnum.NODE,
-    };
-
-    this.addNode(node);
-
-    return {
-      success: true,
-      data: node,
-    };
-  };
-
-  addNode = (node: TypedNode): FlowResult<TypedNode, null> => {
+  addNode = (node: TypedNode): void => {
     this.setFlow((prev) => {
       return prev.cloneWithAddedNode(node);
     });
-
-    return {
-      success: true,
-      data: node,
-    };
   };
 
-  addEdge = (edge: TypedEdge): FlowResult<TypedEdge, null> => {
+  addEdge = (edge: TypedEdge): void => {
     this.setFlow((prev) => {
       return prev.cloneWithAddedEdge(edge);
     });
-
-    return {
-      success: true,
-      data: edge,
-    };
   };
 
   removeNode = (id: string): FlowResult<TypedNode, null> => {

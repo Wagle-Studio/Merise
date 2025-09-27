@@ -3,7 +3,6 @@ import { EntityComponent, EntityFormComponent } from "@/ui";
 import {
   type MeriseEntity,
   type MeriseEntityInterface,
-  type MeriseFieldInterface,
   MeriseItemTypeEnum,
   type MeriseResult,
   MeriseSeverityTypeEnum,
@@ -16,9 +15,9 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
   private flowId: string;
   private name: string;
   private emoji: string;
-  private fields: MeriseFieldInterface[];
+  private fields: Field[];
 
-  constructor(id: string, flowId: string, name: string, fields: MeriseFieldInterface[] = [], emoji: string = "🆕") {
+  constructor(id: string, flowId: string, name: string, fields: Field[] = [], emoji: string = "🆕") {
     super(MeriseItemTypeEnum.ENTITY, id);
     this.flowId = flowId;
     this.name = name;
@@ -49,19 +48,19 @@ export default class Entity extends AbstractMeriseItem implements MeriseEntityIn
     return this.emoji;
   };
 
-  getFields = (): MeriseFieldInterface[] => {
+  getFields = (): Field[] => {
     return this.fields;
   };
 
-  addField = (field: MeriseFieldInterface): void => {
+  addField = (field: Field): void => {
     this.fields = [...this.fields, field];
   };
 
-  updateFields = (field: MeriseFieldInterface): void => {
+  updateFields = (field: Field): void => {
     this.fields = [...this.fields].map((f) => (f.getId() === field.getId() ? field : f));
   };
 
-  deleteField = (field: MeriseFieldInterface): MeriseResult<null, null> => {
+  deleteField = (field: Field): MeriseResult<null, null> => {
     const index = this.fields.findIndex((f) => f.getId() === field.getId());
 
     if (index === -1) {

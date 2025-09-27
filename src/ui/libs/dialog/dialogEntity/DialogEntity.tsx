@@ -1,27 +1,27 @@
-import type { DialogEntity as DialogEntityType } from "@/core/libs/dialog";
+import type { Dialog, DialogEntity as DialogEntityType } from "@/core/libs/dialog";
 import { AddIcon, Button, CloseIcon, KeyIcon, TrashIcon } from "@/ui/system";
 import "./dialogEntity.scss";
 
 interface DialogEntityProps {
-  dialog: DialogEntityType;
+  dialog: Dialog<DialogEntityType>;
 }
 
 export const DialogEntity = ({ dialog }: DialogEntityProps) => {
-  const handleCloseDialog = () => dialog.callbacks.closeDialog();
-  const handleDeleteEntity = () => dialog.callbacks.deleteEntity();
-  const handleAddField = () => dialog.callbacks.addField();
-  const handleAddFieldPrimaryKey = () => dialog.callbacks.addFieldPrimaryKey();
+  const handleCloseDialog = () => dialog.closeDialog();
+  const handleDeleteEntity = () => dialog.props.callbacks.deleteEntity();
+  const handleAddField = () => dialog.props.callbacks.addField();
+  const handleAddFieldPrimaryKey = () => dialog.props.callbacks.addFieldPrimaryKey();
 
   return (
     <div className="dialog-overlay">
       <div className="dialog-entity">
         <div className="dialog-entity__card">
-          {dialog.title.length > 0 && (
+          {dialog.props.title && dialog.props.title.length > 0 && (
             <div className="dialog-entity__card-header">
-              <h3>{dialog.title}</h3>
+              <h3>{dialog.props.title}</h3>
             </div>
           )}
-          {dialog.component()}
+          {dialog.props.component()}
         </div>
         <div className="dialog-entity__actions">
           <Button className="dialog-entity__actions-item" onClick={handleCloseDialog}>

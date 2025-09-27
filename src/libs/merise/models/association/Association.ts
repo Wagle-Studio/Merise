@@ -1,6 +1,12 @@
 import { createElement } from "react";
 import { AssociationComponent, AssociationFormComponent } from "@/ui";
-import { type MeriseAssociation, type MeriseAssociationInterface, type MeriseFieldInterface, MeriseItemTypeEnum, type MeriseResult, MeriseSeverityTypeEnum } from "../../types";
+import {
+  type MeriseAssociation,
+  type MeriseAssociationInterface,
+  MeriseItemTypeEnum,
+  type MeriseResult,
+  MeriseSeverityTypeEnum,
+} from "../../types";
 import Field from "../field/Field";
 import AbstractMeriseItem from "./../AbstractMeriseItem";
 import { type AssociationFormType } from "./AssociationFormSchema";
@@ -9,9 +15,9 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
   private flowId: string;
   private name: string;
   private emoji: string;
-  private fields: MeriseFieldInterface[];
+  private fields: Field[];
 
-  constructor(id: string, flowId: string, name: string, fields: MeriseFieldInterface[] = [], emoji: string = "🆕") {
+  constructor(id: string, flowId: string, name: string, fields: Field[] = [], emoji: string = "🆕") {
     super(MeriseItemTypeEnum.ASSOCIATION, id);
     this.flowId = flowId;
     this.name = name;
@@ -42,19 +48,19 @@ export default class Association extends AbstractMeriseItem implements MeriseAss
     return this.emoji;
   };
 
-  getFields = (): MeriseFieldInterface[] => {
+  getFields = (): Field[] => {
     return this.fields;
   };
 
-  addField = (field: MeriseFieldInterface): void => {
+  addField = (field: Field): void => {
     this.fields = [...this.fields, field];
   };
 
-  updateFields = (field: MeriseFieldInterface): void => {
+  updateFields = (field: Field): void => {
     this.fields = this.fields.map((f) => (f.getId() === field.getId() ? field : f));
   };
 
-  deleteField = (field: MeriseFieldInterface): MeriseResult<null, null> => {
+  deleteField = (field: Field): MeriseResult<null, null> => {
     const index = this.fields.findIndex((f) => f.getId() === field.getId());
 
     if (index === -1) {

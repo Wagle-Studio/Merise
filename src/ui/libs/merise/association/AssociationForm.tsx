@@ -1,5 +1,6 @@
 import { type FormEvent } from "react";
-import { Association, AssociationFormTypeSchema, useMeriseContext } from "@/libs/merise";
+import { useDomainContext } from "@/core/domain/DomainContext";
+import { Association, AssociationFormTypeSchema } from "@/libs/merise";
 import { Button, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
 import { FieldTableComponent } from "../field/FieldTable";
 
@@ -8,8 +9,7 @@ interface AssociationFormComponentProps {
 }
 
 export const AssociationFormComponent = ({ association }: AssociationFormComponentProps) => {
-  const { operations } = useMeriseContext();
-
+  const { operations } = useDomainContext();
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -31,7 +31,7 @@ export const AssociationFormComponent = ({ association }: AssociationFormCompone
     }
 
     association.hydrate(validationResult.data);
-    operations.onAssociationUpdate(association);
+    operations.handleAssociationUpdate(association);
   };
 
   const emojiOptions = [
@@ -62,11 +62,25 @@ export const AssociationFormComponent = ({ association }: AssociationFormCompone
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
       <Fieldset variant="horizontal" legend="Identité">
-        <FieldSelect label="Emoji" labelDisplay={false} htmlFor="association-emoji" defaultValue={association.getEmoji()} options={emojiOptions} error={fieldErrors.emoji} />
-        <FieldText label="Nom" labelDisplay={false} htmlFor="association-name" defaultValue={association.getName()} placeholder={association.getName()} error={fieldErrors.name} />
+        <FieldSelect
+          label="Emoji"
+          labelDisplay={false}
+          htmlFor="association-emoji"
+          defaultValue={association.getEmoji()}
+          options={emojiOptions}
+          error={fieldErrors.emoji}
+        />
+        <FieldText
+          label="Nom"
+          labelDisplay={false}
+          htmlFor="association-name"
+          defaultValue={association.getName()}
+          placeholder={association.getName()}
+          error={fieldErrors.name}
+        />
       </Fieldset>
       <Fieldset legend="Champs">
-        <FieldTableComponent fields={association.getFields()} onSelect={operations.onFieldSelect} />
+        <FieldTableComponent fields={association.getFields()} />
       </Fieldset>
     </Form>
   );

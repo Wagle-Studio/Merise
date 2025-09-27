@@ -1,15 +1,15 @@
 import { memo, useMemo } from "react";
 import { BaseEdge, EdgeLabelRenderer, type EdgeProps } from "@xyflow/react";
+import { useDomainContext } from "@/core/domain/DomainContext";
 import { FlowEdge } from "@/ui";
-import { useFlowContext } from "../core";
 import type { TypedEdge } from "../types";
 
 // Custom Edge component rendering the corresponding Merise item UI and connection handles
 export default memo(
   function Edge(props: EdgeProps<TypedEdge>) {
-    const { dependencies } = useFlowContext();
+    const { dependencies } = useDomainContext();
 
-    const meriseItemFindResult = dependencies.findMeriseRelationByFlowId(props.id);
+    const meriseItemFindResult = dependencies.findRelationByFlowId(props.id);
 
     if (!meriseItemFindResult.success || !meriseItemFindResult.data) {
       return null;
