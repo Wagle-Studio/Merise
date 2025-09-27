@@ -1,8 +1,8 @@
+import { ToastTypeEnum } from ".";
 import type { RefObject } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { CoreError, ErrorSeverityTypeEnum } from "@/core/libs/error";
+import { ErrorDTO, ErrorSeverityTypeEnum } from "@/core/libs/error";
 import type { AddToastProps, Toast, ToastManagerInterface, ToastsDispatcher } from "./ToastTypes";
-import { ToastType } from "./ToastTypes";
 
 export default class ToastManager implements ToastManagerInterface {
   private static instance: ToastManager;
@@ -27,42 +27,25 @@ export default class ToastManager implements ToastManagerInterface {
     return this.instance;
   };
 
+  getCurrentToasts = (): Toast[] => {
+    return this.getToasts();
+  };
+
   addToastSuccess = (message: string): void => {
     this.addToast({
-      type: ToastType.SUCCESS,
-      message,
-    });
-  };
-
-  addToastInfo = (message: string): void => {
-    this.addToast({
-      type: ToastType.INFO,
-      message,
-    });
-  };
-
-  addToastWarning = (message: string): void => {
-    this.addToast({
-      type: ToastType.WARNING,
-      message,
-    });
-  };
-
-  addToastError = (message: string): void => {
-    this.addToast({
-      type: ToastType.ERROR,
-      message,
+      type: ToastTypeEnum.SUCCESS,
+      message: message,
     });
   };
 
   addToastSave = (message: string): void => {
     this.addToast({
-      type: ToastType.SAVE,
-      message,
+      type: ToastTypeEnum.SAVE,
+      message: message,
     });
   };
 
-  removeToastById = (id: string): void => {
+  removeToast = (id: string): void => {
     this.setToasts((prev) => prev.filter((toast) => toast.id !== id));
 
     if (this.timersRef.current[id]) {
@@ -71,19 +54,19 @@ export default class ToastManager implements ToastManagerInterface {
     }
   };
 
-  mapToastError = (error: CoreError): void => {
+  mapToastError = (error: ErrorDTO): void => {
     switch (error.type) {
       case ErrorSeverityTypeEnum.INFO:
-        this.addToastInfo(error.message);
+        this.addToast({ type: ToastTypeEnum.INFO, message: error.message });
         break;
       case ErrorSeverityTypeEnum.WARNING:
-        this.addToastWarning(error.message);
+        this.addToast({ type: ToastTypeEnum.WARNING, message: error.message });
         break;
       case ErrorSeverityTypeEnum.ERROR:
-        this.addToastError(error.message);
+        this.addToast({ type: ToastTypeEnum.ERROR, message: error.message });
         break;
       default:
-        this.addToastError("Anomalie dans la gestion de l'erreur");
+        this.addToast({ type: ToastTypeEnum.ERROR, message: "Anomalie dans la gestion de l'erreur" });
         break;
     }
   };

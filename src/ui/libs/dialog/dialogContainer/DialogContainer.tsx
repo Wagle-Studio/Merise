@@ -1,17 +1,19 @@
-import { Fragment } from "react";
-import { useKernelContext } from "@/core";
-import { type DialogAssociation, type DialogConfirm, type DialogEntity, type DialogField, type DialogRelation, type DialogSave, type DialogSettings, DialogTypeEnum } from "@/core/libs/dialog";
-import { DialogAssociation as DialogAssociationComponent } from "../dialogAssociation/DialogAssociation";
-import { DialogConfirm as DialogConfirmComponent } from "../dialogConfirm/DialogConfirm";
-import { DialogEntity as DialogEntityComponent } from "../dialogEntity/DialogEntity";
-import { DialogField as DialogFieldComponent } from "../dialogField/DialogField";
-import { DialogRelation as DialogRelationComponent } from "../dialogRelation/DialogRelation";
-import { DialogSave as DialogSaveComponent } from "../dialogSave/DialogSave";
-import { DialogSettings as DialogSettingsComponent } from "../dialogSettings/DialogSettings";
+import { Fragment } from "react/jsx-runtime";
+import { useKernelContext } from "@/core/kernel/KernelContext";
+import { DialogTypeEnum } from "@/core/libs/dialog";
+import { DialogAssociation } from "../dialogAssociation/DialogAssociation";
+import { DialogConfirm } from "../dialogConfirm/DialogConfirm";
+import { DialogEntity } from "../dialogEntity/DialogEntity";
+import { DialogField } from "../dialogField/DialogField";
+import { DialogRelation } from "../dialogRelation/DialogRelation";
+import { DialogSave } from "../dialogSave/DialogSave";
+import { DialogSettings } from "../dialogSettings/DialogSettings";
 import "./dialogContainer.scss";
 
 export const DialogContainer = () => {
-  const { dialogs } = useKernelContext();
+  const { dependencies } = useKernelContext();
+
+  const dialogs = dependencies.getCurrentDialogs();
 
   if (dialogs.length === 0) {
     return null;
@@ -21,13 +23,13 @@ export const DialogContainer = () => {
     <>
       {dialogs.map((dialog) => (
         <Fragment key={`dialog-${dialog.id}`}>
-          {dialog.type === DialogTypeEnum.CONFIRM && <DialogConfirmComponent dialog={dialog as DialogConfirm} />}
-          {dialog.type === DialogTypeEnum.ENTITY && <DialogEntityComponent dialog={dialog as DialogEntity} />}
-          {dialog.type === DialogTypeEnum.ASSOCIATION && <DialogAssociationComponent dialog={dialog as DialogAssociation} />}
-          {dialog.type === DialogTypeEnum.RELATION && <DialogRelationComponent dialog={dialog as DialogRelation} />}
-          {dialog.type === DialogTypeEnum.FIELD && <DialogFieldComponent dialog={dialog as DialogField} />}
-          {dialog.type === DialogTypeEnum.SAVE && <DialogSaveComponent dialog={dialog as DialogSave} />}
-          {dialog.type === DialogTypeEnum.SETTINGS && <DialogSettingsComponent dialog={dialog as DialogSettings} />}
+          {dialog.type === DialogTypeEnum.CONFIRM && <DialogConfirm dialog={dialog} />}
+          {dialog.type === DialogTypeEnum.ENTITY && <DialogEntity dialog={dialog} />}
+          {dialog.type === DialogTypeEnum.ASSOCIATION && <DialogAssociation dialog={dialog} />}
+          {dialog.type === DialogTypeEnum.RELATION && <DialogRelation dialog={dialog} />}
+          {dialog.type === DialogTypeEnum.FIELD && <DialogField dialog={dialog} />}
+          {dialog.type === DialogTypeEnum.SAVE && <DialogSave dialog={dialog} />}
+          {dialog.type === DialogTypeEnum.SETTINGS && <DialogSettings dialog={dialog} />}
         </Fragment>
       ))}
     </>

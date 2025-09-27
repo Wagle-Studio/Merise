@@ -1,4 +1,4 @@
-import type { CoreError } from "@/core/libs/error";
+import type { ErrorDTO } from "@/core/libs/error";
 
 // List of all available toast types
 export enum ToastType {
@@ -28,11 +28,9 @@ export interface AddToastProps {
 
 // Contract for the toast manager implementation
 export interface ToastManagerInterface {
+  getCurrentToasts: () => Toast[];
   addToastSuccess: (message: string) => void;
-  addToastInfo: (message: string) => void;
-  addToastWarning: (message: string) => void;
-  addToastError: (message: string) => void;
   addToastSave: (message: string) => void;
-  removeToastById: (id: string) => void;
-  mapToastError: (error: CoreError) => void;
+  removeToast: (id: string) => void;
+  mapToastError: (error: ErrorDTO) => void;
 }

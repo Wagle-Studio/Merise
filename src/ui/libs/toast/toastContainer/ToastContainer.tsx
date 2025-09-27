@@ -1,9 +1,11 @@
-import { useKernelContext } from "@/core";
+import { useKernelContext } from "@/core/kernel/KernelContext";
 import { Toast } from "../toast/Toast";
 import "./toastContainer.scss";
 
 export const ToastContainer = () => {
-  const { toasts } = useKernelContext();
+  const { dependencies } = useKernelContext();
+
+  const toasts = dependencies.getCurrentToasts();
 
   if (toasts.length === 0) return null;
 

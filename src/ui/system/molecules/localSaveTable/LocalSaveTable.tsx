@@ -10,7 +10,9 @@ interface LocalSaveTableProps {
   handleSaveRemove: (save: SaveRawDTOObject) => void;
 }
 
-export const LocalSaveTable = ({ saves, handleSaveOpen, handleSaveSelect, handleSaveRemove }: LocalSaveTableProps) => {
+export const LocalSaveTable = (props: LocalSaveTableProps) => {
+  const { saves, handleSaveOpen, handleSaveSelect, handleSaveRemove } = props;
+
   return (
     <div className="local_saves">
       <h2>Sauvegardes locales</h2>

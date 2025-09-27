@@ -1,23 +1,15 @@
-import { type MeriseFieldInterface, MeriseFieldTypeTypeEnum, useMeriseContext } from "@/libs/merise";
+import { useDomainContext } from "@/core/domain/DomainContext";
+import { Field, MeriseFieldTypeTypeEnum } from "@/libs/merise";
 import { Button, CheckedIcon, EditIcon, KeyIcon, TrashIcon, UnCheckedIcon } from "@/ui/system";
 import { formatFieldOption } from "./FieldTypeRegistry";
 import "./field.scss";
 
 interface FieldTableComponentProps {
-  fields: MeriseFieldInterface[];
-  onSelect: (field: MeriseFieldInterface) => void;
+  fields: Field[];
 }
 
-export const FieldTableComponent = ({ fields, onSelect }: FieldTableComponentProps) => {
-  const { operations } = useMeriseContext();
-
-  const handleFieldSelect = (field: MeriseFieldInterface): void => {
-    onSelect(field);
-  };
-
-  const handleFieldDelete = (field: MeriseFieldInterface): void => {
-    operations.onFieldDelete(field);
-  };
+export const FieldTableComponent = ({ fields }: FieldTableComponentProps) => {
+  const { operations } = useDomainContext();
 
   return (
     <table className="field-table">
@@ -64,10 +56,10 @@ export const FieldTableComponent = ({ fields, onSelect }: FieldTableComponentPro
                   {!field.isUnique() && <UnCheckedIcon />}
                 </td>
                 <td className="field-table__rows__item--actions">
-                  <Button variant="ghost" onClick={() => handleFieldSelect(field)}>
+                  <Button variant="ghost" onClick={() => operations.handleDialogFieldEdit(field)}>
                     <EditIcon />
                   </Button>
-                  <Button variant="ghost" onClick={() => handleFieldDelete(field)}>
+                  <Button variant="ghost" onClick={() => operations.handleFieldRemove(field)}>
                     <TrashIcon />
                   </Button>
                 </td>

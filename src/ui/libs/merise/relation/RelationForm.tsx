@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
-import { MeriseRelationCardinalityTypeEnum, Relation, RelationFormTypeSchema, useMeriseContext } from "@/libs/merise";
+import { useDomainContext } from "@/core/domain/DomainContext";
+import { MeriseRelationCardinalityTypeEnum, Relation, RelationFormTypeSchema } from "@/libs/merise";
 import { Button, FieldSelect, Form, SaveIcon, useFormErrors } from "@/ui/system";
 
 interface RelationFormComponentProps {
@@ -7,8 +8,7 @@ interface RelationFormComponentProps {
 }
 
 export const RelationFormComponent = ({ relation }: RelationFormComponentProps) => {
-  const { operations } = useMeriseContext();
-
+  const { operations } = useDomainContext();
   const { fieldErrors, setZodErrors, clearErrors, hasErrors } = useFormErrors();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -29,7 +29,7 @@ export const RelationFormComponent = ({ relation }: RelationFormComponentProps) 
     }
 
     relation.hydrate(validationResult.data);
-    operations.onRelationUpdate(relation);
+    operations.handleRelationUpdate(relation);
   };
 
   const cardinalityOptions = [
@@ -59,7 +59,13 @@ export const RelationFormComponent = ({ relation }: RelationFormComponentProps) 
 
   return (
     <Form onSubmit={handleSubmit} actions={formActions} error={hasErrors}>
-      <FieldSelect label="Cardinalité" htmlFor="relation-cardinality" defaultValue={relation.getCardinality()} options={cardinalityOptions} error={fieldErrors.cardinality} />
+      <FieldSelect
+        label="Cardinalité"
+        htmlFor="relation-cardinality"
+        defaultValue={relation.getCardinality()}
+        options={cardinalityOptions}
+        error={fieldErrors.cardinality}
+      />
     </Form>
   );
 };
