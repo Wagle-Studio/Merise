@@ -1,4 +1,5 @@
 import type { CoreResult } from "@/core";
+import type { NormalizeManagerInterface } from "@/core/libs/normalize";
 import type { SettingsDTOInterface, SettingsDTOObject } from "@/core/libs/settings";
 import type { FlowDTOInterface, FlowDTOObject } from "@/libs/flow";
 import type { MeriseDTOInterface, MeriseDTOObject } from "@/libs/merise";
@@ -59,15 +60,24 @@ export type SaveDispatcher = React.Dispatch<React.SetStateAction<SaveDTOInterfac
 
 // Contract for the save manager implementation
 export interface SaveManagerInterface {
-  saveDemoInit: () => void;
+  initDemo: () => void;
   clearSave: () => void;
-  createSave: () => string;
+  createSave: () => CoreResult<string, null>;
   openSave: (saveId: string) => CoreResult<Save, null>;
   updateSave: (saveDTO: SaveDTOInterface) => void;
   removeSave: (saveId: string) => void;
-  saveCurrent: () => void;
-  getCurrentSave: () => SaveDTOInterface | null;
+  saveCurrent: (
+    settings: SettingsDTOInterface,
+    flow: FlowDTOInterface,
+    merise: MeriseDTOInterface
+  ) => CoreResult<null, null>;
+  getCurrentSave: () => CoreResult<SaveDTOInterface, null>;
   updateCurrentSave: (saveDTO: SaveDTOInterface) => void;
-  hasUnsavedChanges: () => boolean | null;
+  hasUnsavedChanges: (
+    settings: SettingsDTOInterface,
+    flow: FlowDTOInterface,
+    merise: MeriseDTOInterface,
+    normalizer: NormalizeManagerInterface
+  ) => CoreResult<boolean, null>;
   findLocalSaves: () => CoreResult<SaveRawDTOObject[], null>;
 }

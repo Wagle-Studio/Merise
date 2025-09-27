@@ -21,7 +21,7 @@ export default class DialogManager implements DialogManagerInterface {
     private setDialogs: DialogsDispatcher
   ) {}
 
-  static getInstance = (getDialogs: () => Dialog[], setDialogs: DialogsDispatcher) => {
+  static getInstance = (getDialogs: () => Dialog[], setDialogs: DialogsDispatcher): DialogManager => {
     if (!this.instance) {
       this.instance = new DialogManager(getDialogs, setDialogs);
     }

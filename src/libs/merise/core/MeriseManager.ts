@@ -4,14 +4,16 @@ import { MeriseItemTypeEnum } from "../types";
 import MeriseHelper from "./MeriseHelper";
 
 export default class MeriseManager implements MeriseManagerInterface {
-  private helper: MeriseHelper;
+  private helper: MeriseHelper = MeriseHelper.getInstance();
 
   constructor(
     private getMerise: () => MeriseDTOInterface,
     private setMerise: MeriseDTODispatcher
-  ) {
-    this.helper = MeriseHelper.getInstance();
-  }
+  ) {}
+
+  getCurrentMerise = (): MeriseDTOInterface => {
+    return this.getMerise();
+  };
 
   addEntity = (flowId: string): MeriseResult<Entity, null> => {
     return this.helper.addItem<Entity>({

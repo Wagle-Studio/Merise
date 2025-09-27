@@ -9,7 +9,7 @@ export default class ErrorManager implements ErrorManagerInterface {
 
   private constructor() {}
 
-  static getInstance = () => {
+  static getInstance = (): ErrorManager => {
     if (!this.instance) {
       this.instance = new ErrorManager();
     }

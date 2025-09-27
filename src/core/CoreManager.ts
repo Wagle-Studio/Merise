@@ -1,12 +1,14 @@
 import type { Connection } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { DialogManagerInterface } from "@/core/libs/dialog";
-import { type ErrorManagerInterface } from "@/core/libs/error";
+import type { ErrorManagerInterface } from "@/core/libs/error";
 import type { NavigatorManagerInterface } from "@/core/libs/navigator";
-import { SaveDTO, type SaveDTOInterface, type SaveManagerInterface } from "@/core/libs/save";
+import type { NormalizeManagerInterface } from "@/core/libs/normalize";
+import type { SaveDTOInterface, SaveManagerInterface } from "@/core/libs/save";
+import { SaveDTO, SaveDemo } from "@/core/libs/save";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
 import { SettingsDefault } from "@/core/libs/settings/";
-import { type ToastManagerInterface } from "@/core/libs/toast";
+import type { ToastManagerInterface } from "@/core/libs/toast";
 import type { FlowManagerInterface, TypedEdge, TypedNode } from "@/libs/flow";
 import { FlowConnectionTypeEnum, FlowMeriseItemTypeEnum } from "@/libs/flow";
 import type {
@@ -38,14 +40,45 @@ export default class CoreManager implements CoreManagerInterface {
     private errorManager: ErrorManagerInterface,
     private saveManager: SaveManagerInterface,
     private settingsManager: SettingsManagerInterface,
-    private navigatorManager: NavigatorManagerInterface
+    private navigatorManager: NavigatorManagerInterface,
+    private normalizeManager: NormalizeManagerInterface
   ) {}
 
+  // REVIEWED - APP MANAGER
   handleNavigateToHome = (): void => {
-    const isSaveDemo = this.saveManager.getCurrentSave()?.getId() === "save_demo";
-    const hasUnsavedChanges = this.saveManager.hasUnsavedChanges();
+    const navigateToHome = () => {
+      this.dialogManager.clearDialogs();
+      this.navigatorManager.clearSaveUrlParams();
+      this.settingsManager.updateSettings(SettingsDefault);
+      this.saveManager.clearSave();
 
-    if (!isSaveDemo && hasUnsavedChanges) {
+      return;
+    };
+
+    const currentSaveResult = this.saveManager.getCurrentSave();
+
+    if (!currentSaveResult.success) {
+      this.toastManager.mapToastError(this.errorManager.mapResultError(currentSaveResult));
+      return;
+    }
+
+    const isSaveDemo = currentSaveResult.data.getId() === SaveDemo.id;
+
+    if (isSaveDemo) navigateToHome();
+
+    const hasUnsavedChangesResult = this.saveManager.hasUnsavedChanges(
+      this.settingsManager.getCurrentSettings(),
+      this.flowManager.getCurrentFlow(),
+      this.meriseManager.getCurrentMerise(),
+      this.normalizeManager
+    );
+
+    if (!hasUnsavedChangesResult.success) {
+      this.toastManager.mapToastError(this.errorManager.mapResultError(hasUnsavedChangesResult));
+      return;
+    }
+
+    if (!isSaveDemo && hasUnsavedChangesResult.data) {
       const dialogId = this.dialogManager.addConfirmDialog({
         title: "Modifications non sauvegardées",
         message: "Êtes-vous sûr de vouloir quitter sans sauvegarder les modifications en cours ?",
@@ -54,10 +87,7 @@ export default class CoreManager implements CoreManagerInterface {
             this.dialogManager.removeDialogById(dialogId);
           },
           onConfirm: () => {
-            this.dialogManager.clearDialogs();
-            this.navigatorManager.clearSaveUrlParams();
-            this.settingsManager.updateSettings(SettingsDefault);
-            this.saveManager.clearSave();
+            navigateToHome();
           },
         },
       });
@@ -65,10 +95,7 @@ export default class CoreManager implements CoreManagerInterface {
       return;
     }
 
-    this.dialogManager.clearDialogs();
-    this.navigatorManager.clearSaveUrlParams();
-    this.settingsManager.updateSettings(SettingsDefault);
-    this.saveManager.clearSave();
+    navigateToHome();
   };
 
   handleCreateFlowEdgeAndMeriseRelation = (connection: Connection): void => {
@@ -411,9 +438,16 @@ export default class CoreManager implements CoreManagerInterface {
     }
   };
 
+  // REVIEWED - CORE MANAGER
   handleSaveCreate = (): void => {
-    const newSaveId = this.saveManager.createSave();
-    const openSaveResult = this.saveManager.openSave(newSaveId);
+    const createSaveResult = this.saveManager.createSave();
+
+    if (!createSaveResult.success) {
+      this.toastManager.mapToastError(this.errorManager.mapResultError(createSaveResult));
+      return;
+    }
+
+    const openSaveResult = this.saveManager.openSave(createSaveResult.data);
 
     if (!openSaveResult.success) {
       this.toastManager.mapToastError(this.errorManager.mapResultError(openSaveResult));
@@ -424,7 +458,6 @@ export default class CoreManager implements CoreManagerInterface {
 
     this.saveManager.updateCurrentSave(save);
     this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
-
     this.toastManager.addToastSave("Diagramme créé");
   };
 
@@ -442,8 +475,18 @@ export default class CoreManager implements CoreManagerInterface {
     this.navigatorManager.setSaveUrlParams(openSaveResult.data.id);
   };
 
+  // REVIEWED - APP MANAGER
   handleSave = (): void => {
-    this.saveManager.saveCurrent();
+    const saveCurrentResult = this.saveManager.saveCurrent(
+      this.settingsManager.getCurrentSettings(),
+      this.flowManager.getCurrentFlow(),
+      this.meriseManager.getCurrentMerise()
+    );
+
+    if (!saveCurrentResult.success) {
+      this.toastManager.mapToastError(this.errorManager.mapResultError(saveCurrentResult));
+    }
+
     this.toastManager.addToastSave("Diagramme sauvegardé");
   };
 
@@ -468,14 +511,22 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
+  // REVIEWED - CORE MANAGER
   handleSaveSelectCurrent = (): void => {
     const saveDialogAlreadOpen = this.dialogManager.hasSaveDialogOpened();
 
     if (saveDialogAlreadOpen) return;
 
+    const getCurrentSaveResult = this.saveManager.getCurrentSave();
+
+    if (!getCurrentSaveResult.success) {
+      this.toastManager.mapToastError(this.errorManager.mapResultError(getCurrentSaveResult));
+      return;
+    }
+
     const dialogId = this.dialogManager.addSaveDialog({
       title: "Sauvegarde",
-      component: () => this.saveManager.getCurrentSave()?.renderFormComponent(),
+      component: () => getCurrentSaveResult.data.renderFormComponent(),
       callbacks: {
         closeDialog: () => {
           this.dialogManager.removeDialogById(dialogId);
@@ -511,11 +562,14 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
+  // REVIEWED - CORE MANAGER
   handleSaveRemoveCurrent = (): void => {
-    const currentSave = this.saveManager.getCurrentSave();
+    const getCurrentSaveResult = this.saveManager.getCurrentSave();
 
-    // TODO : handle error
-    if (!currentSave) return;
+    if (!getCurrentSaveResult.success) {
+      this.toastManager.mapToastError(this.errorManager.mapResultError(getCurrentSaveResult));
+      return;
+    }
 
     const dialogId = this.dialogManager.addConfirmDialog({
       title: "Suppression",
@@ -526,7 +580,7 @@ export default class CoreManager implements CoreManagerInterface {
         },
         onConfirm: () => {
           this.dialogManager.clearDialogs();
-          this.saveManager.removeSave(currentSave.getId());
+          this.saveManager.removeSave(getCurrentSaveResult.data.getId());
           this.toastManager.addToastSuccess("Diagramme supprimé");
           this.handleNavigateToHome();
         },
@@ -550,14 +604,24 @@ export default class CoreManager implements CoreManagerInterface {
     });
   };
 
+  // REVIEWED - APP MANAGER
   handleSettingsUpdate = (settings: Settings): void => {
     this.settingsManager.updateSettings(settings);
-    this.saveManager.saveCurrent();
+
+    const saveCurrentResult = this.saveManager.saveCurrent(
+      this.settingsManager.getCurrentSettings(),
+      this.flowManager.getCurrentFlow(),
+      this.meriseManager.getCurrentMerise()
+    );
+
+    if (!saveCurrentResult.success) {
+      this.toastManager.mapToastError(this.errorManager.mapResultError(saveCurrentResult));
+      return;
+    }
 
     this.toastManager.addToastSave("Diagramme sauvegardés");
   };
 
-  // REVIEWED
   private handleItemUpdate<TInput, TOutput>(
     item: TInput,
     updateFn: (item: TInput) => MeriseResult<TOutput, null>,

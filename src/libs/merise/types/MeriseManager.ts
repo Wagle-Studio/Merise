@@ -7,6 +7,7 @@ export type MeriseDTODispatcher = React.Dispatch<React.SetStateAction<MeriseDTOI
 
 // Contract for the Merise manager implementation
 export interface MeriseManagerInterface {
+  getCurrentMerise: () => MeriseDTOInterface;
   addEntity: (flowId: string) => MeriseResult<Entity, null>;
   addAssociation: (flowId: string) => MeriseResult<Association, null>;
   addRelation: (flowId: string, source: string, target: string) => MeriseResult<Relation, null>;

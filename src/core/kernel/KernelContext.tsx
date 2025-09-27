@@ -14,7 +14,7 @@ export const KernelContextProvider = ({ children }: KernelContextProps) => {
 
   useDTOValidation(flowDTO, meriseDTO, process.env.NODE_ENV === "development");
 
-  managers.save.saveDemoInit();
+  managers.save.initDemo();
 
   const contextValue = useMemo<KernelContext>(
     () => ({

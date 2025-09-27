@@ -72,14 +72,14 @@ export const useKernelInitialization = (): UseKernelInitializationResult => {
     const navigator = NavigatorManager.getInstance(); // REVIEWED
     const normalize = NormalizeManager.getInstance(); // REVIEWED
 
+    const save = SaveManager.getInstance(getSave, setSave); // REVIEWED
     const dialog = DialogManager.getInstance(getDialogs, setDialogs); // REVIEWED
     const settings = SettingsManager.getInstance(getSettingsDTO, setSettingsDTO); // REVIEWED
     const toast = ToastManager.getInstance(getToasts, setToasts, toastsTimersRef); // REVIEWED
 
-    const save = new SaveManager(getSave, setSave, getSettingsDTO, getFlowDTO, getMeriseDTO, normalize);
     const flow = new FlowManager(getFlowDTO, setFlowDTO);
     const merise = new MeriseManager(getMeriseDTO, setMeriseDTO);
-    const core = new CoreManager(flow, merise, toast, dialog, error, save, settings, navigator);
+    const core = new CoreManager(flow, merise, toast, dialog, error, save, settings, navigator, normalize);
 
     return { settings, dialog, toast, error, normalize, save, navigator, flow, merise, core };
   }, []);

@@ -19,7 +19,7 @@ export default class ToastManager implements ToastManagerInterface {
     getToasts: () => Toast[],
     setToasts: ToastsDispatcher,
     timersRef: RefObject<Record<string, NodeJS.Timeout>>
-  ) => {
+  ): ToastManager => {
     if (!this.instance) {
       this.instance = new ToastManager(getToasts, setToasts, timersRef);
     }
@@ -27,35 +27,35 @@ export default class ToastManager implements ToastManagerInterface {
     return this.instance;
   };
 
-  addToastSuccess = (message: string) => {
+  addToastSuccess = (message: string): void => {
     this.addToast({
       type: ToastType.SUCCESS,
       message,
     });
   };
 
-  addToastInfo = (message: string) => {
+  addToastInfo = (message: string): void => {
     this.addToast({
       type: ToastType.INFO,
       message,
     });
   };
 
-  addToastWarning = (message: string) => {
+  addToastWarning = (message: string): void => {
     this.addToast({
       type: ToastType.WARNING,
       message,
     });
   };
 
-  addToastError = (message: string) => {
+  addToastError = (message: string): void => {
     this.addToast({
       type: ToastType.ERROR,
       message,
     });
   };
 
-  addToastSave = (message: string) => {
+  addToastSave = (message: string): void => {
     this.addToast({
       type: ToastType.SAVE,
       message,
