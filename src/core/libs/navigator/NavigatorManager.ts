@@ -5,7 +5,7 @@ export default class NavigatorManager implements NavigatorManagerInterface {
 
   private constructor() {}
 
-  static getInstance = () => {
+  static getInstance = (): NavigatorManager => {
     if (!this.instance) {
       this.instance = new NavigatorManager();
     }

@@ -16,7 +16,7 @@ export default class SettingsManager implements SettingsManagerInterface {
     private setSettings: SettingsDispatcher
   ) {}
 
-  static getInstance = (getSettings: () => SettingsDTOInterface, setSettings: SettingsDispatcher) => {
+  static getInstance = (getSettings: () => SettingsDTOInterface, setSettings: SettingsDispatcher): SettingsManager => {
     if (!this.instance) {
       this.instance = new SettingsManager(getSettings, setSettings);
     }
@@ -28,7 +28,7 @@ export default class SettingsManager implements SettingsManagerInterface {
     return this.getSettings();
   };
 
-  updateSettings = (settings: Settings) => {
+  updateSettings = (settings: Settings): void => {
     this.setSettings((prev) => prev.cloneWithUpdatedSettings(settings));
     this.applyTheme(settings.theme);
 

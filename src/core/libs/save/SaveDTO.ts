@@ -58,15 +58,15 @@ export default class SaveDTO implements SaveDTOInterface {
     return this.save.merise;
   };
 
-  setSettingsDTO = (settingsDTO: SettingsDTOInterface) => {
+  setSettingsDTO = (settingsDTO: SettingsDTOInterface): void => {
     this.save.settings = settingsDTO;
   };
 
-  setFlowDTO = (flowDTO: FlowDTOInterface) => {
+  setFlowDTO = (flowDTO: FlowDTOInterface): void => {
     this.save.flow = flowDTO;
   };
 
-  setMeriseDTO = (meriseDTO: MeriseDTOInterface) => {
+  setMeriseDTO = (meriseDTO: MeriseDTOInterface): void => {
     this.save.merise = meriseDTO;
   };
 

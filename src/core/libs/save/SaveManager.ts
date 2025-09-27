@@ -1,22 +1,35 @@
 import { v4 as uuidv4 } from "uuid";
 import { type CoreResult, CoreSeverityTypeEnum } from "@/core";
-import type { NormalizeManagerInterface } from "@/core/libs/normalize";
 import { SettingsDTO, type SettingsDTOInterface } from "@/core/libs/settings";
 import { FlowDTO, type FlowDTOInterface } from "@/libs/flow";
 import { MeriseDTO, type MeriseDTOInterface } from "@/libs/merise";
+import type { NormalizeManagerInterface } from "../normalize";
 import SaveDTO from "./SaveDTO";
-import { SaveDefault } from "./SaveDefault";
-import type { Save, SaveDTOInterface, SaveDTOObject, SaveDispatcher, SaveManagerInterface, SaveRawDTOObject } from "./SaveTypes";
+import { SaveDemo } from "./SaveDemo";
+import type {
+  Save,
+  SaveDTOInterface,
+  SaveDTOObject,
+  SaveDispatcher,
+  SaveManagerInterface,
+  SaveRawDTOObject,
+} from "./SaveTypes";
 
 export default class SaveManager implements SaveManagerInterface {
-  constructor(
+  private static instance: SaveManager;
+
+  private constructor(
     private getSave: () => SaveDTOInterface | null,
-    private setSave: SaveDispatcher,
-    private getSettings: () => SettingsDTOInterface,
-    private getFlow: () => FlowDTOInterface,
-    private getMerise: () => MeriseDTOInterface,
-    private normalizeManager: NormalizeManagerInterface
+    private setSave: SaveDispatcher
   ) {}
+
+  static getInstance = (getSave: () => SaveDTOInterface | null, setSave: SaveDispatcher): SaveManager => {
+    if (!this.instance) {
+      this.instance = new SaveManager(getSave, setSave);
+    }
+
+    return this.instance;
+  };
 
   static initSaveFromUrlParams = (): SaveDTOInterface | null => {
     const params = new URLSearchParams(window.location.search);
@@ -24,23 +37,23 @@ export default class SaveManager implements SaveManagerInterface {
 
     if (!saveId) return null;
 
-    const buildSaveResult = SaveManager.buildSaveFromSaveId(saveId);
+    const buildSaveResult = SaveManager.buildSaveFromId(saveId);
 
     if (!buildSaveResult.success) return null;
 
     return new SaveDTO(buildSaveResult.data);
   };
 
-  saveDemoInit = (): void => {
-    if (!localStorage.getItem("save_demo")) {
+  initDemo = (): void => {
+    if (!localStorage.getItem(SaveDemo.id)) {
       const save: Save = {
-        id: SaveDefault.id,
-        name: SaveDefault.name,
-        settings: JSON.parse(SaveDefault.settings),
-        flow: JSON.parse(SaveDefault.flow),
-        merise: JSON.parse(SaveDefault.merise),
-        created: new Date(SaveDefault.created),
-        updated: new Date(SaveDefault.updated),
+        id: SaveDemo.id,
+        name: SaveDemo.name,
+        settings: JSON.parse(SaveDemo.settings),
+        flow: JSON.parse(SaveDemo.flow),
+        merise: JSON.parse(SaveDemo.merise),
+        created: new Date(SaveDemo.created),
+        updated: new Date(SaveDemo.updated),
       };
 
       localStorage.setItem(save.id, JSON.stringify(save));
@@ -51,7 +64,7 @@ export default class SaveManager implements SaveManagerInterface {
     this.setSave(null);
   };
 
-  createSave = (): string => {
+  createSave = (): CoreResult<string, null> => {
     const saveId = uuidv4();
 
     const save: Save = {
@@ -66,11 +79,14 @@ export default class SaveManager implements SaveManagerInterface {
 
     localStorage.setItem(saveId, JSON.stringify(save));
 
-    return saveId;
+    return {
+      success: true,
+      data: save.id,
+    };
   };
 
   openSave = (saveId: string): CoreResult<Save, null> => {
-    return SaveManager.buildSaveFromSaveId(saveId);
+    return SaveManager.buildSaveFromId(saveId);
   };
 
   updateSave = (saveDTO: SaveDTOInterface): void => {
@@ -81,27 +97,55 @@ export default class SaveManager implements SaveManagerInterface {
     localStorage.removeItem(saveId);
   };
 
-  saveCurrent = (): void => {
+  saveCurrent = (
+    settings: SettingsDTOInterface,
+    flow: FlowDTOInterface,
+    merise: MeriseDTOInterface
+  ): CoreResult<null, null> => {
     const currentSave = this.getSave();
 
-    if (currentSave) {
-      const save: Save = {
-        id: currentSave.getId(),
-        name: currentSave.getName(),
-        settings: this.getSettings(),
-        flow: this.getFlow(),
-        merise: this.getMerise(),
-        created: currentSave.getCreated(),
-        updated: new Date(),
+    if (!currentSave) {
+      return {
+        success: false,
+        message: "Aucune sauvegarde à mettre à jour",
+        severity: CoreSeverityTypeEnum.ERROR,
       };
-
-      this.setSave(SaveDTO.cloneWithUpdatedSave(save));
-      localStorage.setItem(save.id, JSON.stringify(save));
     }
+
+    const save: Save = {
+      id: currentSave.getId(),
+      name: currentSave.getName(),
+      settings: settings,
+      flow: flow,
+      merise: merise,
+      created: currentSave.getCreated(),
+      updated: new Date(),
+    };
+
+    this.setSave(SaveDTO.cloneWithUpdatedSave(save));
+    localStorage.setItem(save.id, JSON.stringify(save));
+
+    return {
+      success: true,
+      data: null,
+    };
   };
 
-  getCurrentSave = (): SaveDTOInterface | null => {
-    return this.getSave();
+  getCurrentSave = (): CoreResult<SaveDTOInterface, null> => {
+    const save = this.getSave();
+
+    if (!save) {
+      return {
+        success: false,
+        message: "Sauvegarde introuvable",
+        severity: CoreSeverityTypeEnum.ERROR,
+      };
+    }
+
+    return {
+      success: true,
+      data: save,
+    };
   };
 
   updateCurrentSave = (saveDTO: SaveDTOInterface): void => {
@@ -109,24 +153,35 @@ export default class SaveManager implements SaveManagerInterface {
     localStorage.setItem(saveDTO.getId(), JSON.stringify(saveDTO.getSave()));
   };
 
-  hasUnsavedChanges = (): boolean | null => {
+  hasUnsavedChanges = (
+    settings: SettingsDTOInterface,
+    flow: FlowDTOInterface,
+    merise: MeriseDTOInterface,
+    normalizer: NormalizeManagerInterface
+  ): CoreResult<boolean, null> => {
     const currentSave = this.getSave();
 
-    if (!currentSave) return null;
+    if (!currentSave) {
+      return {
+        success: false,
+        message: "Sauvegarde introuvable",
+        severity: CoreSeverityTypeEnum.ERROR,
+      };
+    }
 
-    const buildFreshBaseSave = SaveManager.buildSaveFromSaveId(currentSave.getId());
+    const buildFreshBaseSaveResult = SaveManager.buildSaveFromId(currentSave.getId());
 
-    if (!buildFreshBaseSave.success) return null;
+    if (!buildFreshBaseSaveResult.success) return buildFreshBaseSaveResult;
 
-    const freshSave = buildFreshBaseSave.data;
+    const freshSave = buildFreshBaseSaveResult.data;
 
-    const normalizedCurrentSettings = this.normalizeManager.normalizeSettings(this.getSettings());
-    const normalizedCurrentFlow = this.normalizeManager.normalizeFlow(this.getFlow());
-    const normalizedCurrentMerise = this.normalizeManager.normalizeMerise(this.getMerise());
+    const normalizedCurrentSettings = normalizer.normalizeSettings(settings);
+    const normalizedCurrentFlow = normalizer.normalizeFlow(flow);
+    const normalizedCurrentMerise = normalizer.normalizeMerise(merise);
 
-    const normalizedFreshSettings = this.normalizeManager.normalizeSettings(freshSave.settings);
-    const normalizedFreshFlow = this.normalizeManager.normalizeFlow(freshSave.flow);
-    const normalizedFreshMerise = this.normalizeManager.normalizeMerise(freshSave.merise);
+    const normalizedFreshSettings = normalizer.normalizeSettings(freshSave.settings);
+    const normalizedFreshFlow = normalizer.normalizeFlow(freshSave.flow);
+    const normalizedFreshMerise = normalizer.normalizeMerise(freshSave.merise);
 
     const sameSettings = JSON.stringify(normalizedCurrentSettings) === JSON.stringify(normalizedFreshSettings);
     const sameFlow = JSON.stringify(normalizedCurrentFlow) === JSON.stringify(normalizedFreshFlow);
@@ -138,7 +193,10 @@ export default class SaveManager implements SaveManagerInterface {
       merise: !sameMerise,
     };
 
-    return Object.values(differences).some(Boolean);
+    return {
+      success: true,
+      data: Object.values(differences).some(Boolean),
+    };
   };
 
   findLocalSaves = (): CoreResult<SaveRawDTOObject[], null> => {
@@ -178,7 +236,7 @@ export default class SaveManager implements SaveManagerInterface {
     };
   };
 
-  private static buildSaveFromSaveId = (saveId: string): CoreResult<Save, null> => {
+  private static buildSaveFromId = (saveId: string): CoreResult<Save, null> => {
     const raw = localStorage.getItem(saveId);
 
     if (!raw) {

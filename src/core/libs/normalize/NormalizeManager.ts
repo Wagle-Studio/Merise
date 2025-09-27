@@ -21,7 +21,7 @@ export default class NormalizeManager implements NormalizeManagerInterface {
 
   private constructor() {}
 
-  static getInstance = () => {
+  static getInstance = (): NormalizeManager => {
     if (!this.instance) {
       this.instance = new NormalizeManager();
     }

@@ -8,6 +8,7 @@ export type FlowDTODispatcher = React.Dispatch<React.SetStateAction<FlowDTOInter
 
 // Contract for the Flow manager implementation
 export interface FlowManagerInterface {
+  getCurrentFlow: () => FlowDTOInterface;
   triggerReRender: () => void;
   handleMove: (change: NodeChange<TypedNode>) => void;
   createConnection: (params: Connection) => FlowResult<FlowConnectResult, null>;

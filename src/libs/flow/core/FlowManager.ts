@@ -14,14 +14,16 @@ import { FlowConnectionTypeEnum, FlowItemTypeEnum, FlowSeverityTypeEnum } from "
 import FlowHelper from "./FlowHelper";
 
 export default class FlowManager implements FlowManagerInterface {
-  private helper: FlowHelper;
+  private helper: FlowHelper = FlowHelper.getInstance();
 
   constructor(
     private getFlow: () => FlowDTOInterface,
     private setFlow: FlowDTODispatcher
-  ) {
-    this.helper = FlowHelper.getInstance();
-  }
+  ) {}
+
+  getCurrentFlow = (): FlowDTOInterface => {
+    return this.getFlow();
+  };
 
   triggerReRender = (): void => {
     this.setFlow((prev) => prev.cloneWithUpdatedEdgesAndNodes(prev.getEdges(), prev.getNodes()));
