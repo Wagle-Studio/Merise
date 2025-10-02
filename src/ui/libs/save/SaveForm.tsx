@@ -1,8 +1,8 @@
 import { format } from "date-fns";
-import { useDomainContext } from "@/core/domain/DomainContext";
-import { useKernelContext } from "@/core/kernel/KernelContext";
+import { useDomainContext } from "@/core/domain";
+import { useKernelContext } from "@/core/kernel";
 import { type SaveDTOInterface, SaveFormTypeSchema } from "@/core/libs/save";
-import { Button, FieldText, Fieldset, Form, SaveIcon, TrashIcon, useFormErrors } from "@/ui/system";
+import { Button, FieldText, Fieldset, Form, SaveIcon, TrashIcon, useFormErrors } from "@/ui";
 
 interface SaveFormComponentProps {
   save: SaveDTOInterface;

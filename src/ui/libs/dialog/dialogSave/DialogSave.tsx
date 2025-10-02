@@ -1,5 +1,5 @@
 import type { Dialog, DialogSave as DialogSaveType } from "@/core/libs/dialog";
-import { Button, CloseIcon } from "@/ui/system";
+import { Button, CloseIcon } from "@/ui";
 import "./dialogSave.scss";
 
 interface DialogSaveProps {
@@ -7,8 +7,6 @@ interface DialogSaveProps {
 }
 
 export const DialogSave = ({ dialog }: DialogSaveProps) => {
-  const handleCancel = () => dialog.closeDialog();
-
   return (
     <div className="dialog-overlay">
       <div className="dialog-save">
@@ -21,7 +19,7 @@ export const DialogSave = ({ dialog }: DialogSaveProps) => {
           {dialog.props.component()}
         </div>
         <div className="dialog-save__actions">
-          <Button className="dialog-save__actions-item" onClick={handleCancel}>
+          <Button className="dialog-save__actions-item" onClick={dialog.closeDialog}>
             <CloseIcon /> Fermer
           </Button>
         </div>

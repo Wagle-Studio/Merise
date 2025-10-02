@@ -1,12 +1,12 @@
 import type { FormEvent } from "react";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import {
   SettingsBackgroundTypeEnum,
   type SettingsDTOInterface,
   SettingsFormTypeSchema,
   SettingsThemeTypeEnum,
 } from "@/core/libs/settings";
-import { Button, FieldSelect, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
+import { Button, FieldSelect, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui";
 
 interface SettingsFormComponentProps {
   settings: SettingsDTOInterface;

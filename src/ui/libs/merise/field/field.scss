@@ -1,42 +1,47 @@
 .field-table {
   border-collapse: collapse;
   table-layout: fixed;
+  width: 100%;
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
 
   &__col--key {
     width: 30px;
   }
-
   &__col--name {
     width: 150px;
   }
-
   &__col--type {
     width: 150px;
   }
-
   &__col--nullable,
   &__col--unique {
     width: 100px;
   }
-
   &__col--actions {
     width: 40px;
   }
 
   thead th {
     text-align: left;
-    font-weight: 600;
-    padding: 6px 8px;
+    font-weight: 700;
+    padding: 8px 10px;
     border-bottom: 1px solid var(--gray-base);
     color: var(--gray-darker);
+    background-color: var(--gray-base);
     box-sizing: border-box;
   }
 
   tbody td {
-    padding: 6px 8px;
+    padding: 8px 10px;
     border-bottom: 1px solid var(--gray-base);
     vertical-align: middle;
     box-sizing: border-box;
+  }
+
+  tbody tr:hover td {
+    background: var(--gray-light);
   }
 
   &__rows {

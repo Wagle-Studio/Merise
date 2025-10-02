@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import type { Entity } from "@/libs/merise";
-import { KeyIcon } from "@/ui/system";
+import { KeyIcon } from "@/ui";
 import "./entity.scss";
 
 interface EntityComponentProps {

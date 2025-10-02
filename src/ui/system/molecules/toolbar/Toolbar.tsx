@@ -1,6 +1,6 @@
-import { useDomainContext } from "@/core/domain/DomainContext";
-import { useKernelContext } from "@/core/kernel/KernelContext";
-import { AddIcon, Button, EditIcon, HomeIcon, SaveIcon, SettingsIcon } from "../../atoms";
+import { useDomainContext } from "@/core/domain";
+import { useKernelContext } from "@/core/kernel";
+import { AddIcon, Button, EditIcon, HomeIcon, SaveIcon, SettingsIcon } from "@/ui";
 import "./toolbar.scss";
 
 export const Toolbar = () => {
@@ -10,22 +10,15 @@ export const Toolbar = () => {
   const getCurrentSaveResult = kernel.dependencies.getCurrentSave();
   const isSaveDemo = getCurrentSaveResult.success && getCurrentSaveResult.data.getId() == "save_demo";
 
-  const navigateToHome = domain.operations.handleNavigateToHome;
-  const save = domain.operations.handleSaveCurrent;
-  const createEntity = domain.operations.handleEntityCreate;
-  const createAssociation = domain.operations.handleAssociationCreate;
-  const dialogSaveEdit = kernel.operations.handleDialogSaveEditCurrent;
-  const dialogSettingsEdit = kernel.operations.handleDialogSettingsEdit;
-
   return (
     <div className="toolbar">
       {getCurrentSaveResult.success && (
         <div className="toolbar__wrapper">
           <div className="toolbar__left">
-            <Button onClick={createEntity}>
+            <Button onClick={domain.operations.handleEntityCreate}>
               <AddIcon /> Entité
             </Button>
-            <Button onClick={createAssociation}>
+            <Button onClick={domain.operations.handleAssociationCreate}>
               <AddIcon /> Association
             </Button>
           </div>
@@ -33,16 +26,16 @@ export const Toolbar = () => {
             <p>{getCurrentSaveResult.data.getName()}</p>
           </div>
           <div className="toolbar__right">
-            <Button onClick={navigateToHome}>
+            <Button onClick={domain.operations.handleNavigateToHome}>
               <HomeIcon />
             </Button>
-            <Button onClick={save} disabled={isSaveDemo}>
+            <Button onClick={domain.operations.handleSaveCurrent} disabled={isSaveDemo}>
               <SaveIcon />
             </Button>
-            <Button onClick={dialogSaveEdit} disabled={isSaveDemo}>
+            <Button onClick={kernel.operations.handleDialogSaveEditCurrent} disabled={isSaveDemo}>
               <EditIcon />
             </Button>
-            <Button onClick={dialogSettingsEdit}>
+            <Button onClick={kernel.operations.handleDialogSettingsEdit}>
               <SettingsIcon />
             </Button>
           </div>

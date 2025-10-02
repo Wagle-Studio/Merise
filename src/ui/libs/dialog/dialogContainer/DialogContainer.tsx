@@ -1,5 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
-import { useKernelContext } from "@/core/kernel/KernelContext";
+import { useKernelContext } from "@/core/kernel";
 import { DialogTypeEnum } from "@/core/libs/dialog";
 import { DialogAssociation } from "../dialogAssociation/DialogAssociation";
 import { DialogConfirm } from "../dialogConfirm/DialogConfirm";

@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { type SaveRawDTOObject } from "@/core/libs/save";
-import { Button, EditIcon, EnterIcon, TrashIcon } from "../../atoms";
+import { Button, EditIcon, EnterIcon, TrashIcon } from "@/ui";
 import "./localSaveTable.scss";
 
 interface LocalSaveTableProps {

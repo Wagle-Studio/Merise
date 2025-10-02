@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useMemo } from "react";
 import { Background, BackgroundVariant, type EdgeProps, type NodeProps, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import { SettingsBackgroundTypeEnum } from "@/core/libs/settings";
 import { useFlowHandlers } from "../core/useFlowHandlers";
 import type { TypedEdge, TypedNode } from "../types";

@@ -1,5 +1,5 @@
 import type { Dialog, DialogAssociation as DialogAssociationType } from "@/core/libs/dialog";
-import { AddIcon, Button, CloseIcon, KeyIcon, TrashIcon } from "@/ui/system";
+import { AddIcon, Button, CloseIcon, KeyIcon, TrashIcon } from "@/ui";
 import "./dialogAssociation.scss";
 
 interface DialogAssociationProps {
@@ -7,11 +7,6 @@ interface DialogAssociationProps {
 }
 
 export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
-  const handleCloseDialog = () => dialog.closeDialog();
-  const handleDeleteAssociation = () => dialog.props.callbacks.deleteAssociation();
-  const handleAddField = () => dialog.props.callbacks.addField();
-  const handleAddFieldPrimaryKey = () => dialog.props.callbacks.addFieldPrimaryKey();
-
   return (
     <div className="dialog-overlay">
       <div className="dialog-association">
@@ -24,16 +19,16 @@ export const DialogAssociation = ({ dialog }: DialogAssociationProps) => {
           {dialog.props.component()}
         </div>
         <div className="dialog-association__actions">
-          <Button className="dialog-association__actions-item" onClick={handleCloseDialog}>
+          <Button className="dialog-association__actions-item" onClick={dialog.closeDialog}>
             <CloseIcon /> Fermer
           </Button>
-          <Button className="dialog-association__actions-item" onClick={handleAddField}>
+          <Button className="dialog-association__actions-item" onClick={dialog.props.callbacks.addField}>
             <AddIcon /> Un champ
           </Button>
-          <Button className="dialog-association__actions-item" onClick={handleAddFieldPrimaryKey}>
+          <Button className="dialog-association__actions-item" onClick={dialog.props.callbacks.addFieldPrimaryKey}>
             <KeyIcon /> Clé primaire
           </Button>
-          <Button className="dialog-association__actions-item" onClick={handleDeleteAssociation}>
+          <Button className="dialog-association__actions-item" onClick={dialog.props.callbacks.deleteAssociation}>
             <TrashIcon /> Supprimer
           </Button>
         </div>

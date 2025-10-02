@@ -3,6 +3,7 @@ export { AssociationFormComponent } from "./association/AssociationForm";
 export { EntityComponent } from "./entity/EntityComponent";
 export { EntityFormComponent } from "./entity/EntityForm";
 export { FieldFormComponent } from "./field/FieldForm";
+export { FieldTableComponent } from "./field/FieldTable";
 export { FieldTypeDateFormComponent } from "./field/fieldTypes/FieldTypeDateForm";
 export { FieldTypeNumberFormComponent } from "./field/fieldTypes/FieldTypeNumberForm";
 export { FieldTypeOtherFormComponent } from "./field/fieldTypes/FieldTypeOtherForm";

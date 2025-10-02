@@ -1,5 +1,5 @@
-import { useKernelContext } from "@/core/kernel/KernelContext";
-import { Toast } from "../toast/Toast";
+import { useKernelContext } from "@/core/kernel";
+import { Toast } from "@/ui";
 import "./toastContainer.scss";
 
 export const ToastContainer = () => {

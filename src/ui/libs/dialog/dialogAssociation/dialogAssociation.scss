@@ -1,6 +1,6 @@
 .dialog-association {
   display: flex;
-  flex-direction: column; /* mobile d'abord */
+  flex-direction: column;
   gap: 16px;
   padding: 24px;
   box-sizing: border-box;
@@ -8,12 +8,13 @@
   &__card {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    padding: 24px;
+    gap: 20px;
+    padding: 20px;
     width: 100%;
     max-width: 700px;
     background: var(--white);
-    border-radius: 8px;
+    border: 1px solid var(--gray-base);
+    border-radius: 12px;
     box-shadow: var(--dialog-shadow);
     overflow-y: auto;
     box-sizing: border-box;
@@ -21,7 +22,12 @@
     &-header {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
+
+      h3 {
+        margin: 0;
+        color: var(--gray-darker);
+      }
     }
   }
 

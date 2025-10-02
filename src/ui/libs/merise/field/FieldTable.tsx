@@ -1,6 +1,6 @@
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import { Field, MeriseFieldTypeTypeEnum } from "@/libs/merise";
-import { Button, CheckedIcon, EditIcon, KeyIcon, TrashIcon, UnCheckedIcon } from "@/ui/system";
+import { Button, CheckedIcon, EditIcon, KeyIcon, TrashIcon, UnCheckedIcon } from "@/ui";
 import { formatFieldOption } from "./FieldTypeRegistry";
 import "./field.scss";
 

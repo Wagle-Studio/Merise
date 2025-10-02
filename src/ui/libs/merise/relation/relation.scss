@@ -1,8 +1,10 @@
 .relation {
-  padding: 4px 16px;
+  padding: 4px 12px;
   background-color: var(--white);
   border: 1px solid var(--relation);
-  border-radius: 2px;
+  border-radius: 4px;
+  color: var(--gray-darker);
+  box-shadow: var(--dialog-shadow);
   box-sizing: border-box;
   pointer-events: all;
 }

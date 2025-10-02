@@ -1,5 +1,5 @@
 import type { Dialog, DialogConfirm as DialogConfirmType } from "@/core/libs/dialog";
-import { Button, CheckIcon, CloseIcon } from "@/ui/system";
+import { Button, CheckIcon, CloseIcon } from "@/ui";
 import "./dialogConfirm.scss";
 
 interface DialogConfirmProps {
@@ -7,9 +7,6 @@ interface DialogConfirmProps {
 }
 
 export const DialogConfirm = ({ dialog }: DialogConfirmProps) => {
-  const handleConfirm = () => dialog.props.callbacks.onConfirm();
-  const handleCancel = () => dialog.closeDialog();
-
   return (
     <div className="dialog-overlay">
       <div className="dialog-confirm">
@@ -18,10 +15,10 @@ export const DialogConfirm = ({ dialog }: DialogConfirmProps) => {
           <p>{dialog.props.message}</p>
         </div>
         <div className="dialog-confirm__actions">
-          <Button onClick={handleConfirm}>
+          <Button onClick={dialog.props.callbacks.onConfirm}>
             <CheckIcon /> Confirmer
           </Button>
-          <Button onClick={handleCancel}>
+          <Button onClick={dialog.closeDialog}>
             <CloseIcon /> Annuler
           </Button>
         </div>

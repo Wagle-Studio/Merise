@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 import { BaseEdge, EdgeLabelRenderer, type EdgeProps } from "@xyflow/react";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import { FlowEdge } from "@/ui";
 import type { TypedEdge } from "../types";
 

@@ -6,6 +6,7 @@
   background-color: var(--white);
   border: 1px solid var(--association);
   border-radius: 4px;
+  box-shadow: var(--dialog-shadow);
   box-sizing: border-box;
   pointer-events: all;
 
@@ -16,7 +17,8 @@
 
     &__title {
       font-size: 18px;
-      font-weight: 500;
+      font-weight: 700;
+      color: var(--gray-darker);
     }
   }
 
@@ -28,7 +30,6 @@
       &__col--key {
         width: 25px;
       }
-
       &__rows {
         &__item {
           &--key {

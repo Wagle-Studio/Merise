@@ -1,1 +1,1 @@
-export { DomainContextProvider } from "./DomainContext";
+export { DomainContextProvider, useDomainContext } from "./DomainContext";

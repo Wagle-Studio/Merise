@@ -1,5 +1,5 @@
 import type { Dialog, DialogSettings as DialogSettingsType } from "@/core/libs/dialog";
-import { Button, CloseIcon } from "@/ui/system";
+import { Button, CloseIcon } from "@/ui";
 import "./dialogSettings.scss";
 
 interface DialogSettingsProps {
@@ -7,8 +7,6 @@ interface DialogSettingsProps {
 }
 
 export const DialogSettings = ({ dialog }: DialogSettingsProps) => {
-  const handleCancel = () => dialog.closeDialog();
-
   return (
     <div className="dialog-overlay">
       <div className="dialog-settings">
@@ -21,7 +19,7 @@ export const DialogSettings = ({ dialog }: DialogSettingsProps) => {
           {dialog.props.component()}
         </div>
         <div className="dialog-settings__actions">
-          <Button className="dialog-settings__actions-item" onClick={handleCancel}>
+          <Button className="dialog-settings__actions-item" onClick={dialog.closeDialog}>
             <CloseIcon /> Fermer
           </Button>
         </div>

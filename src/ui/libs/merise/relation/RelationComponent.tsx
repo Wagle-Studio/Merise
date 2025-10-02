@@ -1,4 +1,4 @@
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import type { Relation } from "@/libs/merise";
 import "./relation.scss";
 

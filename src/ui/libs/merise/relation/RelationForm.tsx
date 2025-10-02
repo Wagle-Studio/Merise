@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import { MeriseRelationCardinalityTypeEnum, Relation, RelationFormTypeSchema } from "@/libs/merise";
-import { Button, FieldSelect, Form, SaveIcon, useFormErrors } from "@/ui/system";
+import { Button, FieldSelect, Form, SaveIcon, useFormErrors } from "@/ui";
 
 interface RelationFormComponentProps {
   relation: Relation;

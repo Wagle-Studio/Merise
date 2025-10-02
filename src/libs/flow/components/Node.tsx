@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Handle, type NodeProps, Position } from "@xyflow/react";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import { FlowNode } from "@/ui";
 import type {
   FlowMeriseAssociationInterface,

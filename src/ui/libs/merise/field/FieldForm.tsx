@@ -1,6 +1,6 @@
 import { type ChangeEvent, type FormEvent, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import {
   Field,
   FieldFormTypeSchema,
@@ -9,7 +9,7 @@ import {
   type MeriseFormType,
   MeriseFormTypeEnum,
 } from "@/libs/merise";
-import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
+import { Button, FieldCheckbox, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui";
 import {
   type FieldConfig,
   type FieldOptionUnion,

@@ -1,8 +1,7 @@
 import { type FormEvent } from "react";
-import { useDomainContext } from "@/core/domain/DomainContext";
+import { useDomainContext } from "@/core/domain";
 import { Association, AssociationFormTypeSchema } from "@/libs/merise";
-import { Button, FieldSelect, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui/system";
-import { FieldTableComponent } from "../field/FieldTable";
+import { Button, FieldSelect, FieldTableComponent, FieldText, Fieldset, Form, SaveIcon, useFormErrors } from "@/ui";
 
 interface AssociationFormComponentProps {
   association: Association;

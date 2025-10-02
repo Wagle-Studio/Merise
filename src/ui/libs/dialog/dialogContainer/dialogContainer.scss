@@ -1,14 +1,14 @@
-// Common dialog overlay
 .dialog-overlay {
   position: fixed;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-  animation: fade-in 0.2s ease-out;
+  background: color-mix(in oklab, var(--gray-darker) 40%, transparent);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fade-in 0.18s ease-out;
   pointer-events: auto;
-  inset: 0;
 }
 
 @keyframes fade-in {
