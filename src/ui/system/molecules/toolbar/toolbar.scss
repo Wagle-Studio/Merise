@@ -1,5 +1,8 @@
 .toolbar {
+  width: 100%;
+  max-width: 1280px;
   height: max-content;
+  margin: 0 auto;
   box-sizing: border-box;
 
   &__wrapper {
@@ -11,16 +14,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px;
+    padding: 10px 12px;
     width: 95%;
     height: max-content;
-    border-radius: 12px;
+    border-radius: 14px;
     background-color: var(--white);
+    border: 1px solid var(--gray-base);
+    backdrop-filter: saturate(140%) blur(6px);
+    -webkit-backdrop-filter: saturate(140%) blur(6px);
     box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.1),
-      4px 0px 6px rgba(0, 0, 0, 0.1),
-      0 10px 20px rgba(0, 0, 0, 0.1),
-      10px 0px 20px rgba(0, 0, 0, 0.1);
+      0 4px 6px rgba(0, 0, 0, 0.08),
+      0 10px 20px rgba(0, 0, 0, 0.08);
     box-sizing: border-box;
   }
 
@@ -28,11 +32,17 @@
   &__right {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 10px;
   }
 
   &__center {
     display: none;
+    font-weight: 700;
+    color: var(--gray-darker);
+    max-width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -49,6 +59,8 @@
       transform: translateX(-50%);
       display: flex;
       justify-content: center;
+      align-items: center;
+      pointer-events: none;
     }
   }
 }

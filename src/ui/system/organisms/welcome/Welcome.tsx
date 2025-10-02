@@ -1,7 +1,6 @@
 import { useKernelContext } from "@/core/kernel/KernelContext";
 import { type SaveRawDTOObject } from "@/core/libs/save";
-import { LocalSaveTable } from "@/ui";
-import { Button } from "../../atoms";
+import { Button, GithubIcon, LocalSaveTable, Tag } from "@/ui";
 import "./welcome.scss";
 
 export const Welcome = () => {
@@ -19,9 +18,17 @@ export const Welcome = () => {
   return (
     <div className="welcome">
       <div className="welcome__header">
-        <h1>Merise</h1>
-        <div className="welcome__header__actions">
-          <Button onClick={handleSaveCreate}>Nouveau diagramme</Button>
+        <div className="welcome__header__top">
+          <h1>Merise</h1>
+          <div className="welcome__header__actions">
+            <Button onClick={handleSaveCreate}>Nouveau diagramme</Button>
+          </div>
+        </div>
+        <div className="welcome__header__bottom">
+          <Tag>V 1.0</Tag>
+          <a href="https://github.com/Wagle-Studio/Merise" target="_blank" title="GitHub">
+            <GithubIcon size="medium" />
+          </a>
         </div>
       </div>
       <div className="welcome__saves">

@@ -5,6 +5,7 @@
 
   &--horizontal {
     flex-direction: row;
+    align-items: center;
   }
 
   &--vertical {
@@ -12,7 +13,7 @@
   }
 
   &__label {
-    font-weight: bold;
+    font-weight: 600;
     color: var(--gray-darker);
 
     &--hide {
@@ -22,16 +23,36 @@
 
   &__input {
     width: 100%;
-    padding: 6px 8px;
+    padding: 8px 10px;
     font-size: 16px;
     box-sizing: border-box;
+    border: 1px solid var(--gray-base);
+    border-radius: 8px;
+    background-color: var(--white);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      background-color 0.15s ease;
+
+    &:hover {
+      border-color: var(--gray-dark);
+    }
+
+    &:focus-visible {
+      outline: 2px solid transparent;
+      border-color: var(--gray-dark);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+    }
 
     &--error {
       border: 1px solid var(--error);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
     }
   }
 
   &__error {
     color: var(--error);
+    font-size: 12px;
+    line-height: 1.3;
   }
 }

@@ -9,6 +9,8 @@
     width: 100%;
     background: var(--white);
     box-shadow: var(--dialog-shadow);
+    border-radius: 6px;
+    overflow: hidden;
 
     &__col {
       &--name {
@@ -28,8 +30,8 @@
 
     thead th {
       text-align: left;
-      font-weight: 600;
-      padding: 6px 8px;
+      font-weight: 700;
+      padding: 10px 12px;
       border-bottom: 1px solid var(--gray-base);
       color: var(--gray-darker);
       background-color: var(--gray-base);
@@ -37,9 +39,13 @@
     }
 
     tbody td {
-      padding: 6px 8px;
+      padding: 10px 12px;
       border-bottom: 1px solid var(--gray-base);
       vertical-align: middle;
+    }
+
+    tbody tr:hover td {
+      background-color: var(--gray-light);
     }
 
     &__rows {
@@ -53,6 +59,12 @@
 
         &--updated {
           display: none;
+        }
+
+        &--empty {
+          text-align: center;
+          padding: 16px 12px;
+          color: var(--gray-darker);
         }
 
         &__actions {
@@ -84,7 +96,7 @@
         &__item {
           &--updated {
             display: table-cell;
-            padding: 6px 8px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--gray-base);
             vertical-align: middle;
           }

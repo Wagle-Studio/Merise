@@ -2,15 +2,46 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 
   &--vertical {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  &__input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--gray-darker);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid transparent;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+    }
+
+    &--error {
+      outline: 1px solid var(--error);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+      border-radius: 4px;
+    }
   }
 
   &__label {
+    cursor: pointer;
+    user-select: none;
+
     &--hide {
       display: none;
     }
+  }
+
+  &__error {
+    color: var(--error);
+    font-size: 12px;
+    line-height: 1.3;
   }
 }

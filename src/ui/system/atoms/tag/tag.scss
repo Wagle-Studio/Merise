@@ -1,0 +1,81 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  border: 1px solid var(--gray-base);
+  background-color: var(--white);
+  color: var(--gray-darker);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &--small {
+    padding: 3px 8px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  &--medium {
+    padding: 4px 10px;
+    font-size: 13px;
+  }
+
+  &--large {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  &--default {
+    background-color: var(--white);
+    border-color: var(--gray-base);
+    color: var(--gray-darker);
+  }
+
+  &--outline {
+    background-color: transparent;
+    border-color: var(--gray-dark);
+    color: var(--gray-darker);
+  }
+
+  &--info {
+    background-color: color-mix(in oklab, var(--info) 12%, transparent);
+    border-color: color-mix(in oklab, var(--info) 45%, transparent);
+    color: color-mix(in oklab, var(--info) 30%, var(--gray-darker));
+  }
+
+  &--success {
+    background-color: color-mix(in oklab, var(--succes) 12%, transparent);
+    border-color: color-mix(in oklab, var(--succes) 45%, transparent);
+    color: color-mix(in oklab, var(--succes) 28%, var(--gray-darker));
+  }
+
+  &--warning {
+    background-color: color-mix(in oklab, var(--warning) 14%, transparent);
+    border-color: color-mix(in oklab, var(--warning) 48%, transparent);
+    color: color-mix(in oklab, var(--warning) 34%, var(--gray-darker));
+  }
+
+  &--danger {
+    background-color: color-mix(in oklab, var(--error) 14%, transparent);
+    border-color: color-mix(in oklab, var(--error) 48%, transparent);
+    color: color-mix(in oklab, var(--error) 34%, var(--gray-darker));
+  }
+
+  &:hover {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--gray-base) 50%, transparent);
+  }
+
+  &__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

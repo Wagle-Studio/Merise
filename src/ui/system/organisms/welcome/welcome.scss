@@ -1,20 +1,49 @@
 .welcome {
   display: flex;
   flex-direction: column;
-  gap: 80px;
-  padding: 12px 24px;
+  gap: 64px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 24px 24px 24px;
   box-sizing: border-box;
 
   &__header {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex-direction: column;
+
+    &__top {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-base);
+
+      h1 {
+        margin: 0;
+        line-height: 1.1;
+        color: var(--gray-darker);
+      }
+
+      &__actions {
+        display: flex;
+        gap: 8px;
+      }
+    }
+
+    &__bottom {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      padding-top: 8px;
+    }
   }
 
   &__saves {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 24px;
   }
 }

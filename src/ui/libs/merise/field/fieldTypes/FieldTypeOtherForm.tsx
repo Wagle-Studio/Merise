@@ -15,5 +15,14 @@ export const FieldTypeOtherFormComponent = ({ value, onChange }: FieldTypeOtherF
     onChange({ variant: e.target.value as FieldTypeOtherOptionEnum });
   };
 
-  return <FieldRadio key={`other-variant-${value.variant}`} label="Type de champ autre" htmlFor="field-type-other-option" defaultValue={value.variant} options={typeOptions} onChange={handleVariant} />;
+  return (
+    <FieldRadio
+      key={`other-variant-${value.variant}`}
+      label="Type de champ autre"
+      htmlFor="field-type-other-option"
+      defaultValue={value.variant}
+      options={typeOptions}
+      onChange={handleVariant}
+    />
+  );
 };

@@ -1,7 +1,13 @@
 .icon {
-  stroke: var(--gray-darker);
+  display: inline-block;
+  color: var(--gray-darker);
+  stroke: currentColor;
   fill: none;
   stroke-width: 0;
+  transition:
+    color 0.15s ease,
+    opacity 0.15s ease,
+    transform 0.15s ease;
 
   &--small {
     width: 16px;
@@ -21,6 +27,17 @@
   path {
     fill-rule: evenodd;
     clip-rule: evenodd;
-    fill: var(--gray-darker);
+    fill: currentColor;
   }
+}
+
+.button:hover .icon {
+  transform: translateY(-1px);
+}
+.button:active .icon {
+  transform: translateY(0);
+}
+.button:disabled .icon,
+.button.button--disabled .icon {
+  opacity: 0.7;
 }

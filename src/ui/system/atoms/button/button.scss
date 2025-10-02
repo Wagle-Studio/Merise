@@ -1,19 +1,28 @@
 .button {
+  --btn-radius: 8px;
+
   &--default {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 4px;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: var(--btn-radius);
     font-family: inherit;
     font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
     box-sizing: border-box;
     cursor: pointer;
+    color: var(--gray-darker);
     background-color: var(--white);
-    border: 1px solid var(--gray-dark);
-    transition: background-color 0.2s ease;
+    border: 1px solid var(--gray-base);
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.05s ease;
   }
 
   &--ghost {
@@ -22,18 +31,29 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 4px;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--btn-radius);
     font-family: inherit;
     font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
     box-sizing: border-box;
     cursor: pointer;
+    color: var(--gray-darker);
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.05s ease;
   }
 
   &--disabled {
-    background-color: var(--gray-base);
+    opacity: 0.6;
     cursor: not-allowed;
+    pointer-events: none;
   }
 
   &--max-content {
@@ -47,8 +67,34 @@
 
 .button--default:hover {
   background-color: var(--gray-light);
+  border-color: var(--gray-dark);
 }
 
 .button--default:active {
+  transform: translateY(1px);
   background-color: var(--gray-base);
+  border-color: var(--gray-dark);
+}
+
+.button--default:focus-visible,
+.button--ghost:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.button--ghost:hover {
+  background-color: var(--gray-base);
+  border-color: var(--gray-base);
+}
+
+.button--ghost:active {
+  transform: translateY(1px);
+  background-color: var(--gray-light);
+}
+
+.button:disabled,
+.button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }

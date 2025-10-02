@@ -4,6 +4,7 @@ export { CheckIcon } from "./CheckIcon";
 export { CloseIcon } from "./CloseIcon";
 export { EditIcon } from "./EditIcon";
 export { EnterIcon } from "./EnterIcon";
+export { GithubIcon } from "./GithubIcon";
 export { HomeIcon } from "./HomeIcon";
 export { KeyIcon } from "./KeyIcon";
 export { SaveIcon } from "./SaveIcon";
