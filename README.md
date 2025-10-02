@@ -42,14 +42,14 @@ npm run preview
 
 L’application repose sur une architecture en couches distinctes et complémentaires :
 
-| Couche       | Rôle                                                                                                                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kernel**   | Socle central de l’application, il gère les services transverses (sauvegardes, paramètres, dialogues, notifications, erreurs) et expose des opérations cohérentes au reste du système. |
-| **Domain**   | Couche métier spécialisée, construite au-dessus du Kernel pour modéliser un type de diagramme précis (Merise, mind map, etc.).                                                         |
-| **Managers** | Responsables d’un périmètre fonctionnel (flow, merise, settings, save, toast…), ils encapsulent leurs états et exposent des méthodes publiques sûres.                                  |
-| **DTO**      | Objets de transfert immutables représentant l’état courant, produits et validés par les managers pour garantir cohérence et traçabilité.                                               |
-| **Libs**     | Bibliothèques internes fournissant la logique et les modèles propres à chaque diagramme.                                                                                               |
-| **UI**       | Interface utilisateur connectée au Domain et au Kernel via des contextes clairs, utilisant un design system modulaire.                                                                 |
+| Couche   | Rôle                                                                                                                                                                                   |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kernel   | Socle central de l’application, il gère les services transverses (sauvegardes, paramètres, dialogues, notifications, erreurs) et expose des opérations cohérentes au reste du système. |
+| Domain   | Couche métier spécialisée, construite au-dessus du Kernel pour modéliser un type de diagramme précis (Merise, mind map, etc.).                                                         |
+| Managers | Responsables d’un périmètre fonctionnel (flow, merise, settings, save, toast…), ils encapsulent leurs états et exposent des méthodes publiques sûres.                                  |
+| DTO      | Objets de transfert immutables représentant l’état courant, produits et validés par les managers pour garantir cohérence et traçabilité.                                               |
+| Libs     | Bibliothèques internes fournissant la logique et les modèles propres à chaque diagramme.                                                                                               |
+| UI       | Interface utilisateur connectée au Domain et au Kernel via des contextes clairs, utilisant un design system modulaire.                                                                 |
 
 ---
 
@@ -67,6 +67,8 @@ Aujourd’hui, le projet embarque un **Domain Merise** (schémas MCD pour bases 
 
 <details>
   <summary>Socle central de l’application, il gère les services transverses (sauvegardes, paramètres, dialogues, notifications, erreurs) et expose des opérations cohérentes au reste du système.</summary>
+
+---
 
 Le hook d’initialisation instancie les managers du Kernel, chacun spécialisé dans une responsabilité (dialogues, gestion des erreurs, sauvegardes, paramètres…) ainsi que les états globaux associés.
 
@@ -86,6 +88,8 @@ La Kernel Factory se charge de construire et d’exposer vers le reste de l’ap
 
 <details>
   <summary>Couche métier spécialisée, construite au-dessus du Kernel pour modéliser un type de diagramme précis (Merise, mind map, etc.).</summary>
+
+---
 
 Le hook d’initialisation crée les managers spécifiques au type de diagramme ciblé (Merise, mind map, etc.) ainsi que les états globaux nécessaires à leur fonctionnement.
 
@@ -112,6 +116,8 @@ Enfin, la Domain Factory expose les **opérations** et **dépendances** construi
 <details>
   <summary>Responsables d’un périmètre fonctionnel (flow, merise, settings, save, toast…), ils encapsulent leurs états et exposent des méthodes publiques sûres.</summary>
 
+---
+
 Les états globaux du Kernel, ainsi que ceux requis par un Domain spécifique, sont initialisés dans leurs hooks respectifs.
 
 Toutefois, ces états ne sont jamais manipulés directement : ils sont encapsulés et pilotés exclusivement par le **manager** correspondant.
@@ -128,6 +134,8 @@ Il expose ensuite un ensemble de méthodes publiques, permettant à l’orchestr
 
 <details>
   <summary>Objets de transfert immutables représentant l’état courant, produits et validés par les managers pour garantir cohérence et traçabilité.</summary>
+
+---
 
 Les **Data Transfer Objects (DTO)** sont au cœur de la communication entre les managers et le reste de l’application.
 
