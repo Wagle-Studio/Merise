@@ -13,12 +13,10 @@ import {
   FieldTypeTextOption,
   MeriseFieldTypeTypeEnum,
 } from "@/libs/merise";
-import {
-  FieldTypeDateFormComponent,
-  FieldTypeNumberFormComponent,
-  FieldTypeOtherFormComponent,
-  FieldTypeTextFormComponent,
-} from "@/ui";
+import { FieldTypeDateFormComponent } from "./fieldTypes/FieldTypeDateForm";
+import { FieldTypeNumberFormComponent } from "./fieldTypes/FieldTypeNumberForm";
+import { FieldTypeOtherFormComponent } from "./fieldTypes/FieldTypeOtherForm";
+import { FieldTypeTextFormComponent } from "./fieldTypes/FieldTypeTextForm";
 
 export type TextOptionValue = { variant: FieldTypeTextOption; maxLength?: number };
 export type NumberOptionValue = { variant: FieldTypeNumberOption };

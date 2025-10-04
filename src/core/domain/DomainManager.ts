@@ -333,14 +333,14 @@ export default class DomainManager implements DomainManagerInterface {
     flowRemoveFn: (id: string) => FlowResult<TypedNode | TypedEdge, null>,
     meriseRemoveFn: (id: string) => MeriseResult<T, null>
   ) => {
-    const flowRemoveResult = flowRemoveFn(item.getId());
+    const flowRemoveResult = flowRemoveFn(item.getFlowId());
 
     if (!flowRemoveResult.success) {
       this.operations.handleError(flowRemoveResult);
       return;
     }
 
-    const meriseRemoveResult = meriseRemoveFn(item.getId());
+    const meriseRemoveResult = meriseRemoveFn(item.getFlowId());
 
     if (!meriseRemoveResult.success) {
       this.operations.handleError(meriseRemoveResult);
