@@ -1,5 +1,13 @@
 import { type ReactNode, useCallback, useMemo } from "react";
-import { Background, BackgroundVariant, type EdgeProps, type NodeProps, ReactFlow } from "@xyflow/react";
+import {
+  Background,
+  BackgroundVariant,
+  type EdgeProps,
+  type NodeProps,
+  type OnInit,
+  ReactFlow,
+  type ReactFlowProps,
+} from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useDomainContext } from "@/core/domain";
 import { SettingsBackgroundTypeEnum } from "@/core/libs/settings";
@@ -10,7 +18,7 @@ import Node from "./Node";
 
 // Main Flow component integrating React Flow with custom node and edge types
 export default function Flow() {
-  const { operations, dependencies } = useDomainContext();
+  const { operations, dependencies, setReactFlow } = useDomainContext();
 
   const { onConnect, onNodesChange } = useFlowHandlers({
     onConnectFn: operations.handleRelationCreate,
@@ -27,7 +35,11 @@ export default function Flow() {
   const nodes = useMemo(() => [...flow.getNodes()], [flow]);
   const edges = useMemo(() => [...flow.getEdges()], [flow]);
 
-  const reactFlowProps = useMemo(
+  const handleInit: OnInit<TypedNode, TypedEdge> = (instance) => {
+    setReactFlow(instance);
+  };
+
+  const reactFlowProps: ReactFlowProps<TypedNode, TypedEdge> = useMemo(
     () => ({
       nodeTypes,
       edgeTypes,
@@ -43,6 +55,7 @@ export default function Flow() {
       nodesDraggable: true,
       nodesConnectable: true,
       panOnDrag: true,
+      onInit: handleInit,
     }),
     [nodeTypes, edgeTypes, nodes, edges, dependencies, onNodesChange, onConnect]
   );
@@ -60,7 +73,7 @@ export default function Flow() {
 
   return (
     <div className="react_flow" tabIndex={0}>
-      <ReactFlow<TypedNode, TypedEdge> {...reactFlowProps}>{getBackgroundVariant()}</ReactFlow>
+      <ReactFlow {...reactFlowProps}>{getBackgroundVariant()}</ReactFlow>
     </div>
   );
 }

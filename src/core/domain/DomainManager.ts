@@ -1,4 +1,4 @@
-import type { Connection } from "@xyflow/react";
+import { type Connection, type ReactFlowInstance } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
 import type { KernelDependencies, KernelOperations } from "@/core/kernel";
 import { SaveDemo } from "@/core/libs/save";
@@ -28,7 +28,8 @@ export default class DomainManager implements DomainManagerInterface {
   constructor(
     private managers: DomainManagers,
     private operations: KernelOperations,
-    private dependencies: KernelDependencies
+    private dependencies: KernelDependencies,
+    private reactFlow: () => ReactFlowInstance<TypedNode, TypedEdge> | null
   ) {}
 
   getManager<K extends keyof DomainManagerMap>(name: K): DomainManagerMap[K] {
@@ -107,6 +108,13 @@ export default class DomainManager implements DomainManagerInterface {
       return;
     }
 
+    const reactFlowInstance = this.reactFlow();
+
+    if (reactFlowInstance) {
+      const newNodePosition = nodeCreateResult.data.position;
+      reactFlowInstance.setCenter(newNodePosition.x, newNodePosition.y);
+    }
+
     this.dependencies.addToastSuccess("Entité créée");
   };
 
@@ -126,6 +134,13 @@ export default class DomainManager implements DomainManagerInterface {
       // TODO : handle fail result
       this.managers.flow.removeNode(nodeCreateResult.data.id);
       return;
+    }
+
+    const reactFlowInstance = this.reactFlow();
+
+    if (reactFlowInstance) {
+      const newNodePosition = nodeCreateResult.data.position;
+      reactFlowInstance.setCenter(newNodePosition.x, newNodePosition.y);
     }
 
     this.dependencies.addToastSuccess("Association créée");

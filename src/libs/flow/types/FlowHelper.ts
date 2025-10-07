@@ -51,6 +51,7 @@ export interface FlowConnectEntityToAssociationProps {
 // Props required to create Flow connection between two entities
 export interface FlowCalculateNewNodePositionProps {
   nodes: TypedNode[];
+  connection: Connection;
 }
 
 // Contract for the Flow helper implementation
@@ -62,5 +63,5 @@ export interface FlowHelperInterface {
   connectEntityToAssociation: (
     props: FlowConnectEntityToAssociationProps
   ) => FlowResult<FlowConnectEntityToAssociationResult, null>;
-  calculateNewNodePosition: (props: FlowCalculateNewNodePositionProps) => { x: number; y: number };
+  calculateNewNodePosition: (props?: FlowCalculateNewNodePositionProps) => { x: number; y: number };
 }

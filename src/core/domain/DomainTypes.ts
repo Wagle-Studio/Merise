@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import type { Connection } from "@xyflow/react";
+import type { Connection, ReactFlowInstance } from "@xyflow/react";
 import type { Settings, SettingsManagerInterface } from "@/core/libs/settings";
-import type { FlowManagerInterface } from "@/libs/flow";
+import type { FlowManagerInterface, TypedEdge, TypedNode } from "@/libs/flow";
 import type { Association, Entity, Field, MeriseManagerInterface, Relation } from "@/libs/merise";
 
 // Managers available in the Domain context
@@ -19,6 +19,7 @@ export type DomainManagerMap = {
 // Result returned by the Domain initialization hook
 export interface UseDomainInitResult {
   domain: DomainManagerInterface;
+  setReactFlow: React.Dispatch<React.SetStateAction<ReactFlowInstance<TypedNode, TypedEdge> | null>>;
 }
 
 // Props required to initialize the Domain context
@@ -30,6 +31,7 @@ export interface DomainContextProps {
 export interface DomainContext {
   operations: DomainOperations;
   dependencies: DomainDependencies;
+  setReactFlow: React.Dispatch<React.SetStateAction<ReactFlowInstance<TypedNode, TypedEdge> | null>>;
 }
 
 // Contract for the Domain manager implementation

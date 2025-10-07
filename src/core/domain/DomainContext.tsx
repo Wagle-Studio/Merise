@@ -9,7 +9,7 @@ const DomainContext = createContext<DomainContext | null>(null);
 
 export const DomainContextProvider = ({ children }: DomainContextProps) => {
   const { operations, dependencies } = useKernelContext();
-  const { domain } = useDomainInit(operations, dependencies);
+  const { domain, setReactFlow } = useDomainInit(operations, dependencies);
 
   const flowDTO = domain.getManager("flow").getCurrentFlow();
   const meriseDTO = domain.getManager("merise").getCurrentMerise();
@@ -18,7 +18,10 @@ export const DomainContextProvider = ({ children }: DomainContextProps) => {
 
   const ops = useMemo(() => ProviderFactoryDomain.createOperations(domain), [domain]);
   const deps = useMemo(() => ProviderFactoryDomain.createDependencies(domain, dependencies), [domain, dependencies]);
-  const contextValue = useMemo(() => ({ operations: ops, dependencies: deps }), [ops, deps, flowDTO, meriseDTO]);
+  const contextValue = useMemo(
+    () => ({ operations: ops, dependencies: deps, setReactFlow }),
+    [ops, deps, flowDTO, meriseDTO]
+  );
 
   return <DomainContext.Provider value={contextValue}>{children}</DomainContext.Provider>;
 };

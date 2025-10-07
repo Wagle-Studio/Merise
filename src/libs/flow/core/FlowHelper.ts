@@ -17,8 +17,8 @@ import { FlowConnectionTypeEnum, FlowItemTypeEnum, FlowMeriseItemTypeEnum, FlowS
 
 export default class FlowHelper implements FlowHelperInterface {
   private static instance: FlowHelper;
-  private POS_DEFAULT_X = 100;
-  private POS_VERTICAL_SPACING = 120;
+  private POS_DEFAULT_X = 0;
+  private POS_DEFAULT_Y = 0;
 
   private constructor() {}
 
@@ -203,7 +203,7 @@ export default class FlowHelper implements FlowHelperInterface {
 
     const nodeNewAssociation: TypedNode = {
       id: nodeNewAssociationId,
-      position: this.calculateNewNodePosition({ nodes: nodes }),
+      position: this.calculateNewNodePosition({ nodes: nodes, connection: connection }),
       data: { id: nodeNewAssociationId, type: FlowMeriseItemTypeEnum.ASSOCIATION },
       type: FlowItemTypeEnum.NODE,
     };
@@ -261,14 +261,29 @@ export default class FlowHelper implements FlowHelperInterface {
     };
   };
 
-  calculateNewNodePosition = (props: FlowCalculateNewNodePositionProps): { x: number; y: number } => {
-    const { nodes } = props;
-    const existingPositions = nodes.map((n) => n.position.y);
-    const maxY = existingPositions.length > 0 ? Math.max(...existingPositions) : 0;
+  calculateNewNodePosition = (props?: FlowCalculateNewNodePositionProps): { x: number; y: number } => {
+    if (props) {
+      const source = props.nodes.find((node) => node.id === props.connection.source);
+      const target = props.nodes.find((node) => node.id === props.connection.target);
+
+      if (source && target) {
+        const getCenter = (n: any) => {
+          const w = n.measured?.width ?? n.width ?? 0;
+          const h = n.measured?.height ?? n.height ?? 0;
+
+          return { x: n.position.x + w / 2, y: n.position.y + h / 2 };
+        };
+
+        const s = getCenter(source);
+        const t = getCenter(target);
+
+        return { x: (s.x + t.x) / 2, y: (s.y + t.y) / 2 };
+      }
+    }
 
     return {
       x: this.POS_DEFAULT_X,
-      y: maxY + this.POS_VERTICAL_SPACING,
+      y: this.POS_DEFAULT_Y,
     };
   };
 }

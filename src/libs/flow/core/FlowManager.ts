@@ -36,7 +36,7 @@ export default class FlowManager implements FlowManagerInterface {
 
     const node: TypedNode = {
       id: nodeId,
-      position: this.helper.calculateNewNodePosition({ nodes: this.getFlow().getNodes() }),
+      position: this.helper.calculateNewNodePosition(),
       data: {
         id: nodeId,
         type: itemType,
