@@ -68,8 +68,8 @@ jobs:
           lftp sftp://${{ secrets.SFTP_PROD_USERNAME }}:${{ secrets.SFTP_PROD_PWD }}@${{ secrets.REMOTE_HOST }} -e "
             set sftp:auto-confirm yes
             cd $REMOTEDIR
-            put -O . docker-compose.prod.yml
-            put -O . .env.example
+            put docker-compose.prod.yml -o docker-compose.yml
+            put .env.example -o .env
             bye
           "
 
@@ -80,10 +80,12 @@ jobs:
           APP_DIR=${{ secrets.REMOTE_PROD_PROJECT_FOLDER_PATH }}
           GHCR_NAMESPACE=${{ secrets.GHCR_NAMESPACE }}
           IMAGE_TAG=${{ needs.build_and_push.outputs.image_tag }}
+          CONTAINER_PREFIX=${{ secrets.REMOTE_CONTAINER_PREFIX }}
+          DIST_PORT=${{ secrets.REMOTE_DIST_PORT }}
 
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF
             cd "$APP_DIR"
-            cp .env.example .env
             sed -i "s#^GHCR_NAMESPACE=.*#GHCR_NAMESPACE=${GHCR_NAMESPACE}:${IMAGE_TAG}#" .env
-            docker compose -p merise -f docker-compose.prod.yml --env-file .env up -d
+            sed -i "s#^REMOTE_DIST_PORT=.*#REMOTE_DIST_PORT=${DIST_PORT}#" .env
+            docker compose -p ${CONTAINER_PREFIX} up -d --pull always
           EOF

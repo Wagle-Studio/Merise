@@ -3,4 +3,4 @@ services:
     restart: always
     image: ${GHCR_NAMESPACE}
     ports:
-      - 4173:4173
+      - 127.0.0.1:${REMOTE_DIST_PORT}:4173
