@@ -1,0 +1,6 @@
+services:
+  frontend:
+    restart: always
+    image: ${GHCR_NAMESPACE}
+    ports:
+      - 4173:4173
